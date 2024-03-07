@@ -9,41 +9,47 @@ trait InstallVueStack
 {
     protected function installVueStack()
     {
-        $this->components->info('Installing Blade stack...');
+        $this->components->info('Installing Vue stack...');
+        $this->line('');
 
         // Call breeze
         $this->installBreezeIfNotExist();
-        $this->callSilent('breeze:install', ['vue']);
+        $this->runCommands(['php artisan breeze:install vue']);
+        // End call breeze
 
-        // // Controllers...
-        // (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
-        // (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/blade/app/Http/Controllers', app_path('Http/Controllers'));
+        // Clean unnecessary files from breeze
+        // ...
+        // End clean unnecessary files from breeze
 
-        // // Views...
-        // (new Filesystem)->ensureDirectoryExists(resource_path('views'));
-        // (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/blade/resources/views', resource_path('views'));
+        // Update the "package.json" file
+        $this->updateNodePackages(function ($packages) {
+            return [
+                // example
+                // 'axios' => '^0.21',
+                // ...
+                ] + $packages;
+        });
+        // End update the "package.json" file
 
-        // // Routes...
-        // copy(__DIR__.'/../../stubs/blade/routes/web.php', base_path('routes/web.php'));
+        // Controllers
+        (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
+        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/app/Http/Controllers', app_path('Http/Controllers'));
+        // End controllers
 
-        // // Tailwind / Vite...
-        // copy(__DIR__.'/../../stubs/blade/tailwind.config.js', base_path('tailwind.config.js'));
-        // copy(__DIR__.'/../../stubs/blade/postcss.config.js', base_path('postcss.config.js'));
-        // copy(__DIR__.'/../../stubs/blade/vite.config.js', base_path('vite.config.js'));
-        // copy(__DIR__.'/../../stubs/blade/resources/css/app.css', resource_path('css/app.css'));
-        // copy(__DIR__.'/../../stubs/blade/resources/js/app.js', resource_path('js/app.js'));
+        // Views/Pages
+        (new Filesystem)->ensureDirectoryExists(resource_path('views'));
+        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/resources/views', resource_path('views'));
+        // End views/Pages
 
-        // $this->components->info('Installing and building Node dependencies.');
+        // Routes
+        copy(__DIR__.'/../../stubs/vue/routes/web.php', base_path('routes/web.php'));
+        // End routes
 
-        // if (file_exists(base_path('pnpm-lock.yaml'))) {
-        //     $this->runCommands(['pnpm install', 'pnpm run build']);
-        // } elseif (file_exists(base_path('yarn.lock'))) {
-        //     $this->runCommands(['yarn install', 'yarn run build']);
-        // } else {
-        //     $this->runCommands(['npm install', 'npm run build']);
-        // }
+        // Update npm packages
+        $this->runCommands(['npm install', 'npm run build']);
+        // End update npm packages
 
-        // $this->line('');
-        // $this->components->info('Eky scaffolding installed successfully.');
+        $this->line('');
+        $this->components->info('PKT Starter Kit installed with Vue stack.');
     }
 }

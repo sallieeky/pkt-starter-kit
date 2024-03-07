@@ -9,14 +9,14 @@ use Symfony\Component\Process\Process;
 
 class InstallCommand extends Command implements PromptsForMissingInput
 {
-    use InstallBladeStack, InstallVueStack, InstallReactStack;
+    use InstallVueStack, InstallReactStack;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
     protected $signature = 'pkt:install 
-                            {stack : The development stack that should be installed (blade, vue, react)}';
+                            {stack : The development stack that should be installed (vue or react)}';
 
     /**
      * The console command description.
@@ -32,20 +32,18 @@ class InstallCommand extends Command implements PromptsForMissingInput
      */
     public function handle()
     {
-        if ($this->argument('stack') === 'blade') {
-            $this->installBladeStack();
-        } elseif ($this->argument('stack') === 'vue') {
+        if ($this->argument('stack') === 'vue') {
             $this->installVueStack();
         } elseif ($this->argument('stack') === 'react') {
             $this->installReactStack();
         } else {
-            $this->error('Invalid stack. Please use "blade", "vue", or "react".');
+            $this->error('Invalid stack. Please use "vue", or "react".');
             return 1;
         }
         return 1;
     }
 
-    protected static function installBreezeIfNotExist()
+    protected function installBreezeIfNotExist()
     {
         $existInComposer = file_exists(base_path('composer.json')) &&
             ! empty(json_decode(file_get_contents(base_path('composer.json')), true)['require']['laravel/breeze']);
