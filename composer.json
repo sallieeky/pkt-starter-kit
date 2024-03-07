@@ -22,6 +22,9 @@
         "illuminate/validation": "^10.17"
     },
     "extra": {
+        "branch-alias": {
+            "dev-master": "dev"
+        },
         "laravel": {
             "providers": [
                 "Pkt\\StarterKit\\StarterKitServiceProvider"

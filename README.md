@@ -2,5 +2,5 @@
 ## Installation
 
 ```bash
-composer require pkt/starter-kit --dev 
+composer require pkt/starter-kit:dev-dev --dev 
 ```
