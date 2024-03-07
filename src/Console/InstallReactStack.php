@@ -13,7 +13,7 @@ trait InstallReactStack
 
         // Call breeze
         $this->installBreezeIfNotExist();
-        $this->runCommands(['php artisan breeze:install react']);
+        $this->runCommands(['php artisan breeze:install react --pest']);
         // End call breeze
 
         // Clean unnecessary files from breeze

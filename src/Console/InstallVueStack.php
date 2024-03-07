@@ -14,7 +14,7 @@ trait InstallVueStack
 
         // Call breeze
         $this->installBreezeIfNotExist();
-        $this->runCommands(['php artisan breeze:install vue']);
+        $this->runCommands(['php artisan breeze:install vue --pest']);
         // End call breeze
 
         // Clean unnecessary files from breeze
