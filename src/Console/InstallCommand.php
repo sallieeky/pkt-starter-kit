@@ -32,6 +32,11 @@ class InstallCommand extends Command implements PromptsForMissingInput
      */
     public function handle()
     {
+        if (!$this->confirm('Make sure that this is the empty project. Do you want to continue?')) {
+            $this->info('Installation aborted.');
+            return 1;
+        }
+        
         if ($this->argument('stack') === 'vue') {
             $this->installVueStack();
         } elseif ($this->argument('stack') === 'react') {
