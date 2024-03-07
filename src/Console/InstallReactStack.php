@@ -11,7 +11,8 @@ trait InstallReactStack
     {
         $this->components->info('Installing Blade stack...');
 
-        // call breeze:install react
+        // Call breeze
+        $this->installBreezeIfNotExist();
         $this->callSilent('breeze:install', ['react']);
 
         // // Controllers...

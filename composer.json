@@ -21,9 +21,6 @@
         "illuminate/support": "^10.17",
         "illuminate/validation": "^10.17"
     },
-    "require-dev": {
-        "laravel/breeze": "^1.29"
-    },
     "extra": {
         "laravel": {
             "providers": [
