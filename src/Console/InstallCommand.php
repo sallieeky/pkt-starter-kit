@@ -129,4 +129,32 @@ class InstallCommand extends Command implements PromptsForMissingInput
             $this->output->write('    '.$line);
         });
     }
+
+    /**
+     * Installs the given Composer Packages into the application.
+     *
+     * @param  array  $packages
+     * @param  bool  $asDev
+     * @return bool
+     */
+    protected function requireComposerPackages(array $packages, $asDev = false)
+    {
+        $composer = $this->option('composer');
+
+        if ($composer !== 'global') {
+            $command = ['php', $composer, 'require'];
+        }
+
+        $command = array_merge(
+            $command ?? ['composer', 'require'],
+            $packages,
+            $asDev ? ['--dev'] : [],
+        );
+
+        return (new Process($command, base_path(), ['COMPOSER_MEMORY_LIMIT' => '-1']))
+            ->setTimeout(null)
+            ->run(function ($type, $output) {
+                $this->output->write($output);
+            }) === 0;
+    }
 }
