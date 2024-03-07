@@ -1,0 +1,34 @@
+{
+    "name": "pkt/starter-kit",
+    "description": "Comprehensive and efficient toolkit designed to streamline the process of developing Laravel packages In Pupuk Kaltim",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Pkt\\StarterKit\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "sallieeky",
+            "email": "sallieeky@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.1.0",
+        "illuminate/console": "^10.17",
+        "illuminate/filesystem": "^10.17",
+        "illuminate/support": "^10.17",
+        "illuminate/validation": "^10.17"
+    },
+    "require-dev": {
+        "laravel/breeze": "^1.29"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Pkt\\StarterKit\\StarterKitServiceProvider"
+            ]
+        }
+    }
+}
