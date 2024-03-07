@@ -43,6 +43,11 @@ class InstallCommand extends Command implements PromptsForMissingInput
         return 1;
     }
 
+    /**
+     * Installing Laravel Breeze if not exist
+     *
+     * @return void
+     */
     protected function installBreezeIfNotExist()
     {
         $existInComposer = file_exists(base_path('composer.json')) &&
@@ -50,6 +55,21 @@ class InstallCommand extends Command implements PromptsForMissingInput
         if (!$existInComposer) {
             $this->runCommands(['composer require laravel/breeze --dev']);
         }
+    }
+
+    /**
+     * Copying default template
+     *
+     * @return void
+     */
+    protected function copyDefault()
+    {
+        // Controllers
+        // (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
+        // (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Controllers', app_path('Http/Controllers'));
+        // End controllers
+        
+        // ...
     }
 
     /**
