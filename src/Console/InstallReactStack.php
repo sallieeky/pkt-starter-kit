@@ -17,7 +17,10 @@ trait InstallReactStack
         // End call breeze
 
         // Clean unnecessary files from breeze
-        // ...
+        (new Filesystem)->ensureDirectoryExists(resource_path('js/Components'));
+        (new Filesystem)->ensureDirectoryExists(resource_path('js/Layouts'));
+        (new Filesystem)->deleteDirectory(resource_path('js/Components'));
+        (new Filesystem)->deleteDirectory(resource_path('js/Layouts'));
         // End clean unnecessary files from breeze
 
         // Update the "package.json" file

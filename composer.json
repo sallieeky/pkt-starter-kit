@@ -2,6 +2,7 @@
     "name": "pkt/starter-kit",
     "description": "Comprehensive and efficient toolkit designed to streamline the process of developing Laravel packages In Pupuk Kaltim",
     "license": "MIT",
+    "type": "library",
     "autoload": {
         "psr-4": {
             "Pkt\\StarterKit\\": "src/"
