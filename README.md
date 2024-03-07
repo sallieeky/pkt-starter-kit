@@ -22,3 +22,9 @@ Using react
 ```bash
 php artisan pkt:install react
 ```
+
+## Authors
+
+- [@sallieeky](https://www.github.com/sallieeky)
+- [@ardmgtm](https://www.github.com/ardmgtm)
+- [@sallixie](https://www.github.com/sallixie)
