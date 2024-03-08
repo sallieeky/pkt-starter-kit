@@ -24,7 +24,6 @@ trait InstallVueStack
             (new Filesystem)->deleteDirectory(resource_path('js/Components'));
             (new Filesystem)->deleteDirectory(resource_path('js/Layouts'));
         });
-        $this->info('Unnecessary files cleaned.');
         // End clean unnecessary files from breeze
 
         // Update the "package.json" file
@@ -37,7 +36,6 @@ trait InstallVueStack
                     ] + $packages;
             });
         });
-        $this->info('The "package.json" file updated.');
         // End update the "package.json" file
 
         // Controllers
@@ -45,7 +43,6 @@ trait InstallVueStack
             (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/app/Http/Controllers', app_path('Http/Controllers'));
         });
-        $this->info('Controllers created.');
         // End controllers
 
         // Views/Pages
@@ -53,28 +50,24 @@ trait InstallVueStack
             (new Filesystem)->ensureDirectoryExists(resource_path('views'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/resources/views', resource_path('views'));
         });
-        $this->info('Views/pages created.');
         // End views/Pages
 
         // Routes
         $this->components->task('Creating routes...', function () {
             copy(__DIR__.'/../../stubs/vue/routes/web.php', base_path('routes/web.php'));
         });
-        $this->info('Routes created.');
         // End routes
 
         // Update npm packages
         $this->components->task('Installing new npm module and build...', function () {
             $this->runCommands(['npm install', 'npm run build']);
         });
-        $this->info('New npm module installed and build.');
         // End update npm packages
 
         // Copy default
         $this->components->task('Copying default template...', function () {
             $this->copyDefault();
         });
-        $this->info('Default template copied.');
         // End copy default
 
         $this->line('');

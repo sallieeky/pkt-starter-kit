@@ -10,6 +10,7 @@ trait InstallReactStack
     protected function installReactStack()
     {
         $this->components->info('Installing React stack...');
+        $this->line('');
 
         // Call breeze
         $this->installBreezeIfNotExist();
@@ -23,7 +24,6 @@ trait InstallReactStack
             (new Filesystem)->deleteDirectory(resource_path('js/Components'));
             (new Filesystem)->deleteDirectory(resource_path('js/Layouts'));
         });
-        $this->info('Unnecessary files cleaned.');
         // End clean unnecessary files from breeze
 
         // Update the "package.json" file
@@ -36,7 +36,6 @@ trait InstallReactStack
                     ] + $packages;
             });
         });
-        $this->info('The "package.json" file updated.');
         // End update the "package.json" file
 
         // Controllers
@@ -44,7 +43,6 @@ trait InstallReactStack
             // (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
             // (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/react/app/Http/Controllers', app_path('Http/Controllers'));
         });
-        $this->info('Controllers created.');
         // End controllers
 
         // Views/Pages
@@ -52,28 +50,24 @@ trait InstallReactStack
             // (new Filesystem)->ensureDirectoryExists(resource_path('views'));
             // (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/react/resources/views', resource_path('views'));
         });
-        $this->info('Views/pages created.');
         // End views/Pages
 
         // Routes
         $this->components->task('Creating routes...', function () {
             // copy(__DIR__.'/../../stubs/react/routes/web.php', base_path('routes/web.php'));
         });
-        $this->info('Routes created.');
         // End routes
 
         // Update npm packages
         $this->components->task('Installing new npm module and build...', function () {
             $this->runCommands(['npm install', 'npm run build']);
         });
-        $this->info('Npm module installed.');
         // End update npm packages
 
         // Copy default
         $this->components->task('Copying default template...', function () {
             $this->copyDefault();
         });
-        $this->info('Default template copied.');
         // End copy default
 
         $this->line('');
