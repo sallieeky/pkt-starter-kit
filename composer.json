@@ -1,6 +1,6 @@
 {
     "name": "pkt/starter-kit",
-    "description": "Comprehensive and efficient toolkit designed to streamline the process of developing Laravel packages In Pupuk Kaltim",
+    "description": "Comprehensive and efficient toolkit designed to streamline the process of developing Laravel application In PT Pupuk Kaltim",
     "license": "MIT",
     "type": "library",
     "autoload": {

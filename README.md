@@ -1,4 +1,6 @@
 # PKT Starter Kit
+Comprehensive and efficient toolkit designed to streamline the process of developing Laravel application In PT Pupuk Kaltim
+
 ## Installation
 
 For stable package install using
