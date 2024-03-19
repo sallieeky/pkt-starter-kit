@@ -54,7 +54,7 @@ trait InstallVueStack
 
         // Routes
         $this->components->task('Creating routes...', function () {
-            copy(__DIR__.'/../../stubs/vue/routes/web.php', base_path('routes/web.php'));
+            // copy(__DIR__.'/../../stubs/vue/routes/web.php', base_path('routes/web.php'));
         });
         // End routes
 
