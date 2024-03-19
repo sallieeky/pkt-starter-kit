@@ -1,0 +1,14 @@
+# version: '1.0'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: .docker/php/Dockerfile
+    image: pkt-starter-kit
+    container_name: pkt-starter-kit
+    restart: always
+    ports:
+      - 44080:80
+      - 440443:443
+    volumes:
+      - .:/var/www/html
