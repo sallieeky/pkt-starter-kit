@@ -29,10 +29,15 @@ class UserActivityLog
         $userAgent = $request->header('User-Agent');
         $statusCode = $response->getStatusCode();
         $statusName = Response::$statusTexts[$statusCode];
+        $requestBody = $request->except(['error_message','stack_trace','error_class']);
+        if(isset($requestBody['password'])){
+            $requestBody['password'] = '*****';
+        }
 
         $logData = [
             'path' => $path,
             'method' => $requestMethod,
+            'request_body' => $requestBody,
             'status_code' => $statusCode,
             'status_name' => $statusName,
             'user_id' => $user?->user_id,
@@ -44,11 +49,11 @@ class UserActivityLog
         if($response->isSuccessful()){
             Log::info(json_encode($logData));
         }else{
-            if ($request->has('errors')) {
-                $errors = $request->get('errors');
+            if ($request->has('error_message') && $request->has('stack_trace')) {
                 $logData['errors'] = [
-                    'message' => $errors->getMessage(),
-                    'stack_trace' => $errors->getTrace(),
+                    'error_class' => $request->get('error_class'),
+                    'message' => $request->get('error_message'),
+                    'stack_trace' => $request->get('stack_trace'),
                 ];
                 Log::error(json_encode($logData));
             }else{
