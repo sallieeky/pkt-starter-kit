@@ -71,7 +71,6 @@ class InstallCommand extends Command implements PromptsForMissingInput
      */
     protected function copyDefault()
     {
-
         $this->components->task('Copying default...', function () {
             // Docker
             (new Filesystem)->ensureDirectoryExists(base_path('.docker'));
@@ -118,6 +117,10 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/app/Models/User.php', app_path('Models/User.php'));
             // End Models
 
+            // Config
+            copy(__DIR__.'/../../stubs/default/config/ldap.php', config_path('ldap.php'));
+            // End Config
+
             // Migrations
             (new Filesystem)->ensureDirectoryExists(database_path('migrations'));
             copy(__DIR__.'/../../stubs/default/database/migrations/2024_04_01_000000_create_permission_tables.php', database_path('migrations/2024_04_01_000000_create_permission_tables.php'));
@@ -142,6 +145,11 @@ class InstallCommand extends Command implements PromptsForMissingInput
             (new Filesystem)->ensureDirectoryExists(resource_path('js/Core'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/resources/js/Core', resource_path('js/Core'));
             // End Resources
+
+            // Routes
+            (new Filesystem)->ensureDirectoryExists(base_path('routes'));
+            copy(__DIR__.'/../../stubs/default/routes/web.php', base_path('routes/web.php'));
+            // End Routes
         });
     }
 
