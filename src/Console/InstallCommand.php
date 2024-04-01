@@ -72,6 +72,9 @@ class InstallCommand extends Command implements PromptsForMissingInput
     protected function copyDefault()
     {
         $this->components->task('Copying default...', function () {
+            if (!$this->requireComposerPackages(["spatie/laravel-permission:^6.1"])) {
+                return 1;
+            }
             // Docker
             (new Filesystem)->ensureDirectoryExists(base_path('.docker'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/.docker', base_path('.docker'));
