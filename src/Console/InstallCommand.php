@@ -85,10 +85,10 @@ class InstallCommand extends Command implements PromptsForMissingInput
 
             // Controllers
             (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Controllers/AuthenticationController.php', app_path('Http/Controllers'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Controllers/RoleAndPermissionController.php', app_path('Http/Controllers'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Controllers/UserController.php', app_path('Http/Controllers'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Controllers/UserLogController.php', app_path('Http/Controllers'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/AuthenticationController.php', app_path('Http/Controllers/AuthenticationController.php'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/RoleAndPermissionController.php', app_path('Http/Controllers/RoleAndPermissionController.php'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/UserController.php', app_path('Http/Controllers/UserController.php'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/UserLogController.php', app_path('Http/Controllers/UserLogController.php'));
             // End controllers
 
             // Helpers
@@ -98,10 +98,8 @@ class InstallCommand extends Command implements PromptsForMissingInput
 
             // Middleware
             (new Filesystem)->ensureDirectoryExists(app_path('Http/Middleware'));
-            copy(__DIR__.'/../../stubs/default/app/Http/Middleware/UserActivityLog.php', app_path('Http/Middleware'));
-            $this->installMiddleware([
-                '\App\Http\Middleware\UserActivityLog::class',
-            ]);
+            copy(__DIR__.'/../../stubs/default/app/Http/Middleware/UserActivityLog.php', app_path('Http/Middleware/UserActivityLog.php'));
+            $this->installMiddlewareAfter('\Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class', '\App\Http\Middleware\UserActivityLog::class');
             // End Middleware
 
             // Requests
@@ -219,33 +217,32 @@ class InstallCommand extends Command implements PromptsForMissingInput
     }
 
     /**
-     * Install the given middleware names into the application.
+     * Install the middleware to a group in the application Http Kernel.
      *
-     * @param  array|string  $name
+     * @param  string  $after
+     * @param  string  $name
      * @param  string  $group
-     * @param  string  $modifier
      * @return void
      */
-    protected function installMiddleware($names, $group = 'web', $modifier = 'append')
+    protected function installMiddlewareAfter($after, $name, $group = 'web')
     {
-        $bootstrapApp = file_get_contents(base_path('bootstrap/app.php'));
+        $httpKernel = file_get_contents(app_path('Http/Kernel.php'));
 
-        $names = collect(Arr::wrap($names))
-            ->filter(fn ($name) => ! Str::contains($bootstrapApp, $name))
-            ->whenNotEmpty(function ($names) use ($bootstrapApp, $group, $modifier) {
-                $names = $names->map(fn ($name) => "$name")->implode(','.PHP_EOL.'            ');
+        $middlewareGroups = Str::before(Str::after($httpKernel, '$middlewareGroups = ['), '];');
+        $middlewareGroup = Str::before(Str::after($middlewareGroups, "'$group' => ["), '],');
 
-                $bootstrapApp = str_replace(
-                    '->withMiddleware(function (Middleware $middleware) {',
-                    '->withMiddleware(function (Middleware $middleware) {'
-                        .PHP_EOL."        \$middleware->$group($modifier: ["
-                        .PHP_EOL."            $names,"
-                        .PHP_EOL.'        ]);'
-                        .PHP_EOL,
-                    $bootstrapApp,
-                );
+        if (! Str::contains($middlewareGroup, $name)) {
+            $modifiedMiddlewareGroup = str_replace(
+                $after.',',
+                $after.','.PHP_EOL.'            '.$name.',',
+                $middlewareGroup,
+            );
 
-                file_put_contents(base_path('bootstrap/app.php'), $bootstrapApp);
-            });
+            file_put_contents(app_path('Http/Kernel.php'), str_replace(
+                $middlewareGroups,
+                str_replace($middlewareGroup, $modifiedMiddlewareGroup, $middlewareGroups),
+                $httpKernel
+            ));
+        }
     }
 }
