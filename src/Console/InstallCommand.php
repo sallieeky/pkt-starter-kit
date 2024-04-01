@@ -124,7 +124,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             // Migrations
             (new Filesystem)->ensureDirectoryExists(database_path('migrations'));
             copy(__DIR__.'/../../stubs/default/database/migrations/2024_04_01_000000_create_permission_tables.php', database_path('migrations/2024_04_01_000000_create_permission_tables.php'));
-            copy(__DIR__.'/../../stubs/default/database/migrations/2024_04_01_000000_create_users_table.php', database_path('migrations/2024_04_01_000000_create_users_table.php'));
+            copy(__DIR__.'/../../stubs/default/database/migrations/2014_10_12_000000_create_users_table.php', database_path('migrations/2014_10_12_000000_create_users_table.php'));
             // End Migrations
 
             // Seeders
