@@ -5,7 +5,9 @@ namespace Pkt\StarterKit\Console;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Symfony\Component\Process\Process;
-
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class InstallCommand extends Command implements PromptsForMissingInput
 {
@@ -69,12 +71,57 @@ class InstallCommand extends Command implements PromptsForMissingInput
      */
     protected function copyDefault()
     {
-        // Controllers
-        // (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
-        // (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Controllers', app_path('Http/Controllers'));
-        // End controllers
-        
-        // ...
+
+        $this->components->task('Copying default...', function () {
+            // Docker
+            (new Filesystem)->ensureDirectoryExists(base_path('.docker'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/.docker', base_path('.docker'));
+            copy(__DIR__.'/../../stubs/default/docker-compose.yml', base_path('docker-compose.yml'));
+            // End docker
+
+            // Tailwind
+            copy(__DIR__.'/../../stubs/default/tailwind.config.js', base_path('tailwind.config.js'));
+            // End tailwind
+
+            // Controllers
+            (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Controllers/AuthenticationController.php', app_path('Http/Controllers'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Controllers/RoleAndPermissionController.php', app_path('Http/Controllers'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Controllers/UserController.php', app_path('Http/Controllers'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Controllers/UserLogController.php', app_path('Http/Controllers'));
+            // End controllers
+
+            // Helpers
+            (new Filesystem)->ensureDirectoryExists(app_path('Http/Helpers'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Helpers', app_path('Http/Helpers'));
+            // End Helpers
+
+            // Middleware
+            (new Filesystem)->ensureDirectoryExists(app_path('Http/Middleware'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Middleware/UserActivityLog.php', app_path('Http/Middleware'));
+            $this->installMiddleware([
+                '\App\Http\Middleware\UserActivityLog::class',
+            ]);
+            // End Middleware
+
+            // Requests
+            (new Filesystem)->ensureDirectoryExists(app_path('Http/Requests'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Requests', app_path('Http/Requests'));
+            // End Requests
+
+            // Public
+            (new Filesystem)->ensureDirectoryExists(public_path('images'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/public/images', public_path('images'));
+            (new Filesystem)->ensureDirectoryExists(public_path('icons'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/public/icons', public_path('icons'));
+            // End Public
+
+            // Resources
+            copy(__DIR__.'/../../stubs/default/resources/css/dx.material.pkt-scheme.css', resource_path('css/dx.material.pkt-scheme.css'));
+            (new Filesystem)->ensureDirectoryExists(resource_path('js/Core'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/resources/js/Core', resource_path('js/Core'));
+            // End Resources
+        });
     }
 
     /**
@@ -169,5 +216,36 @@ class InstallCommand extends Command implements PromptsForMissingInput
     protected function replaceInFile($search, $replace, $path)
     {
         file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
+    }
+
+    /**
+     * Install the given middleware names into the application.
+     *
+     * @param  array|string  $name
+     * @param  string  $group
+     * @param  string  $modifier
+     * @return void
+     */
+    protected function installMiddleware($names, $group = 'web', $modifier = 'append')
+    {
+        $bootstrapApp = file_get_contents(base_path('bootstrap/app.php'));
+
+        $names = collect(Arr::wrap($names))
+            ->filter(fn ($name) => ! Str::contains($bootstrapApp, $name))
+            ->whenNotEmpty(function ($names) use ($bootstrapApp, $group, $modifier) {
+                $names = $names->map(fn ($name) => "$name")->implode(','.PHP_EOL.'            ');
+
+                $bootstrapApp = str_replace(
+                    '->withMiddleware(function (Middleware $middleware) {',
+                    '->withMiddleware(function (Middleware $middleware) {'
+                        .PHP_EOL."        \$middleware->$group($modifier: ["
+                        .PHP_EOL."            $names,"
+                        .PHP_EOL.'        ]);'
+                        .PHP_EOL,
+                    $bootstrapApp,
+                );
+
+                file_put_contents(base_path('bootstrap/app.php'), $bootstrapApp);
+            });
     }
 }
