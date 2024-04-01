@@ -60,7 +60,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
         $existInComposer = file_exists(base_path('composer.json')) &&
             ! empty(json_decode(file_get_contents(base_path('composer.json')), true)['require']['laravel/breeze']);
         if (!$existInComposer) {
-            $this->runCommands(['composer require laravel/breeze --dev']);
+            $this->runCommands(['composer require laravel/breeze:v1.29.1 --dev']);
         }
     }
 
