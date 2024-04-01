@@ -50,6 +50,12 @@ trait InstallVueStack
         });
         // End update the "package.json" file
 
+        // Vite
+        $this->components->task('Creating vite config...', function () {
+            copy(__DIR__.'/../../stubs/vue/vite.config.js', base_path('vite.config.js'));
+        });
+        // End vite
+
         // Css
         $this->components->task('Creating css...', function () {
             (new Filesystem)->ensureDirectoryExists(resource_path('css'));
