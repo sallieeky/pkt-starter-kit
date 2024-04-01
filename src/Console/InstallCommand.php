@@ -77,11 +77,16 @@ class InstallCommand extends Command implements PromptsForMissingInput
             (new Filesystem)->ensureDirectoryExists(base_path('.docker'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/.docker', base_path('.docker'));
             copy(__DIR__.'/../../stubs/default/docker-compose.yml', base_path('docker-compose.yml'));
-            // End docker
+            // End Docker
 
             // Tailwind
             copy(__DIR__.'/../../stubs/default/tailwind.config.js', base_path('tailwind.config.js'));
-            // End tailwind
+            // End Tailwind
+
+            // Exceptions
+            (new Filesystem)->ensureDirectoryExists(app_path('Exceptions'));
+            copy(__DIR__.'/../../stubs/default/app/Exceptions/Handler.php', app_path('Exceptions/Handler.php'));
+            // End Exceptions
 
             // Controllers
             (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
@@ -89,7 +94,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/RoleAndPermissionController.php', app_path('Http/Controllers/RoleAndPermissionController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/UserController.php', app_path('Http/Controllers/UserController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/UserLogController.php', app_path('Http/Controllers/UserLogController.php'));
-            // End controllers
+            // End Controllers
 
             // Helpers
             (new Filesystem)->ensureDirectoryExists(app_path('Http/Helpers'));
@@ -98,6 +103,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
 
             // Middleware
             (new Filesystem)->ensureDirectoryExists(app_path('Http/Middleware'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Middleware/HandleInertiaRequests.php', app_path('Http/Middleware/HandleInertiaRequests.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Middleware/UserActivityLog.php', app_path('Http/Middleware/UserActivityLog.php'));
             $this->installMiddlewareAfter('\Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class', '\App\Http\Middleware\UserActivityLog::class');
             // End Middleware
@@ -107,6 +113,22 @@ class InstallCommand extends Command implements PromptsForMissingInput
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Requests', app_path('Http/Requests'));
             // End Requests
 
+            // Models
+            (new Filesystem)->ensureDirectoryExists(app_path('Models'));
+            copy(__DIR__.'/../../stubs/default/app/Models/User.php', app_path('Models/User.php'));
+            // End Models
+
+            // Migrations
+            (new Filesystem)->ensureDirectoryExists(database_path('migrations'));
+            copy(__DIR__.'/../../stubs/default/database/migrations/2024_04_01_000000_create_permission_tables.php', database_path('migrations/2024_04_01_000000_create_permission_tables.php'));
+            copy(__DIR__.'/../../stubs/default/database/migrations/2024_04_01_000000_create_users_table.php', database_path('migrations/2024_04_01_000000_create_users_table.php'));
+            // End Migrations
+
+            // Seeders
+            (new Filesystem)->ensureDirectoryExists(database_path('seeders'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/database/seeders', database_path('seeders'));
+            // End Seeders
+
             // Public
             (new Filesystem)->ensureDirectoryExists(public_path('images'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/public/images', public_path('images'));
@@ -115,6 +137,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             // End Public
 
             // Resources
+            (new Filesystem)->ensureDirectoryExists(resource_path('css'));
             copy(__DIR__.'/../../stubs/default/resources/css/dx.material.pkt-scheme.css', resource_path('css/dx.material.pkt-scheme.css'));
             (new Filesystem)->ensureDirectoryExists(resource_path('js/Core'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/resources/js/Core', resource_path('js/Core'));
