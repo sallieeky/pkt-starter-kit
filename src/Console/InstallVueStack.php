@@ -36,9 +36,7 @@ trait InstallVueStack
         // End clean unnecessary files from breeze
 
         // Copy default
-        $this->components->task('Copying default template...', function () {
-            $this->copyDefault();
-        });
+        $this->copyDefault();
         // End copy default
 
         // Update the "package.json" file
