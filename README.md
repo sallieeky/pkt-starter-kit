@@ -31,6 +31,7 @@ For development this package install using
 composer require pkt/starter-kit:dev-dev --dev 
 ```
 
+
 ## How To Use
 
 Using vue
@@ -42,6 +43,53 @@ Using react <strong>(NOT READY)</strong>
 ```bash
 php artisan pkt:install react
 ```
+
+## Full Installation/Setup Project
+
+1.  Installing Laravel
+```bash
+composer create-project laravel/laravel:^10.0 <project-name>
+```
+
+2.  Move to Project Directory
+```bash
+cd <project-name>
+```
+
+3.  Include Starter Kit to Project
+```bash
+composer require pkt/starter-kit --dev 
+```
+
+4.  Install Starter Kit
+
+```bash
+php artisan pkt:install vue
+
+#or
+
+php artisan pkt:install react
+```
+
+5.  Setup/Edit environment variable (.env)
+```bash
+.env
+```
+
+6.  Run Migration and Seeder
+```bash
+php artisan migrate:fresh --seed
+```
+
+7.  Run project
+```bash
+# Frontend
+npm run dev
+
+#backend
+php artisan serve
+```
+
 
 ## Included Library
 <p align="left">
