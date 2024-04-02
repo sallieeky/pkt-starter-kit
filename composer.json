@@ -1,7 +1,8 @@
 {
     "name": "pkt/starter-kit",
-    "description": "Comprehensive and efficient toolkit designed to streamline the process of developing Laravel packages In Pupuk Kaltim",
+    "description": "Comprehensive and efficient toolkit designed to streamline the process of developing Laravel application In PT Pupuk Kaltim",
     "license": "MIT",
+    "type": "library",
     "autoload": {
         "psr-4": {
             "Pkt\\StarterKit\\": "src/"
@@ -11,6 +12,14 @@
         {
             "name": "sallieeky",
             "email": "sallieeky@gmail.com"
+        },
+        {
+            "name": "ardmgtm",
+            "email": "muhamad.ardian24@gmail.com"
+        },
+        {
+            "name": "sallixie",
+            "email": "10191077@student.itk.ac.id"
         }
     ],
     "minimum-stability": "dev",

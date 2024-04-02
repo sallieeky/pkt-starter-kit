@@ -10,46 +10,67 @@ trait InstallReactStack
     protected function installReactStack()
     {
         $this->components->info('Installing React stack...');
+        $this->line('');
 
         // Call breeze
         $this->installBreezeIfNotExist();
-        $this->runCommands(['php artisan breeze:install react']);
+        $this->runCommands(['php artisan breeze:install react --pest']);
         // End call breeze
 
         // Clean unnecessary files from breeze
-        // ...
+        $this->components->task('Cleaning unnecessary files from breeze...', function () {
+            (new Filesystem)->ensureDirectoryExists(resource_path('js/Components'));
+            (new Filesystem)->ensureDirectoryExists(resource_path('js/Layouts'));
+            (new Filesystem)->deleteDirectory(resource_path('js/Components'));
+            (new Filesystem)->deleteDirectory(resource_path('js/Layouts'));
+        });
         // End clean unnecessary files from breeze
 
         // Update the "package.json" file
-        $this->updateNodePackages(function ($packages) {
-            return [
-                // example
-                // 'axios' => '^0.21',
-                // ...
-                ] + $packages;
+        $this->components->task('Updating the "package.json" file...', function () {
+            $this->updateNodePackages(function ($packages) {
+                return [
+                    // example
+                    // 'axios' => '^0.21',
+                    // ...
+                    ] + $packages;
+            });
         });
         // End update the "package.json" file
 
         // Controllers
-        (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/app/Http/Controllers', app_path('Http/Controllers'));
+        $this->components->task('Creating controllers...', function () {
+            // (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
+            // (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/react/app/Http/Controllers', app_path('Http/Controllers'));
+        });
         // End controllers
 
         // Views/Pages
-        (new Filesystem)->ensureDirectoryExists(resource_path('views'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/resources/views', resource_path('views'));
+        $this->components->task('Creating views/pages...', function () {
+            // (new Filesystem)->ensureDirectoryExists(resource_path('views'));
+            // (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/react/resources/views', resource_path('views'));
+        });
         // End views/Pages
 
         // Routes
-        copy(__DIR__.'/../../stubs/vue/routes/web.php', base_path('routes/web.php'));
+        $this->components->task('Creating routes...', function () {
+            // copy(__DIR__.'/../../stubs/react/routes/web.php', base_path('routes/web.php'));
+        });
         // End routes
 
         // Update npm packages
-        $this->runCommands(['npm install', 'npm run build']);
+        $this->components->task('Installing new npm module and build...', function () {
+            $this->runCommands(['npm install', 'npm run build']);
+        });
         // End update npm packages
 
-        $this->line('');
+        // Copy default
+        $this->components->task('Copying default template...', function () {
+            $this->copyDefault();
+        });
+        // End copy default
 
+        $this->line('');
         $this->components->info('PKT Starter Kit installed with React stack.');
     }
 }

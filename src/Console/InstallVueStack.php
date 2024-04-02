@@ -14,39 +14,82 @@ trait InstallVueStack
 
         // Call breeze
         $this->installBreezeIfNotExist();
-        $this->runCommands(['php artisan breeze:install vue']);
+        $this->runCommands(['php artisan breeze:install vue --pest']);
         // End call breeze
 
         // Clean unnecessary files from breeze
-        // ...
+        $this->components->task('Cleaning unnecessary files from breeze...', function () {
+            (new Filesystem)->ensureDirectoryExists(resource_path('js/Components'));
+            (new Filesystem)->ensureDirectoryExists(resource_path('js/Layouts'));
+            (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages'));
+            (new Filesystem)->deleteDirectory(resource_path('js/Components'));
+            (new Filesystem)->deleteDirectory(resource_path('js/Layouts'));
+            (new Filesystem)->deleteDirectory(resource_path('js/Pages'));
+
+            (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
+            (new Filesystem)->deleteDirectory(app_path('Http/Controllers/Auth'));
+            (new Filesystem)->delete(app_path('Http/Controllers/ProfileController.php'));
+            
+            (new Filesystem)->ensureDirectoryExists(app_path('Http/Requests'));
+            (new Filesystem)->deleteDirectory(app_path('Http/Requests'));
+
+            (new Filesystem)->ensureDirectoryExists(base_path('routes'));
+            (new Filesystem)->delete(base_path('routes/auth.php'));
+        });
         // End clean unnecessary files from breeze
 
+        // Copy default
+        $this->components->task('Copying default template...', function () {
+            $this->copyDefault();
+        });
+        // End copy default
+
         // Update the "package.json" file
-        $this->updateNodePackages(function ($packages) {
-            return [
-                // example
-                // 'axios' => '^0.21',
-                // ...
-                ] + $packages;
+        $this->components->task('Updating the "package.json" file...', function () {
+            copy(__DIR__.'/../../stubs/vue/package.json', base_path('package.json'));
         });
         // End update the "package.json" file
 
-        // Controllers
-        (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/app/Http/Controllers', app_path('Http/Controllers'));
-        // End controllers
+        // Vite
+        $this->components->task('Creating vite config...', function () {
+            copy(__DIR__.'/../../stubs/vue/vite.config.js', base_path('vite.config.js'));
+        });
+        // End vite
+
+        // Css
+        $this->components->task('Creating css...', function () {
+            (new Filesystem)->ensureDirectoryExists(resource_path('css'));
+            copy(__DIR__.'/../../stubs/vue/resources/css/app.css', resource_path('css/app.css'));
+            copy(__DIR__.'/../../stubs/vue/resources/css/element-plus.scss', resource_path('css/element-plus.scss'));
+        });
+        // End Css
 
         // Views/Pages
-        (new Filesystem)->ensureDirectoryExists(resource_path('views'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/resources/views', resource_path('views'));
+        $this->components->task('Creating views/pages...', function () {
+            (new Filesystem)->ensureDirectoryExists(resource_path('views'));
+            copy(__DIR__.'/../../stubs/vue/resources/views/app.blade.php', resource_path('views/app.blade.php'));
+        });
         // End views/Pages
 
-        // Routes
-        copy(__DIR__.'/../../stubs/vue/routes/web.php', base_path('routes/web.php'));
-        // End routes
+        // Js
+        $this->components->task('Creating js...', function () {
+            (new Filesystem)->ensureDirectoryExists(resource_path('js/Components'));
+            (new Filesystem)->ensureDirectoryExists(resource_path('js/Layouts'));
+            (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages'));
+            (new Filesystem)->ensureDirectoryExists(resource_path('js/Stores'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/resources/js/Components', resource_path('js/Components'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/resources/js/Layouts', resource_path('js/Layouts'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/resources/js/Pages', resource_path('js/Pages'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/resources/js/Stores', resource_path('js/Stores'));
+            copy(__DIR__.'/../../stubs/vue/resources/js/app.js', resource_path('js/app.js'));
+            copy(__DIR__.'/../../stubs/vue/resources/js/bootstrap.js', resource_path('js/bootstrap.js'));
+        });
+        // End Js
 
         // Update npm packages
-        $this->runCommands(['npm install', 'npm run build']);
+        $this->components->task('Installing new npm module and build...', function () {
+            $this->runCommands(['npm install', 'npm run build']);
+        });
         // End update npm packages
 
         $this->line('');
