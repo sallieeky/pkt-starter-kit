@@ -7,6 +7,9 @@
     <a href="https://packagist.org/packages/pkt/starter-kit">
         <img src="https://img.shields.io/packagist/v/pkt/starter-kit" alt="Latest Stable Version">
     </a>
+    <a href="https://github.com/sallieeky/pkt-starter-kit/pulse" alt="Activity">
+        <img src="https://img.shields.io/github/commit-activity/m/sallieeky/pkt-starter-kit" />
+    </a>
     <a href="https://packagist.org/packages/pkt/starter-kit">
         <img src="https://img.shields.io/packagist/l/pkt/starter-kit" alt="License">
     </a>
