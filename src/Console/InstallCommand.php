@@ -42,7 +42,9 @@ class InstallCommand extends Command implements PromptsForMissingInput
         if ($this->argument('stack') === 'vue') {
             $this->installVueStack();
         } elseif ($this->argument('stack') === 'react') {
-            $this->installReactStack();
+            // $this->installReactStack();
+            $this->info('React stack is not available yet. Please use "vue" stack.');
+            return 1;
         } else {
             $this->error('Invalid stack. Please use "vue", or "react".');
             return 1;
