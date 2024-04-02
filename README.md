@@ -105,6 +105,9 @@ php artisan serve
     <a href="https://element-plus.org/en-US/">
         <img src="/art/ElementPlus.png" alt="Element Plus" width="200">
     </a>
+    <a href="https://www.amcharts.com/docs/v5/">
+        <img src="/art/Amcharts.png" alt="Amcharts" width="200">
+    </a>
 </p>
 
 ## Authors
