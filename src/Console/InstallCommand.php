@@ -53,16 +53,22 @@ class InstallCommand extends Command implements PromptsForMissingInput
     }
 
     /**
-     * Installing Laravel Breeze if not exist
+     * Installing Laravel ComposerPackage if not exist
      *
      * @return void
      */
-    protected function installBreezeIfNotExist()
+    protected function installComposerPackageIfNotExist()
     {
         $existInComposer = file_exists(base_path('composer.json')) &&
             ! empty(json_decode(file_get_contents(base_path('composer.json')), true)['require']['laravel/breeze']);
         if (!$existInComposer) {
-            $this->runCommands(['composer require laravel/breeze:v1.29.1 --dev']);
+            $this->runCommands(['composer require laravel/breeze:v1.29 --dev']);
+        }
+
+        $existInComposer = file_exists(base_path('composer.json')) &&
+            ! empty(json_decode(file_get_contents(base_path('composer.json')), true)['require']['spatie/laravel-permission']);
+        if (!$existInComposer) {
+            $this->runCommands(['composer require spatie/laravel-permission:^6.1']);
         }
     }
 
@@ -74,8 +80,6 @@ class InstallCommand extends Command implements PromptsForMissingInput
     protected function copyDefault()
     {
         $this->components->task('Copying default...', function () {
-            $this->runCommands(['composer require spatie/laravel-permission:^6.1']);
-
             // Docker
             (new Filesystem)->ensureDirectoryExists(base_path('.docker'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/.docker', base_path('.docker'));
@@ -153,6 +157,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             // Routes
             (new Filesystem)->ensureDirectoryExists(base_path('routes'));
             copy(__DIR__.'/../../stubs/default/routes/web.php', base_path('routes/web.php'));
+            (new Filesystem)->delete(base_path('routes/auth.php'));
             // End Routes
         });
     }

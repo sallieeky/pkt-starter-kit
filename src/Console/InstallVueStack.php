@@ -13,7 +13,7 @@ trait InstallVueStack
         $this->line('');
 
         // Call breeze
-        $this->installBreezeIfNotExist();
+        $this->installComposerPackageIfNotExist();
         $this->runCommands(['php artisan breeze:install vue --pest']);
         // End call breeze
 
@@ -32,16 +32,11 @@ trait InstallVueStack
             
             (new Filesystem)->ensureDirectoryExists(app_path('Http/Requests'));
             (new Filesystem)->deleteDirectory(app_path('Http/Requests'));
-
-            (new Filesystem)->ensureDirectoryExists(base_path('routes'));
-            (new Filesystem)->delete(base_path('routes/auth.php'));
         });
         // End clean unnecessary files from breeze
 
         // Copy default
-        $this->components->task('Copying default template...', function () {
-            $this->copyDefault();
-        });
+        $this->copyDefault();
         // End copy default
 
         // Update the "package.json" file
@@ -88,6 +83,7 @@ trait InstallVueStack
 
         // Update npm packages
         $this->components->task('Installing new npm module and build...', function () {
+            (new Filesystem)->delete(base_path('package-lock.json'));
             $this->runCommands(['npm install', 'npm run build']);
         });
         // End update npm packages
