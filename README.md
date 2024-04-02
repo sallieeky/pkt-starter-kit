@@ -108,6 +108,9 @@ php artisan serve
     <a href="https://www.amcharts.com/docs/v5/">
         <img src="/art/Amcharts.png" alt="Amcharts" width="200">
     </a>
+    <a href="https://tailwindcss.com/">
+        <img src="/art/TailwindCSS.png" alt="Tailwind CSS" width="200">
+    </a>
 </p>
 
 ## Authors
