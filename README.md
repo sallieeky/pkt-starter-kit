@@ -1,4 +1,4 @@
-<p align="center"><img src="/stubs/default/public/images/logo-long.png" alt="Logo Pupuk Kaltim"></p>
+<p align="center"><img src="/art/logo-long.png" alt="Logo Pupuk Kaltim"></p>
 
 <p align="center">
     <a href="https://packagist.org/packages/pkt/starter-kit">
@@ -40,17 +40,24 @@ Using react
 php artisan pkt:install react
 ```
 
+## Included Library
+<p align="center">
+    <a href="https://js.devexpress.com/">
+        <img src="/art/DevExtreme.png" alt="Dev Extreme" width="300">
+    </a>
+    <a href="https://github.com/laravel/breeze">
+        <img src="/art/LaravelBreeze.png" alt="Laravel Breeze" width="300">
+    </a>
+    <a href="https://github.com/spatie/laravel-permission">
+        <img src="/art/SpatieRolePermission.png" alt="Spatie Role and Permission" width="300">
+    </a>
+    <a href="https://element-plus.org/en-US/">
+        <img src="/art/ElementPlus.png" alt="Element Plus" width="300">
+    </a>
+</p>
+
 ## Authors
 
 - [@sallieeky](https://www.github.com/sallieeky)
 - [@ardmgtm](https://www.github.com/ardmgtm)
 - [@sallixie](https://www.github.com/sallixie)
-
-## 💝 Contributors
-This project exists thanks to all the people who contribute.
-
-And thank you to all our backers! 🙏
-
-<a href="https://github.com/sallieeky/pkt-starter-kit/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=sallieeky/pkt-starter-kit" />
-</a>
