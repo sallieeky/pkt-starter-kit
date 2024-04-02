@@ -21,7 +21,7 @@ Welcome to the Pupuk Kaltim Laravel Starter Kit – your gateway to streamlined 
 
 ## Installation
 
-For stable package install using
+For stable package install using <strong>(RECOMMENDED)</strong>
 ```bash
 composer require pkt/starter-kit --dev 
 ```
@@ -38,7 +38,7 @@ Using vue
 php artisan pkt:install vue
 ```
 
-Using react
+Using react <strong>(NOT READY)</strong>
 ```bash
 php artisan pkt:install react
 ```
