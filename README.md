@@ -41,18 +41,18 @@ php artisan pkt:install react
 ```
 
 ## Included Library
-<p align="center">
+<p align="left">
     <a href="https://js.devexpress.com/">
-        <img src="/art/DevExtreme.png" alt="Dev Extreme" width="300">
+        <img src="/art/DevExtreme.png" alt="Dev Extreme" width="200">
     </a>
     <a href="https://github.com/laravel/breeze">
-        <img src="/art/LaravelBreeze.png" alt="Laravel Breeze" width="300">
+        <img src="/art/LaravelBreeze.png" alt="Laravel Breeze" width="200">
     </a>
     <a href="https://github.com/spatie/laravel-permission">
-        <img src="/art/SpatieRolePermission.png" alt="Spatie Role and Permission" width="300">
+        <img src="/art/SpatieRolePermission.png" alt="Spatie Role and Permission" width="200">
     </a>
     <a href="https://element-plus.org/en-US/">
-        <img src="/art/ElementPlus.png" alt="Element Plus" width="300">
+        <img src="/art/ElementPlus.png" alt="Element Plus" width="200">
     </a>
 </p>
 
