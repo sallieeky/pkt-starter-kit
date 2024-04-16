@@ -9,6 +9,6 @@ services:
     restart: always
     ports:
       - 44080:80
-      - 440443:443
+      - 44443:443
     volumes:
       - .:/var/www/html
