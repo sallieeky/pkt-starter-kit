@@ -90,6 +90,63 @@ npm run dev
 php artisan serve
 ```
 
+## Configuration
+
+Before you use between ldap or portal, first you need to have production server and ask to <strong>IT Infra</strong> to open your application host and port to get authorize to use ldap or portal
+
+### Ldap
+To enable ldap functionality, first you need to add this to the `.env` file and ask <strong>admin</strong> for the credential
+```env
+LDAP_HOST=<ask admin>
+LDAP_PORT=<ask admin>
+LDAP_DN=<ask admin>
+LDAP_PASS=<ask admin>
+LDAP_TREE=<ask admin>
+```
+
+### Portal PKT
+To enable portal functionality, first you need to add this to the `.env` file and ask <strong>admin</strong> for the credential
+```env
+ENABLE_SSO=<true|false>
+DISABLE_INTERNAL_LOGIN=<true|false>
+SSO_FULL_FEATURE=<true|false>
+APPLICATION_NAME=pkt_starter_kit (your app name)
+PORTAL_URL=https://aplikasi.pupukkaltim.com/
+PORTAL_URL_LOGIN=https://aplikasi.pupukkaltim.com/login
+PORTAL_URL_LOGOUT=https://aplikasi.pupukkaltim.com/logout
+SSO_AUTH_TOKEN=<ask admin>
+API_KEY_PORTAL=<ask admin>
+AUTHORIZATION_TOKEN_PORTAL=<ask admin>
+```
+
+## Using Docker For Production
+
+Configure image, container name, and exposed port in `docker-compose.yml` file
+```yml
+# version: '1.0'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: .docker/php/Dockerfile
+    image: pkt-starter-kit (your app name)
+    container_name: pkt-starter-kit (your app name)
+    restart: always
+    ports:
+      - 44080:80 (change 44080 to any open port you want)
+      - 44443:443 (change 44443 to any open port you want)
+    volumes:
+      - .:/var/www/html
+```
+
+1. Build docker and run
+   ```cmd
+   docker-compose up -d
+   ```
+2. To enter docker container
+   ```cmd
+   docker exec -it <container_name> bash
+   ```
 
 ## Included Library
 <p align="left">
