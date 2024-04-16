@@ -38,9 +38,6 @@ RUN pecl install sqlsrv pdo_sqlsrv && \
   echo "extension=sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini && \
   echo "extension=pdo_sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini
 
-RUN pecl install mongodb && \
-  echo "extension=mongodb.so" >> $PHP_INI_DIR/conf.d/mongodb.ini
-
 RUN apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN usermod -u 1000 www-data
@@ -49,6 +46,10 @@ RUN a2enmod ssl && a2enmod rewrite && service apache2 restart
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && composer install --no-interaction
 
+RUN apt-get update && apt-get install -y \
+    nano \
+    supervisor \
+    cron
 
 RUN apt-get update && apt-get install -y \
     software-properties-common \
@@ -56,10 +57,16 @@ RUN apt-get update && apt-get install -y \
 
 RUN npm install && npm run build
 
+COPY .docker/supervisor/laravel-worker.conf /etc/supervisor/conf.d/laravel-worker.conf
+RUN mkdir -p /var/logs/supervisor
+RUN chown root:root /etc/supervisor/conf.d/laravel-worker.conf && service supervisor start
+RUN supervisorctl reread && supervisorctl update && supervisorctl start "laravel-worker:*"
+
 RUN chown -R www-data:www-data /var/www/html
 RUN find /var/www/html -type d -exec chmod 775 {} \;
 RUN find /var/www/html -type f -exec chmod 0664 {} \;
+RUN chgrp -R www-data storage /var/www/html/bootstrap/cache
+RUN chmod -R ug+rwx storage /var/www/html/bootstrap/cache 
 
 RUN chmod o+w ./storage/ -R
-
 RUN chown www-data:www-data -R ./storage 
