@@ -21,7 +21,7 @@ use Inertia\Inertia;
 Route::get('/login', [AuthenticationController::class, 'loginPage'])->name('login')->middleware('guest');
 Route::post('/login', [AuthenticationController::class, 'login'])->name('login.attempt')->middleware('guest');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->group(function () {
     Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
 
     Route::get('/', fn () => redirect()->route('home'));

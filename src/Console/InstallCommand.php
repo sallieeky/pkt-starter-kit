@@ -97,10 +97,12 @@ class InstallCommand extends Command implements PromptsForMissingInput
 
             // Controllers
             (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
+            (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers/Api'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/AuthenticationController.php', app_path('Http/Controllers/AuthenticationController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/RoleAndPermissionController.php', app_path('Http/Controllers/RoleAndPermissionController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/UserController.php', app_path('Http/Controllers/UserController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/UserLogController.php', app_path('Http/Controllers/UserLogController.php'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/Api/SsoSessionController.php', app_path('Http/Controllers/Api/SsoSessionController.php'));
             // End Controllers
 
             // Helpers
@@ -112,7 +114,9 @@ class InstallCommand extends Command implements PromptsForMissingInput
             (new Filesystem)->ensureDirectoryExists(app_path('Http/Middleware'));
             copy(__DIR__.'/../../stubs/default/app/Http/Middleware/HandleInertiaRequests.php', app_path('Http/Middleware/HandleInertiaRequests.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Middleware/UserActivityLog.php', app_path('Http/Middleware/UserActivityLog.php'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Middleware/SsoPortal.php', app_path('Http/Middleware/SsoPortal.php'));
             $this->installMiddlewareAfter('\Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class', '\App\Http\Middleware\UserActivityLog::class');
+            $this->installMiddlewareAliases("'SsoPortal' => \App\Http\Middleware\SsoPortal::class,");
             // End Middleware
 
             // Requests
@@ -123,16 +127,19 @@ class InstallCommand extends Command implements PromptsForMissingInput
             // Models
             (new Filesystem)->ensureDirectoryExists(app_path('Models'));
             copy(__DIR__.'/../../stubs/default/app/Models/User.php', app_path('Models/User.php'));
+            copy(__DIR__.'/../../stubs/default/app/Models/SSOSession.php', app_path('Models/SSOSession.php'));
             // End Models
 
             // Config
             copy(__DIR__.'/../../stubs/default/config/ldap.php', config_path('ldap.php'));
+            copy(__DIR__.'/../../stubs/default/config/sso-session.php', config_path('sso-session.php'));
             // End Config
 
             // Migrations
             (new Filesystem)->ensureDirectoryExists(database_path('migrations'));
-            copy(__DIR__.'/../../stubs/default/database/migrations/2024_04_01_000000_create_permission_tables.php', database_path('migrations/2024_04_01_000000_create_permission_tables.php'));
             copy(__DIR__.'/../../stubs/default/database/migrations/2014_10_12_000000_create_users_table.php', database_path('migrations/2014_10_12_000000_create_users_table.php'));
+            copy(__DIR__.'/../../stubs/default/database/migrations/2024_04_01_000000_create_permission_tables.php', database_path('migrations/2024_04_01_000000_create_permission_tables.php'));
+            copy(__DIR__.'/../../stubs/default/database/migrations/2024_04_01_000000_create_sso_sessions_table.php', database_path('migrations/2024_04_01_000000_create_sso_sessions_table.php'));
             // End Migrations
 
             // Seeders
@@ -284,5 +291,33 @@ class InstallCommand extends Command implements PromptsForMissingInput
                 $httpKernel
             ));
         }
+    }
+
+    /**
+     * Install the middleware to a aliases in the application Http Kernel.
+     *
+     * @param  string  $after
+     * @param  string  $name
+     * @param  string  $group
+     * @return void
+     */
+    protected function installMiddlewareAliases($name)
+    {
+        $httpKernel = file_get_contents(app_path('Http/Kernel.php'));
+
+        $middlewareAliases = Str::before(Str::after($httpKernel, '$middlewareAliases = ['), '];');
+        $middlewareAlias = Str::before(Str::after($middlewareAliases, "'auth' => \App\Http\Middleware\Authenticate::class,"), ',');
+
+        $modifiedMiddlewareAlias = str_replace(
+            "'auth' => \App\Http\Middleware\Authenticate::class,",
+            "'auth' => \App\Http\Middleware\Authenticate::class,".PHP_EOL.'        '.$name,
+            $middlewareAliases,
+        );
+
+        file_put_contents(app_path('Http/Kernel.php'), str_replace(
+            $middlewareAliases,
+            $modifiedMiddlewareAlias,
+            $httpKernel
+        ));
     }
 }
