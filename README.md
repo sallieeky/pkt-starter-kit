@@ -92,6 +92,8 @@ php artisan serve
 
 ## Configuration
 
+Before you use between ldap or portal, first you need to have production server and ask to <strong>IT Infra</strong> to open your application host and port to get authorize to use ldap or portal
+
 ### Ldap
 To enable ldap functionality, first you need to add this to the `.env` file and ask <strong>admin</strong> for the credential
 ```env
@@ -136,6 +138,7 @@ services:
     volumes:
       - .:/var/www/html
 ```
+
 1. Build docker and run
    ```cmd
    docker-compose up -d
