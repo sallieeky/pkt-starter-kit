@@ -14,7 +14,7 @@ RUN apt-get update \
   && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
   && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen \
   && apt-get update \
-  && ACCEPT_EULA=Y apt-get install -y --no-install-recommends unixodbc-dev msodbcsql17 mssql-tools
+  && ACCEPT_EULA=Y apt-get install -y --no-install-recommends unixodbc-dev msodbcsql18 mssql-tools
 
 RUN \
   apt-get update && \
