@@ -141,7 +141,7 @@ services:
 
 1. Build docker and run
    ```cmd
-   docker-compose up -d
+   docker-compose up -d --build
    ```
 2. To enter docker container
    ```cmd
