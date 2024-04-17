@@ -133,6 +133,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             // Config
             copy(__DIR__.'/../../stubs/default/config/ldap.php', config_path('ldap.php'));
             copy(__DIR__.'/../../stubs/default/config/sso-session.php', config_path('sso-session.php'));
+            copy(__DIR__.'/../../stubs/default/config/logging.php', config_path('logging.php'));
             // End Config
 
             // Migrations
