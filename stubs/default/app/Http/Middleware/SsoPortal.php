@@ -41,7 +41,7 @@ class SsoPortal
                             return $next($request);
                         } else {
                             $aliases = explode(';', $sso_session->USER_ALIASES);
-                            $user = User::whereIn('username', $aliases)->where('is_locked', false)->first();
+                            $user = User::whereIn('username', $aliases)->where('is_active', true)->first();
                             if ($user != null) {
                                 Auth::login($user);
                                 return $next($request);
