@@ -147,6 +147,11 @@ services:
    ```cmd
    docker exec -it <container_name> bash
    ```
+### SSL (HTTPS) 
+If SSL is disabled, enable SSL using
+```cmd
+a2enmod ssl
+```
 
 ### Worker using supervisor
 Available supervisor worker located in `/etc/supervisor/conf.d/laravel-worker.conf`
