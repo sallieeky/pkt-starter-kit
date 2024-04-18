@@ -53,7 +53,10 @@ class RoleAndPermissionController extends Controller
                 ->addSelect(DB::raw('CASE WHEN role_has_permissions.role_id IS NOT NULL THEN 1 ELSE 0 END AS role_has_permission'))
                 ->orderBy('id')
                 ->get();
-    
+            $permissions = $permissions->map(function ($p){
+                $p->role_has_permission = intval($p->role_has_permission);
+                return $p;
+            });
             $permissionsGrouped = $permissions->groupBy(function ($item) {
                 return explode('.', $item['name'])[0];
             });
