@@ -8,7 +8,7 @@ export const navItems = [
         label: "User Management",
         href: "/users",
         icon: "users",
-        permission: "user.browse | role.browse",
+        permission: "user.browse | role.browse | user_log.browse",
         submenu:[
             {
                 label: "User",
@@ -23,6 +23,7 @@ export const navItems = [
             {
                 label: "User Log",
                 href: "/user-log",
+                permission: "user_log.browse",
             },
         ]
     },
