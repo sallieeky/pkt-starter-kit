@@ -11,16 +11,14 @@ RUN apt-get update \
 
 RUN apt-get update \
   && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-  && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+  && curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list \
   && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen \
   && apt-get update \
-  && ACCEPT_EULA=Y apt-get install -y --no-install-recommends unixodbc-dev msodbcsql18 mssql-tools
+  && ACCEPT_EULA=Y apt-get install -y --no-install-recommends unixodbc-dev msodbcsql18 mssql-tools18 \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN \
-  apt-get update && \
-  apt-get install libldap2-dev -y && \
-  rm -rf /var/lib/apt/lists/* && \
-  docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
+RUN apt-get update && \
+  apt-get install libldb-dev libldap2-dev -y && \
   docker-php-ext-install ldap
 
 RUN apt-get update && apt-get install -y \
@@ -60,13 +58,12 @@ RUN npm install && npm run build
 COPY .docker/supervisor/laravel-worker.conf /etc/supervisor/conf.d/laravel-worker.conf
 RUN mkdir -p /var/logs/supervisor
 RUN chown root:root /etc/supervisor/conf.d/laravel-worker.conf && service supervisor start
-RUN supervisorctl reread && supervisorctl update && supervisorctl start "laravel-worker:*"
 
 RUN chown -R www-data:www-data /var/www/html
 RUN find /var/www/html -type d -exec chmod 775 {} \;
 RUN find /var/www/html -type f -exec chmod 0664 {} \;
 RUN chgrp -R www-data storage /var/www/html/bootstrap/cache
-RUN chmod -R ug+rwx storage /var/www/html/bootstrap/cache 
+RUN chmod -R ug+rwx storage /var/www/html/bootstrap/cache
 
 RUN chmod o+w ./storage/ -R
-RUN chown www-data:www-data -R ./storage 
+RUN chown www-data:www-data -R ./storage

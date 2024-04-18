@@ -148,6 +148,41 @@ services:
    docker exec -it <container_name> bash
    ```
 
+### Worker using supervisor
+Available supervisor worker located in `/etc/supervisor/conf.d/laravel-worker.conf`
+```conf
+[program:laravel-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/html/artisan queue:work --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=8
+redirect_stderr=true
+stdout_logfile=/var/logs/supervisor/laravel-worker.log
+stopwaitsecs=3600
+```
+
+By default supervisor service is disabled in docker so you need to start.
+```cmd
+service supervisor start
+supervisorctl status
+```
+
+Or if you change the worker you need to reread and update supervisor service
+```cmd
+supervisorctl reread
+supervisorctl update
+```
+
+Or if you want to stop supervisor service
+```cmd
+service supervisor stop
+```
+
+
 ## Included Library
 <p align="left">
     <a href="https://js.devexpress.com/">
