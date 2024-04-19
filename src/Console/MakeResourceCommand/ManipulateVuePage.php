@@ -91,8 +91,8 @@ trait ManipulateVuePage
         $this->replaceContent(resource_path('js/Pages/' . $nameArgument . '/' . $nameArgument . '.vue'), [
             'ResourceTitle' => $resourceTitle,
             'ModelLabel' => $modelLabel,
-            'ModelName' => $nameArgument,
-            'modelName' => Str::camel($nameArgument),
+            'ModelName' => $modelName,
+            'modelName' => Str::camel($modelName),
             'PrimaryKey' => $primaryKey,
             'ColumnTableSlot' => $columnTableSlot,
             'ActionPermission' => $actionPermission,
