@@ -12,7 +12,7 @@ use Inertia\Inertia;
 
 class ModelNameController extends Controller
 {
-    public function modelNameManagePage(Request $request)
+    public function managePage(Request $request)
     {
         return Inertia::render('ModelName/ModelNameManage');
     }
