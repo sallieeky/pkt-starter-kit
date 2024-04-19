@@ -7,7 +7,7 @@ use Illuminate\Contracts\Console\PromptsForMissingInput;
 
 class MakeResourceCommand extends Command implements PromptsForMissingInput
 {
-    use ManipulateVuePage;
+    use ManipulateVueResource;
 
     /**
      * The name and signature of the console command.

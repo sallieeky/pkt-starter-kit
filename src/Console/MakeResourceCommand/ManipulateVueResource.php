@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
-trait ManipulateVuePage
+trait ManipulateVueResource
 {
     private Model $model;
     private string $nameArgument;
@@ -133,14 +133,16 @@ trait ManipulateVuePage
         $nameArgument = $this->nameArgument;
         $modelName = $this->nameArgument;
         $groupName = Str::lower(Str::snake($nameArgument));
-        $route = Str::kebab(Str::lower($nameArgument));
+        $route = Str::lower(Str::kebab($nameArgument));
+
+        $primaryKey = $this->model->getKeyName();
 
         $route = "Route::controller(App\Http\Model\\{$modelName}Controller::class)->group(function () {
             Route::get('/$route', '{$modelName}ManagePage')->name('$groupName.browse')->can('$groupName.browse');
             Route::get('/$route/data-processing', 'dataProcessing')->name('$groupName.data_processing')->can('$groupName.browse');
             Route::post('/$route', 'create')->name('$groupName.create')->can('$groupName.create');
-            Route::put('/$route/\{$modelName\}', 'update')->name('$groupName.update')->can('$groupName.update');
-            Route::delete('/$route/\{$modelName\}', 'delete')->name('$groupName.delete')->can('$groupName.delete');
+            Route::put('/$route/\{$modelName:$primaryKey\}', 'update')->name('$groupName.update')->can('$groupName.update');
+            Route::delete('/$route/\{$modelName:$primaryKey\}', 'delete')->name('$groupName.delete')->can('$groupName.delete');
         });";
 
         file_put_contents(base_path('routes/web.php'), $route, FILE_APPEND);
