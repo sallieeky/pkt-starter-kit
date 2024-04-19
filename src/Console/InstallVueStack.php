@@ -54,7 +54,7 @@ trait InstallVueStack
         // Css
         $this->components->task('Creating css...', function () {
             (new Filesystem)->ensureDirectoryExists(resource_path('css'));
-            copy(__DIR__.'/../../stubs/vue/resources/css/app.css', resource_path('css/app.css'));
+            file_put_contents(resource_path('css/app.css'), "@import url('../../vendor/pkt/starter-kit/stubs/vue/resources/css/app.css');");
             copy(__DIR__.'/../../stubs/vue/resources/css/element-plus.scss', resource_path('css/element-plus.scss'));
         });
         // End Css
