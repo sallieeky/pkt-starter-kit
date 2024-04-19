@@ -28,7 +28,8 @@
         "illuminate/console": "^10.17",
         "illuminate/filesystem": "^10.17",
         "illuminate/support": "^10.17",
-        "illuminate/validation": "^10.17"
+        "illuminate/validation": "^10.17",
+        "illuminate/database": "^10.0"
     },
     "extra": {
         "branch-alias": {
