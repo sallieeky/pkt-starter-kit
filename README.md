@@ -90,6 +90,8 @@ npm run dev
 php artisan serve
 ```
 
+8.  For other development guide see [GUIDE.md](GUIDE.md)
+
 ## Configuration
 
 Before you use between ldap or portal, first you need to have production server and ask to <strong>IT Infra</strong> to open your application host and port to get authorize to use ldap or portal
