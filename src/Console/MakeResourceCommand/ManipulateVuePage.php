@@ -17,6 +17,8 @@ trait ManipulateVuePage
         $this->nameArgument = $nameArgument;
 
         $this->manipulateVuePage();
+        $this->manipulateController();
+        $this->manipulateRoute();
     }
 
     private function manipulateVuePage()
@@ -36,7 +38,7 @@ trait ManipulateVuePage
         $columns = $model->getConnection()->getSchemaBuilder()->getColumnListing($model->getTable());
 
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages/' . $nameArgument ));
-        copy(__DIR__.'/../../../resource-template/vue/resources/js/Pages/IndexPage.vue', resource_path('js/Pages/' . $nameArgument . '/' . $nameArgument . '.vue'));
+        copy(__DIR__.'/../../../resource-template/vue/resources/js/Pages/IndexPage.vue', resource_path('js/Pages/' . $nameArgument . '/' . $nameArgument . 'Manage.vue'));
 
         // ResourceTitle
         $resourceTitle = ucfirst($nameArgument) . ' Management';
@@ -52,7 +54,7 @@ trait ManipulateVuePage
         $modalFormSlot = '';
         foreach ($columns as $column) {
             $modalFormSlot .= "<el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$column\" :required=\"true\">
-                    <el-input v-model=\"formUser.$column\" autocomplete=\"one-time-code\" autocorrect=\"off\" spellcheck=\"false\" />
+                    <el-input v-model=\"form$modelName.$column\" autocomplete=\"one-time-code\" autocorrect=\"off\" spellcheck=\"false\" />
                 </el-form-item>" . PHP_EOL . '                ';
         }
 
@@ -88,7 +90,7 @@ trait ManipulateVuePage
             $formEditAction .= "form$modelName.$column = data$modelName.$column;" . PHP_EOL . '    ';
         }
 
-        $this->replaceContent(resource_path('js/Pages/' . $nameArgument . '/' . $nameArgument . '.vue'), [
+        $this->replaceContent(resource_path('js/Pages/' . $nameArgument . '/' . $nameArgument . 'Manage.vue'), [
             'ResourceTitle' => $resourceTitle,
             'ModelLabel' => $modelLabel,
             'ModelName' => $modelName,
@@ -108,5 +110,39 @@ trait ManipulateVuePage
             'FormAddAction' => $formAddAction,
             'FormEditAction' => $formEditAction,
         ]);
+    }
+
+    private function manipulateController()
+    {
+        $nameArgument = $this->nameArgument;
+        $modelName = $this->nameArgument;
+        $modelLabel = Str::headline($nameArgument);
+
+        (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
+        copy(__DIR__.'/../../../resource-template/vue/app/Http/Controllers/ResourceController.php', app_path('Http/Controllers/' . $nameArgument . 'Controller.php'));
+
+        $this->replaceContent(app_path('Http/Controllers/' . $nameArgument . 'Controller.php'), [
+            'ModelLabel' => $modelLabel,
+            'ModelName' => $modelName,
+            'modelName' => Str::camel($modelName),
+        ]);
+    }
+
+    private function manipulateRoute()
+    {
+        $nameArgument = $this->nameArgument;
+        $modelName = $this->nameArgument;
+        $groupName = Str::lower(Str::snake($nameArgument));
+        $route = Str::kebab(Str::lower($nameArgument));
+
+        $route = "Route::controller(App\Http\Model\\{$modelName}Controller::class)->group(function () {
+            Route::get('/$route', '{$modelName}ManagePage')->name('$groupName.browse')->can('$groupName.browse');
+            Route::get('/$route/data-processing', 'dataProcessing')->name('$groupName.data_processing')->can('$groupName.browse');
+            Route::post('/$route', 'create')->name('$groupName.create')->can('$groupName.create');
+            Route::put('/$route/\{$modelName\}', 'update')->name('$groupName.update')->can('$groupName.update');
+            Route::delete('/$route/\{$modelName\}', 'delete')->name('$groupName.delete')->can('$groupName.delete');
+        });";
+
+        file_put_contents(base_path('routes/web.php'), $route, FILE_APPEND);
     }
 }

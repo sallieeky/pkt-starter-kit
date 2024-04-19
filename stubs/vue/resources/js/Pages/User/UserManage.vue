@@ -92,7 +92,6 @@
                             <div v-else class="h-auto flex items-center px-4">
                                 <BsIconButton icon="x-mark" class="mr-2" @click="clearSelection" />
                                 <span class="font-bold mr-4">{{ dataSelected.length }} dipilih</span>
-                                <!-- <BsButton type="danger" icon="trash">Delete</BsButton> -->
                             </div>
                         </Transition>
                     </div>
