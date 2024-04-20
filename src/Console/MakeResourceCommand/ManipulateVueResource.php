@@ -166,7 +166,7 @@ trait ManipulateVueResource
 
         $primaryKey = $this->model->getKeyName();
 
-        $route = "\n
+        $route = "
 Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->controller(App\Http\Controllers\\{$modelName}Controller::class)->group(function () {
     Route::get('/$route', 'managePage')->name('$groupName.browse')->can('$groupName.browse');
     Route::get('/$route/data-processing', 'dataProcessing')->name('$groupName.data_processing')->can('$groupName.browse');
