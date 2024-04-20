@@ -160,6 +160,37 @@ trait ManipulateVueResource
     }
 
     /**
+     * Create Request
+     *
+     * @return void
+     */
+    private function manipulatRequest()
+    {
+        $modelName = $this->nameArgument;
+        $modelLabel = Str::headline($modelName);
+
+        (new Filesystem)->ensureDirectoryExists(app_path('Http/Requests/' . $modelName));
+        copy(__DIR__.'/../../../resource-template/vue/app/Http/Requests/CreateRequest.php', app_path('Http/Requests/' . $modelName . '/Create' . $modelName . 'Request.php'));
+        copy(__DIR__.'/../../../resource-template/vue/app/Http/Requests/UpdateRequest.php', app_path('Http/Requests/' . $modelName . '/Update' . $modelName . 'Request.php'));
+
+        // Rules
+        $rules = '';
+        $columns = $this->model->getConnection()->getSchemaBuilder()->getColumnListing($this->model->getTable());
+        foreach ($columns as $column) {
+            if ($column === $this->model->getKeyName() || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at') {
+                continue;
+            }
+            $rules .= "            '$column' => ['required'],\n";
+        }
+
+        $this->replaceContent(app_path('Http/Requests/' . $modelName . '/Create' . $modelName . 'Request.php'), [
+            'ModelLabel' => $modelLabel,
+            'ModelName' => $modelName,
+            'Rules' => $rules,
+        ]);
+    }
+
+    /**
      * Create Route
      *
      * @return void

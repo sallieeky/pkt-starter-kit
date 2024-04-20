@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\DxAdapter;
+use App\Http\Requests\ModelName\CreateModelNameRequest;
+use App\Http\Requests\ModelName\UpdateModelNameRequest;
 use App\Models\ModelName;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,12 +30,12 @@ class ModelNameController extends Controller
             'totalCount' => $data->total(),
         ], 200);
     }
-    public function create(Request $request)
+    public function create(CreateModelNameRequest $request)
     {
         DB::beginTransaction();
         try {
-            $validated = $request->all();
-            $modelName = ModelName::create($validated);
+            $validated = $request->validated();
+            ModelName::create($validated);
 
             DB::commit();
             return redirect()->back()->with('message','Success to create ModelLabel');
@@ -44,11 +46,11 @@ class ModelNameController extends Controller
             ]);
         }
     }
-    public function update(ModelName $modelName, Request $request)
+    public function update(ModelName $modelName, UpdateModelNameRequest $request)
     {
         DB::beginTransaction();
         try {
-            $validated = $request->all();
+            $validated = $request->validated();
             $modelName->update($validated);
 
             DB::commit();
