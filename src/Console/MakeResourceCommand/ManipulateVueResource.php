@@ -181,10 +181,16 @@ trait ManipulateVueResource
             if ($column === $this->model->getKeyName() || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at') {
                 continue;
             }
-            $rules .= "            '$column' => ['required'],\n";
+            $rules .= "'$column' => ['required'],\n" . '            ';
         }
 
         $this->replaceContent(app_path('Http/Requests/' . $modelName . '/Create' . $modelName . 'Request.php'), [
+            'ModelLabel' => $modelLabel,
+            'ModelName' => $modelName,
+            'Rules' => $rules,
+        ]);
+
+        $this->replaceContent(app_path('Http/Requests/' . $modelName . '/Update' . $modelName . 'Request.php'), [
             'ModelLabel' => $modelLabel,
             'ModelName' => $modelName,
             'Rules' => $rules,
