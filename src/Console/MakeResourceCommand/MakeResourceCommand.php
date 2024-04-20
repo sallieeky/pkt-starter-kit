@@ -45,7 +45,13 @@ class MakeResourceCommand extends Command implements PromptsForMissingInput
         return 1;
     }
 
-
+    /**
+     * Replace content in file
+     *
+     * @param string $file
+     * @param array $replacements
+     * @return void
+     */
     protected function replaceContent($file, $replacements)
     {
         $content = file_get_contents($file);

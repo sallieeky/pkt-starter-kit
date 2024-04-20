@@ -19,8 +19,14 @@ trait ManipulateVueResource
         $this->manipulateVuePage();
         $this->manipulateController();
         $this->manipulateRoute();
+        $this->manipulatePermissions();
     }
 
+    /**
+     * Create Vue Page
+     *
+     * @return void
+     */
     private function manipulateVuePage()
     {
         $nameArgument = $this->nameArgument;
@@ -112,6 +118,13 @@ trait ManipulateVueResource
         ]);
     }
 
+    /**
+     * Create Controller
+     *
+     * @param string $file
+     * @param array $replacements
+     * @return void
+     */
     private function manipulateController()
     {
         $nameArgument = $this->nameArgument;
@@ -128,6 +141,11 @@ trait ManipulateVueResource
         ]);
     }
 
+    /**
+     * Create Route
+     *
+     * @return void
+     */
     private function manipulateRoute()
     {
         $nameArgument = $this->nameArgument;
@@ -146,5 +164,27 @@ trait ManipulateVueResource
         });";
 
         file_put_contents(base_path('routes/web.php'), $route, FILE_APPEND);
+    }
+
+    /**
+     * Replace content in file
+     *
+     * @param string $file
+     * @param array $replacements
+     * @return void
+     */
+    private function manipulatePermissions()
+    {
+        $permissionsName = config('permissions');
+        $nameArgument = $this->nameArgument;
+        $groupName = Str::lower(Str::snake($nameArgument));
+        
+        // update permissions in config/permissions.php
+        $permissionsName[] = [
+            'group_name' => $groupName,
+            'permissions' => ['browse', 'create', 'update', 'delete']
+        ];
+
+        file_put_contents(config_path('permissions.php'), $permissionsName);
     }
 }
