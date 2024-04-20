@@ -60,7 +60,7 @@ class ModelNameController extends Controller
             ]);
         }
     }
-    public function delete(ModelName $user, Request $request)
+    public function delete(ModelName $modelName, Request $request)
     {
         $user->delete();
         return redirect()->back()->with('message','Success to delete ModelLabel');
