@@ -311,7 +311,7 @@ function onSelectionChanged(data) {
 function onExporting(e) {
     const workbook = new Workbook();
     const worksheet = workbook.addWorksheet('ModelName');
-    var fileName = "data-users"
+    var fileName = "data-ModelName"
 
     exportDataGrid({
         component: e.component,
