@@ -138,3 +138,9 @@ Controller : app/Http/Controllers/[ModelName]Controller.php
 Route : routes/web.php
 Permission : config/permissions.php
 ```
+
+<strong>(RECOMMENDED ACTION)</strong><br>
+After you run the command, it's recommended to re-seed the role and permission to update permission to database
+```cmd
+php artisan db:seed --class=RoleAndPermissionSeeder
+```
