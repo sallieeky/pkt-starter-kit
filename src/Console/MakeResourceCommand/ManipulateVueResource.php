@@ -121,8 +121,6 @@ trait ManipulateVueResource
     /**
      * Create Controller
      *
-     * @param string $file
-     * @param array $replacements
      * @return void
      */
     private function manipulateController()
@@ -168,10 +166,8 @@ trait ManipulateVueResource
     }
 
     /**
-     * Replace content in file
+     * Create Permissions
      *
-     * @param string $file
-     * @param array $replacements
      * @return void
      */
     private function manipulatePermissions()
@@ -179,13 +175,27 @@ trait ManipulateVueResource
         $permissionsName = config('permissions');
         $nameArgument = $this->nameArgument;
         $groupName = Str::lower(Str::snake($nameArgument));
-        
+
         // update permissions in config/permissions.php
         $permissionsName[] = [
             'group_name' => $groupName,
             'permissions' => ['browse', 'create', 'update', 'delete']
         ];
 
-        file_put_contents(config_path('permissions.php'), $permissionsName);
+        $content = "<?php\n\n// Define permissions name and permissions group with snake case\nreturn [\n";
+        foreach ($permissionsName as $permission) {
+            $content .= "    [\n";
+            $content .= "        'group_name' => '{$permission['group_name']}',\n";
+            $content .= "        'permissions' => [\n";
+            foreach ($permission['permissions'] as $perm) {
+                $content .= "            '$perm',\n";
+            }
+            $content .= "        ]\n";
+            $content .= "    ],\n";
+        }
+
+        $content .= "];";
+
+        file_put_contents(config_path('permissions.php'), $content);
     }
 }

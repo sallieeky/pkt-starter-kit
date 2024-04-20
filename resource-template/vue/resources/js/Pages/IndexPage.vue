@@ -27,7 +27,7 @@
                                 <el-dropdown-item @click="editModelNameAction(data.data)" v-if="UpdatePermission">
                                     <BsIcon icon="pencil-square" class="mr-2" /> Edit ModelLabel
                                 </el-dropdown-item>
-                                <el-dropdown-item v-if="DeletePermission" @click="deleteUserAction(data.data)">
+                                <el-dropdown-item v-if="DeletePermission" @click="deleteModelNameAction(data.data)">
                                     <BsIcon icon="trash" class="mr-2" /> Delete ModelLabel
                                 </el-dropdown-item>
                             </el-dropdown-menu>
