@@ -124,6 +124,8 @@ trait ManipulateVueResource
             'FormAddAction' => $formAddAction,
             'FormEditAction' => $formEditAction,
         ]);
+
+        $this->info('Vue page created in: resources/js/Pages/' . $nameArgument . '/' . $nameArgument . 'Manage.vue');
     }
 
     /**
@@ -145,6 +147,8 @@ trait ManipulateVueResource
             'ModelName' => $modelName,
             'modelName' => Str::camel($modelName),
         ]);
+
+        $this->info('Controller created in: app/Http/Controllers/' . $nameArgument . 'Controller.php');
     }
 
     /**
@@ -162,8 +166,8 @@ trait ManipulateVueResource
 
         $primaryKey = $this->model->getKeyName();
 
-        $route = "
-        \n\nRoute::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->controller(App\Http\Controllers\\{$modelName}Controller::class)->group(function () {
+        $route = "\n
+Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->controller(App\Http\Controllers\\{$modelName}Controller::class)->group(function () {
     Route::get('/$route', 'managePage')->name('$groupName.browse')->can('$groupName.browse');
     Route::get('/$route/data-processing', 'dataProcessing')->name('$groupName.data_processing')->can('$groupName.browse');
     Route::post('/$route', 'create')->name('$groupName.create')->can('$groupName.create');
@@ -172,6 +176,8 @@ trait ManipulateVueResource
 });";
 
         file_put_contents(base_path('routes/web.php'), $route, FILE_APPEND);
+
+        $this->info('Route updated in: routes/web.php');
     }
 
     /**
@@ -206,5 +212,7 @@ trait ManipulateVueResource
         $content .= "];";
 
         file_put_contents(config_path('permissions.php'), $content);
+
+        $this->info('Permissions updated in: config/permissions.php');
     }
 }
