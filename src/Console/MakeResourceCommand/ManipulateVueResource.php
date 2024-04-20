@@ -150,6 +150,7 @@ trait ManipulateVueResource
     {
         $nameArgument = $this->nameArgument;
         $modelName = $this->nameArgument;
+        $modelNameCamel = Str::camel($this->nameArgument);
         $groupName = Str::lower(Str::snake($nameArgument));
         $route = Str::lower(Str::kebab($nameArgument));
 
@@ -159,8 +160,8 @@ trait ManipulateVueResource
             Route::get('/$route', 'managePage')->name('$groupName.browse')->can('$groupName.browse');
             Route::get('/$route/data-processing', 'dataProcessing')->name('$groupName.data_processing')->can('$groupName.browse');
             Route::post('/$route', 'create')->name('$groupName.create')->can('$groupName.create');
-            Route::put('/$route/{{$modelName}:$primaryKey}', 'update')->name('$groupName.update')->can('$groupName.update');
-            Route::delete('/$route/{{$modelName}:$primaryKey}', 'delete')->name('$groupName.delete')->can('$groupName.delete');
+            Route::put('/$route/{{$modelNameCamel}:$primaryKey}', 'update')->name('$groupName.update')->can('$groupName.update');
+            Route::delete('/$route/{{$modelNameCamel}:$primaryKey}', 'delete')->name('$groupName.delete')->can('$groupName.delete');
         });";
 
         file_put_contents(base_path('routes/web.php'), $route, FILE_APPEND);
