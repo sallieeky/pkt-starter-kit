@@ -135,6 +135,8 @@ This command will help you to create and optimize some file such as
 ```
 Vue page : resources/js/pages/[ModelName]/[ModelName]Manage.vue
 Controller : app/Http/Controllers/[ModelName]Controller.php
+Create Request : app/Http/Requests/[ModelName]/Create[ModelName]Request.php
+Update Request : app/Http/Requests/[ModelName]/Update[ModelName]Request.php
 Route : routes/web.php
 Permission : config/permissions.php
 ```

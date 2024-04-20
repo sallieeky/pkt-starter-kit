@@ -188,6 +188,9 @@ trait ManipulateVueResource
             'ModelName' => $modelName,
             'Rules' => $rules,
         ]);
+
+        $this->info('Create Request created in: app/Http/Requests/' . $modelName . '/Create' . $modelName . 'Request.php');
+        $this->info('Update Request created in: app/Http/Requests/' . $modelName . '/Update' . $modelName . 'Request.php');
     }
 
     /**
