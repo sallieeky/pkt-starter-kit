@@ -16,34 +16,8 @@ class RoleAndPermissionSeeder extends Seeder
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Define permissions name and permissions group with snake case
-        $permissionsName = [
-            [
-                'group_name' => 'user',
-                'permissions' => [
-                    'browse',
-                    'create',
-                    'update',
-                    'delete',
-                ]
-            ],
-            [
-                'group_name' => 'role',
-                'permissions' => [
-                    'browse',
-                    'create',
-                    'update',
-                    'delete',
-                    'assign_permission',
-                ]
-            ],
-            [
-                'group_name' => 'user_log',
-                'permissions' => [
-                    'browse',
-                ]
-            ]
-        ];
+        // Define permissions name and permissions in config/permissions.php
+        $permissionsName = config('permissions');
 
         foreach ($permissionsName as $permissionGroup) {
             $groupName = $permissionGroup['group_name'];
