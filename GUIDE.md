@@ -25,13 +25,13 @@ Schema::create('users', function (Blueprint $table) {
 });
 ```
 
-## Manage permissions
+## Manage Permissions
 Role and permission installed in this starter kit supported by [Spatie laravel permission](https://spatie.be/docs/laravel-permission/v6/introduction).
 
-By default there are only 2 role Superadmin and Viewer, you can adjust the role and permission in `database/seeders/RoleAndPermissionSeeder.php`
+By default there are only 2 role Superadmin and Viewer, you can adjust the permission in `config/permissions.php`
 
 ```php
-$permissionsName = [
+return [
     [
         'group_name' => 'user',
         'permissions' => [
@@ -117,4 +117,24 @@ export const navItems = [
     },
     ... (additional page)
 ];
+```
+
+## Additional Command
+
+### Make resource command
+This command will help you to create basic single page <strong>CRUD</strong> by only execute 1 command
+
+```cmd
+php artisan pkt:make-resource ModelName <additional-flag>
+```
+
+Additional flag you can use <br>
+`--force` if you want to force create the resource. <strong>CAREFULLY</strong> This will replace all the existing Vue and Controller file that have same name.
+
+This command will help you to create and optimize some file such as
+```
+Vue page : resources/js/pages/[ModelName]/[ModelName]Manage.vue
+Controller : app/Http/Controllers/[ModelName]Controller.php
+Route : routes/web.php
+Permission : config/permissions.php
 ```
