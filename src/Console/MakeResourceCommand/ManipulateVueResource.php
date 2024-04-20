@@ -55,7 +55,7 @@ trait ManipulateVueResource
         copy(__DIR__.'/../../../resource-template/vue/resources/js/Pages/IndexPage.vue', resource_path('js/Pages/' . $nameArgument . '/' . $nameArgument . 'Manage.vue'));
 
         // ResourceTitle
-        $resourceTitle = ucfirst($nameArgument) . ' Management';
+        $resourceTitle = Str::headline($nameArgument) . ' Management';
         $modelLabel = Str::headline($nameArgument);
 
         // ColumnTableSlot
