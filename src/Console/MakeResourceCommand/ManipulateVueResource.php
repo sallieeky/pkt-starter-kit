@@ -16,6 +16,20 @@ trait ManipulateVueResource
         $this->model = $model;
         $this->nameArgument = $nameArgument;
 
+        // check if the vue page already exists
+        $exist = (new Filesystem)->exists(resource_path('js/Pages/' . $nameArgument ));
+        if ($exist && !$this->option('force')) {
+            $this->error('Vue page already exists: ' . $nameArgument);
+            return 0;
+        }
+
+        // check if the controller already exists
+        $exist = (new Filesystem)->exists(app_path('Http/Controllers/' . $nameArgument . 'Controller.php'));
+        if ($exist && !$this->option('force')) {
+            $this->error('Controller already exists: ' . $nameArgument);
+            return 0;
+        }
+
         $this->manipulateVuePage();
         $this->manipulateController();
         $this->manipulateRoute();
@@ -33,12 +47,6 @@ trait ManipulateVueResource
         $model = $this->model;
 
         $modelName = $this->nameArgument;
-
-        $folderExists = (new Filesystem)->exists(resource_path('js/Pages/' . $nameArgument ));
-        if ($folderExists && !$this->option('force')) {
-            $this->error('Folder already exists: ' . $nameArgument);
-            return 0;
-        }
 
         $primaryKey = $model->getKeyName();
         $columns = $model->getConnection()->getSchemaBuilder()->getColumnListing($model->getTable());
@@ -154,13 +162,14 @@ trait ManipulateVueResource
 
         $primaryKey = $this->model->getKeyName();
 
-        $route = "Route::controller(App\Http\Controllers\\{$modelName}Controller::class)->group(function () {
-            Route::get('/$route', 'managePage')->name('$groupName.browse')->can('$groupName.browse');
-            Route::get('/$route/data-processing', 'dataProcessing')->name('$groupName.data_processing')->can('$groupName.browse');
-            Route::post('/$route', 'create')->name('$groupName.create')->can('$groupName.create');
-            Route::put('/$route/{{$modelNameCamel}:$primaryKey}', 'update')->name('$groupName.update')->can('$groupName.update');
-            Route::delete('/$route/{{$modelNameCamel}:$primaryKey}', 'delete')->name('$groupName.delete')->can('$groupName.delete');
-        });";
+        $route = "
+        \n\nRoute::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->controller(App\Http\Controllers\\{$modelName}Controller::class)->group(function () {
+    Route::get('/$route', 'managePage')->name('$groupName.browse')->can('$groupName.browse');
+    Route::get('/$route/data-processing', 'dataProcessing')->name('$groupName.data_processing')->can('$groupName.browse');
+    Route::post('/$route', 'create')->name('$groupName.create')->can('$groupName.create');
+    Route::put('/$route/{{$modelNameCamel}:$primaryKey}', 'update')->name('$groupName.update')->can('$groupName.update');
+    Route::delete('/$route/{{$modelNameCamel}:$primaryKey}', 'delete')->name('$groupName.delete')->can('$groupName.delete');
+});";
 
         file_put_contents(base_path('routes/web.php'), $route, FILE_APPEND);
     }
