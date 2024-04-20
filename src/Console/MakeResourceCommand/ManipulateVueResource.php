@@ -32,6 +32,7 @@ trait ManipulateVueResource
 
         $this->manipulateVuePage();
         $this->manipulateController();
+        $this->manipulatRequest();
         $this->manipulateRoute();
         $this->manipulatePermissions();
     }
