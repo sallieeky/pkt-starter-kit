@@ -61,13 +61,21 @@ trait ManipulateVueResource
         // ColumnTableSlot
         $columnTableSlot = '';
         foreach ($columns as $column) {
-            $columnTableSlot .= '<DxColumn data-field="'. $column . '" caption="' . ucfirst($column) .'" :allowHeaderFiltering="false" />' . PHP_EOL . '                ';
+            $label = Str::headline($column);
+            if ($column === $primaryKey || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at') {
+                continue;
+            }
+            $columnTableSlot .= '<DxColumn data-field="'. $column . '" caption="' . $label .'" :allowHeaderFiltering="false" />' . PHP_EOL . '                ';
         }
 
         // ModalFormSlot
         $modalFormSlot = '';
         foreach ($columns as $column) {
-            $modalFormSlot .= "<el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$column\" :required=\"true\">
+            $label = Str::headline($column);
+            if ($column === $primaryKey || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at') {
+                continue;
+            }
+            $modalFormSlot .= "<el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"true\">
                     <el-input v-model=\"form$modelName.$column\" autocomplete=\"one-time-code\" autocorrect=\"off\" spellcheck=\"false\" />
                 </el-form-item>" . PHP_EOL . '                ';
         }
