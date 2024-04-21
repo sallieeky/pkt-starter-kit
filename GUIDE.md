@@ -129,7 +129,8 @@ php artisan pkt:make-resource ModelName <additional-flag>
 ```
 
 Additional flag you can use <br>
-`--force` if you want to force create the resource. <strong>CAREFULLY</strong> This will replace all the existing Vue and Controller file that have same name.
+- `--force` if you want to force create the resource. <br> <strong>(CAREFULLY)</strong> This will replace all the existing related file.
+
 
 This command will help you to create and optimize some file such as
 ```
@@ -138,6 +139,7 @@ Controller : app/Http/Controllers/[ModelName]Controller.php
 Create Request : app/Http/Requests/[ModelName]/Create[ModelName]Request.php
 Update Request : app/Http/Requests/[ModelName]/Update[ModelName]Request.php
 Route : routes/web.php
+Side menu item : resources/js/Core/Config/SidemenuItem.js
 Permission : config/permissions.php
 ```
 

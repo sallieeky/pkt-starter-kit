@@ -34,7 +34,11 @@ trait ManipulateVueResource
         $this->manipulateController();
         $this->manipulatRequest();
         $this->manipulateRoute();
+        $this->manipulateSidemenuItem();
         $this->manipulatePermissions();
+
+        $this->line('');
+        $this->info('You can run php artisan db:seed --class=RoleAndPermissionSeeder to update the permissions');
     }
 
     /**
@@ -227,6 +231,33 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->
         file_put_contents(base_path('routes/web.php'), $route, FILE_APPEND);
 
         $this->info('Route updated in: routes/web.php');
+    }
+
+    /**
+     * Add to Sidemenuitem
+     *
+     * @return void
+     */
+    private function manipulateSidemenuItem()
+    {
+        $modelName = $this->nameArgument;
+        $label = Str::headline($modelName);
+        $route = Str::lower(Str::kebab($modelName));
+        $icon = 'cube';
+        $permission = Str::lower(Str::snake($modelName)) . '.browse';
+
+        $sidemenuItem = "    {
+        label: '$label',
+        href: '/$route',
+        icon: '$icon',
+        permission: '$permission',
+    }," . PHP_EOL;
+
+        $sideMenuItemContent = file_get_contents(resource_path('js/Core/Config/SidemenuItem.js'));
+        $sideMenuItemContent = preg_replace('/(export const navItems = \[)(.*?)(\];)/s', '$1$2' . $sidemenuItem . '$3', $sideMenuItemContent);
+        file_put_contents(resource_path('js/Core/Config/SidemenuItem.js'), $sideMenuItemContent);
+
+        $this->info('SidemenuItem updated in: resources/js/Core/Config/SidemenuItem.js');
     }
 
     /**
