@@ -1,6 +1,14 @@
 # Development Guide
 Before using the application, ensure that you have installed the starter kit.
 
+```
+php artisan pkt:install vue
+
+#or
+
+php artisan pkt:install react
+```
+
 ## User
 By default existing user for superadmin you can adjust in `database/seeders/UserSeeder.php`. <strong>It's highly recommended to change the credential</strong> 
 ```
