@@ -26,9 +26,10 @@ class FormBuilder
             case ColumnType::BIGINTEGER->value:
             case ColumnType::SMALLINTEGER->value:
             case ColumnType::FLOAT->value:
-            case ColumnType::TINYINT->value:
             case ColumnType::DECIMAL->value:
                 return self::setFormWithTypeNumber();
+            case ColumnType::TINYINT->value:
+                return self::setFormWithTypeBoolean();
             case ColumnType::DATE->value:
                 return self::setFormWithTypeDate();
             case ColumnType::TIME->value:
@@ -94,6 +95,25 @@ class FormBuilder
         self::$form = "
                 <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"true\">
                     <el-input-number v-model=\"form$modelName.$column\" autocomplete=\"one-time-code\" autocorrect=\"off\" spellcheck=\"false\" />
+                </el-form-item>" . PHP_EOL . '                ';
+
+        return self::$form;
+    }
+
+    /**
+     * Set the form of type boolean
+     *
+     * @return  self
+     */
+    public static function setFormWithTypeBoolean(): string
+    {
+        $modelName = self::$modelName;
+        $column = self::$column;
+        $label = self::$label;
+
+        self::$form = "
+                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"true\">
+                    <el-switch v-model=\"form$modelName.$column\" active-color=\"#13ce66\" inactive-color=\"#ff4949\" />
                 </el-form-item>" . PHP_EOL . '                ';
 
         return self::$form;
