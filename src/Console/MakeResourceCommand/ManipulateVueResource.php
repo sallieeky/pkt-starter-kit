@@ -5,6 +5,7 @@ namespace Pkt\StarterKit\Console\MakeResourceCommand;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
+use Pkt\StarterKit\Helpers\FormBuilder;
 
 trait ManipulateVueResource
 {
@@ -74,15 +75,16 @@ trait ManipulateVueResource
         }
 
         // ModalFormSlot
+        // ModalFormSlot
         $modalFormSlot = '';
         foreach ($columns as $column) {
+            $type = $model->getConnectionResolver()->connection()->getSchemaBuilder()->getColumnType($model->getTable(), $column);
             $label = Str::headline($column);
             if ($column === $primaryKey || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at') {
                 continue;
             }
-            $modalFormSlot .= "<el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"true\">
-                    <el-input v-model=\"form$modelName.$column\" autocomplete=\"one-time-code\" autocorrect=\"off\" spellcheck=\"false\" />
-                </el-form-item>" . PHP_EOL . '                ';
+
+            $modalFormSlot .= FormBuilder::build($type, $modelName, $column, $label);
         }
 
         // Permission
