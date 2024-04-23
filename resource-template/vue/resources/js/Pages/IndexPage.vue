@@ -1,8 +1,8 @@
 <template>
-    <Head title="User Management" />
-    <MainLayout title="User Management">
+    <Head title="ResourceTitle" />
+    <MainLayout title="ResourceTitle">
         <div class="flex flex-col">
-            <DxDataGrid ref="datagridRef" :data-source="dataSource" key-expr="user_id" :column-auto-width="true"
+            <DxDataGrid ref="datagridRef" :data-source="dataSource" key-expr="PrimaryKey" :column-auto-width="true"
                 :remote-operations="remoteOperations" :item-per-page="10" @selection-changed="onSelectionChanged"
                 @exporting="onExporting">
                 <DxFilterRow :visible="true" />
@@ -12,70 +12,29 @@
                 <DxHeaderFilter :visible="true" />
                 <DxPaging :page-size="10" />
                 <DxPager :visible="true" :allowed-page-sizes="[10, 20, 50]" :show-page-size-selector="true" />
-                <DxColumn data-field="username" caption="Username" :allowHeaderFiltering="false" />
-                <DxColumn data-field="npk" caption="NPK" :allowHeaderFiltering="false" />
-                <DxColumn data-field="name" caption="Nama" :allowHeaderFiltering="false" />
-                <DxColumn data-field="email" caption="Email" :allowHeaderFiltering="false" />
-                <DxColumn caption="Role" cell-template="role" width="200" :allowExporting="false" />
-                <template #role="{ data }">
-                    <div class="flex flex-row justify-start items-center" v-if="data.data.roles.length > 0">
-                        <div class="bg-primary rounded-full px-3 py-1 text-white m-px w-min text-xs">
-                            {{ data.data.roles[0].name }}
-                        </div>
 
-                        <el-popover placement="top" :width="150" trigger="hover" v-if="data.data.roles.length > 1">
-                            <template #reference>
-                                <div
-                                    class=" bg-primary-hover rounded-full px-2 py-1 text-white m-px w-min text-xs cursor-pointer">
-                                    + {{ data.data.roles.length - 1 }}
-                                </div>
-                            </template>
-                            <template #default>
-                                <div class="w-full flex flex-col justify-center items-center">
-                                    <div class="bg-primary rounded-full px-3 py-1 text-white m-px text-xs w-fit"
-                                        v-for="role in data.data.roles.slice(1, data.data.roles.length)">
-                                        {{ role.name }}
-                                    </div>
-                                </div>
-                            </template>
-                        </el-popover>
-                    </div>
-                </template>
-                <DxColumn data-field="is_active" caption="Status" cell-template="user-status" width="110"
-                    alignment="center" :allowFiltering="false" :allowHeaderFiltering="true"
-                    :customizeText="statusText" />
-                <template #user-status="{ data }">
-                    <span v-if="data.data.is_active"
-                        class="px-4 py-2 rounded-md bg-success text-white text-xs">Active</span>
-                    <span v-else class="px-4 py-2 rounded-md bg-danger text-white text-xs">Inactive</span>
-                </template>
+                ColumnTableSlot
+
                 <DxColumn cell-template="action" width="60" alignment="center" :allowExporting="false"
                     :showInColumnChooser="false" />
                 <template #action="{ data }">
-                    <el-dropdown trigger="click" placement="bottom-end" :disabled="!can('user.update|user.delete')">
+                    <el-dropdown trigger="click" placement="bottom-end" :disabled="!ActionPermission">
                         <span class="el-dropdown-link">
                             <BsIcon icon="ellipsis-vertical" />
                         </span>
                         <template #dropdown>
                             <el-dropdown-menu>
-                                <el-dropdown-item @click="editUserAction(data.data)" v-if="can('user.update')">
-                                    <BsIcon icon="pencil-square" class="mr-2" /> Edit User
+                                <el-dropdown-item @click="editModelNameAction(data.data)" v-if="UpdatePermission">
+                                    <BsIcon icon="pencil-square" class="mr-2" /> Edit ModelLabel
                                 </el-dropdown-item>
-                                <el-dropdown-item v-if="!data.data.is_active && can('user.update')"
-                                    @click="switchUserStatus(data.data, true)">
-                                    <BsIcon icon="arrow-path-rounded-square" class="mr-2" /> Enable User
-                                </el-dropdown-item>
-                                <el-dropdown-item v-else-if="can('user.update')"
-                                    @click="switchUserStatus(data.data, false)">
-                                    <BsIcon icon="arrow-path-rounded-square" class="mr-2" /> Disable User
-                                </el-dropdown-item>
-                                <el-dropdown-item v-if="can('user.delete')" @click="deleteUserAction(data.data)">
-                                    <BsIcon icon="trash" class="mr-2" /> Delete User
+                                <el-dropdown-item v-if="DeletePermission" @click="deleteModelNameAction(data.data)">
+                                    <BsIcon icon="trash" class="mr-2" /> Delete ModelLabel
                                 </el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
                     </el-dropdown>
                 </template>
+
                 <DxToolbar>
                     <DxItem location="before" template="buttonTemplate" />
                     <DxItem name="columnChooserButton" />
@@ -85,8 +44,8 @@
                     <div class="flex flex-row w-full">
                         <Transition name="fadetransition" mode="out-in" appear>
                             <div v-if="!itemSelected">
-                                <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">
-                                    Add User</BsButton>
+                                <BsButton type="primary" icon="plus" @click="addModelNameAction" v-if="CreatePermission">
+                                    Add ModelLabel</BsButton>
                                 <BsButton type="primary" icon="arrow-path" @click="refreshDatagrid">Refresh</BsButton>
                             </div>
                             <div v-else class="h-auto flex items-center px-4">
@@ -96,55 +55,38 @@
                         </Transition>
                     </div>
                 </template>
+
             </DxDataGrid>
         </div>
+
+        <!-- MODAL TAMBAH EDIT -->
         <el-dialog v-model="dialogFormVisible" width="500px" :append-to-body="true" :destroy-on-close="true"
             class="!rounded-xl">
             <template #header>
-                <span class="font-bold text-lg">{{ !editMode ? 'Tambah' : 'Edit' }} User</span>
+                <span class="font-bold text-lg">{{ !editMode ? 'Tambah' : 'Edit' }} ModelLabel</span>
             </template>
-            <el-form ref="formUserRef" :model="formUser" label-width="200px" label-position="top"
+            <el-form ref="formModelNameRef" :model="formModelName" label-width="200px" label-position="top"
                 require-asterisk-position="right" autocomplete="off">
-                <el-form-item :error="getFormError('username')" prop="username" label="Username" :required="true">
-                    <el-input v-model="formUser.username" autocomplete="one-time-code" autocorrect="off"
-                        spellcheck="false" />
-                </el-form-item>
-                <el-form-item :error="getFormError('name')" prop="name" label="Nama" :required="true">
-                    <el-input v-model="formUser.name" autocomplete="one-time-code" autocorrect="off"
-                        spellcheck="false" />
-                </el-form-item>
-                <el-form-item :error="getFormError('npk')" prop="npk" label="NPK">
-                    <el-input v-model="formUser.npk" autocomplete="one-time-code" autocorrect="off"
-                        spellcheck="false" />
-                </el-form-item>
-                <el-form-item :error="getFormError('email')" prop="email" label="Email">
-                    <el-input type="email" v-model="formUser.email" autocomplete="one-time-code" autocorrect="off"
-                        spellcheck="false" />
-                </el-form-item>
-                <el-form-item :error="getFormError('password')" prop="password" label="Password" :required="true" v-if="!editMode">
-                    <el-input type="password" v-model="formUser.password" autocomplete="one-time-code" autocorrect="off"
-                        spellcheck="false" />
-                </el-form-item>
-                <el-form-item :error="getFormError('role')" props="role" label="Role">
-                    <el-select v-model="formUser.role" multiple placeholder="Select" class="w-full">
-                        <el-option v-for="role in roles" :key="role.id" :label="role.name" :value="role.id" />
-                    </el-select>
-                </el-form-item>
+
+                ModalFormSlot
+
             </el-form>
             <template #footer>
                 <span class="dialog-footer flex">
                     <el-button class=" flex-grow" @click="closeDialog">Cancel</el-button>
                     <el-button class=" flex-grow" v-if="!editMode" type="primary"
-                        @click="addUserSubmitAction">Submit</el-button>
+                        @click="addModelNameSubmitAction">Submit</el-button>
                     <el-button class=" flex-grow" v-if="editMode" type="primary"
-                        @click="editUserSubmitAction">Update</el-button>
+                        @click="editModelNameSubmitAction">Update</el-button>
                 </span>
             </template>
         </el-dialog>
+
     </MainLayout>
 </template>
+
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
 import { Head, useForm, usePage, router } from '@inertiajs/vue3';
 import MainLayout from '@/Layouts/MainLayout.vue';
 import { can } from '@/Core/Helpers/permission-check';
@@ -174,23 +116,16 @@ import BsIcon from '@/Components/BsIcon.vue';
 import BsIconButton from '@/Components/BsIconButton.vue';
 
 // DIALOG FORM
-const formUserRef = ref();
+const formModelNameRef = ref();
 const dialogFormVisible = ref(false);
 const editMode = ref(false);
-const roles = computed(() => usePage().props.roles);
-const formUser = useForm({
-    user_id: '',
-    user_uuid: '',
-    username: '',
-    name: '',
-    npk: '',
-    email: '',
-    password: '',
-    role: [],
-});
-const formUserErrors = ref([]);
 
-function getFormError(field, errors = formUserErrors.value) {
+const formModelName = useForm({
+    FormUseForm
+});
+const formModelNameErrors = ref([]);
+
+function getFormError(field, errors = formModelNameErrors.value) {
     if (!errors && !errors.length) {
         return false
     }
@@ -198,37 +133,31 @@ function getFormError(field, errors = formUserErrors.value) {
         return errors[field]
     }
 }
+
 function closeDialog() {
     dialogFormVisible.value = false;
 }
-function addUserAction() {
+function addModelNameAction() {
     editMode.value = false;
     dialogFormVisible.value = true;
 
-    formUser.user_uuid = '';
-    formUser.user_id = '';
-    formUser.username = '';
-    formUser.name = '';
-    formUser.npk = '';
-    formUser.email = '';
-    formUser.password = '';
-    formUser.role = [];
+    FormAddAction
 }
-async function addUserSubmitAction() {
-    await formUserRef.value.validate((valid, _) => {
+async function addModelNameSubmitAction() {
+    await formModelNameRef.value.validate((valid, _) => {
         if (valid) {
-            formUser.post(route('user.create'), {
+            formModelName.post(RouteCreate, {
                 onSuccess: (response) => {
                     ElMessage({
                         message: response.props.flash.message,
                         type: 'success',
                     });
                     refreshDatagrid();
-                    formUserErrors.value = [];
+                    formModelNameErrors.value = [];
                     dialogFormVisible.value = false;
                 },
                 onError: (errors) => {
-                    formUserErrors.value = errors;
+                    formModelNameErrors.value = errors;
                     if('message' in errors){
                         ElMessage({
                             message: errors.message,
@@ -240,34 +169,27 @@ async function addUserSubmitAction() {
         }
     });
 }
-function editUserAction(dataUser) {
+function editModelNameAction(dataModelName) {
     editMode.value = true;
     dialogFormVisible.value = true;
 
-    formUser.user_id = dataUser.user_id;
-    formUser.user_uuid = dataUser.user_uuid;
-    formUser.username = dataUser.username;
-    formUser.name = dataUser.name;
-    formUser.npk = dataUser.npk;
-    formUser.email = dataUser.email;
-    formUser.password = '';
-    formUser.role = dataUser.roles.map(role => role.id);
+    FormEditAction
 }
-async function editUserSubmitAction() {
-    await formUserRef.value.validate(async (valid, _) => {
+async function editModelNameSubmitAction() {
+    await formModelNameRef.value.validate(async (valid, _) => {
         if (valid) {
-            formUser.put(route('user.update',formUser.user_uuid), {
+            formModelName.put(RouteUpdate, {
                 onSuccess: (response) => {
                     ElMessage({
                         message: response.props.flash.message,
                         type: 'success',
                     });
                     refreshDatagrid();
-                    formUserErrors.value = [];
+                    formModelNameErrors.value = [];
                     dialogFormVisible.value = false;
                 },
                 onError: (errors) => {
-                    formUserErrors.value = errors;
+                    formModelNameErrors.value = errors;
                     if('message' in errors){
                         ElMessage({
                             message: errors.message,
@@ -279,9 +201,9 @@ async function editUserSubmitAction() {
         }
     });
 }
-function deleteUserAction(dataUser) {
+function deleteModelNameAction(dataModelName) {
     ElMessageBox.confirm(
-        'Apakah anda yakin untuk mengahapus user ini ?',
+        'Apakah anda yakin untuk mengahapus ModelLabel ini ?',
         'Warning',
         {
             confirmButtonText: 'OK',
@@ -290,7 +212,7 @@ function deleteUserAction(dataUser) {
         }
     )
         .then(() => {
-            router.delete(route('user.delete',dataUser.user_uuid), {
+            router.delete(RouteDelete, {
                 onSuccess: (response) => {
                     ElMessage({
                         message: response.props.flash.message,
@@ -300,7 +222,7 @@ function deleteUserAction(dataUser) {
                     dialogFormVisible.value = false;
                 },
                 onError: (errors) => {
-                    formUserErrors.value = errors;
+                    formModelNameErrors.value = errors;
                 }
             });
         })
@@ -310,25 +232,6 @@ function deleteUserAction(dataUser) {
                 message: 'Action Canceled',
             })
         })
-}
-function switchUserStatus(dataUser, status) {
-    useForm({
-        is_active : status
-    }).put(route('user.switch_status', dataUser.user_uuid), {
-        onSuccess: (response) => {
-            ElMessage({
-                message: response.props.flash.message,
-                type: 'success',
-            });
-            refreshDatagrid();
-            dialogFormVisible.value = false;
-        },
-        onError: (errors) => {
-            formUserErrors.value = errors;
-        },
-        onFinish: () => {
-        }
-    });
 }
 
 // DEVEXTREME DATAGRID
@@ -352,7 +255,7 @@ function isNotEmpty(value) {
 };
 
 const dataSource = new CustomStore({
-    key: "user_id",
+    key: "PrimaryKey",
     load: function (loadOptions) {
         let params = "?";
         ["skip", "take", "requireTotalCount", "sort", "filter"].forEach(
@@ -366,7 +269,7 @@ const dataSource = new CustomStore({
 
         if (dataGridAction.value == "select.all") {
             if (allMode.value == "allPages") {
-                return axios.get(route('user.data_processing'), { params: params })
+                return axios.get(RouteDataProcessing, { params: params })
                     .then((response) => {
                         dataGridAction.value = "index";
                         data = response.data;
@@ -376,7 +279,7 @@ const dataSource = new CustomStore({
                 dataGridAction.value = "index";
             }
         } else {
-            return axios.get(route('user.data_processing') + params)
+            return axios.get(RouteDataProcessing + params)
                 .then((response) => {
                     dataGridAction.value = "index";
                     return response.data;
@@ -407,8 +310,8 @@ function onSelectionChanged(data) {
 
 function onExporting(e) {
     const workbook = new Workbook();
-    const worksheet = workbook.addWorksheet('Employees');
-    var fileName = "data-users"
+    const worksheet = workbook.addWorksheet('ModelName');
+    var fileName = "data-ModelName"
 
     exportDataGrid({
         component: e.component,
@@ -422,10 +325,6 @@ function onExporting(e) {
 
     e.cancel = true;
 };
-
-function statusText(data) {
-    return data.value == 0 ? 'Inactive' : 'Active';
-}
 
 function clearSelection() {
     const dataGrid = datagridRef.value.instance;

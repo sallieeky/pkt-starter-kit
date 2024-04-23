@@ -1,6 +1,14 @@
 # Development Guide
 Before using the application, ensure that you have installed the starter kit.
 
+```
+php artisan pkt:install vue
+
+#or
+
+php artisan pkt:install react
+```
+
 ## User
 By default existing user for superadmin you can adjust in `database/seeders/UserSeeder.php`. <strong>It's highly recommended to change the credential</strong> 
 ```
@@ -25,13 +33,13 @@ Schema::create('users', function (Blueprint $table) {
 });
 ```
 
-## Manage permissions
+## Manage Permissions
 Role and permission installed in this starter kit supported by [Spatie laravel permission](https://spatie.be/docs/laravel-permission/v6/introduction).
 
-By default there are only 2 role Superadmin and Viewer, you can adjust the role and permission in `database/seeders/RoleAndPermissionSeeder.php`
+By default there are only 2 role Superadmin and Viewer, you can adjust the permission in `config/permissions.php`
 
 ```php
-$permissionsName = [
+return [
     [
         'group_name' => 'user',
         'permissions' => [
@@ -117,4 +125,34 @@ export const navItems = [
     },
     ... (additional page)
 ];
+```
+
+## Additional Command
+
+### Make resource command
+This command will help you to create basic single page <strong>CRUD</strong> by only execute 1 command
+
+```cmd
+php artisan pkt:make-resource ModelName <additional-flag>
+```
+
+Additional flag you can use <br>
+- `--force` if you want to force create the resource. <br> <strong>(CAREFULLY)</strong> This will replace all the existing related file.
+
+
+This command will help you to create and optimize some file such as
+```
+Vue page : resources/js/pages/[ModelName]/[ModelName]Manage.vue
+Controller : app/Http/Controllers/[ModelName]Controller.php
+Create Request : app/Http/Requests/[ModelName]/Create[ModelName]Request.php
+Update Request : app/Http/Requests/[ModelName]/Update[ModelName]Request.php
+Route : routes/web.php
+Side menu item : resources/js/Core/Config/SidemenuItem.js
+Permission : config/permissions.php
+```
+
+<strong>(RECOMMENDED ACTION)</strong><br>
+After you run the command, it's recommended to re-seed the role and permission to update permission to database
+```cmd
+php artisan db:seed --class=RoleAndPermissionSeeder
 ```

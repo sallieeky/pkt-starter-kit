@@ -30,6 +30,7 @@ class StarterKitServiceProvider extends ServiceProvider implements DeferrablePro
 
         $this->commands([
             Console\InstallCommand::class,
+            Console\MakeResourceCommand\MakeResourceCommand::class,
         ]);
     }
 
@@ -40,6 +41,9 @@ class StarterKitServiceProvider extends ServiceProvider implements DeferrablePro
      */
     public function provides()
     {
-        return [Console\InstallCommand::class];
+        return [
+            Console\InstallCommand::class,
+            Console\MakeResourceCommand\MakeResourceCommand::class,
+        ];
     }
 }
