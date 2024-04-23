@@ -111,7 +111,8 @@ trait ManipulateVueResource
         // Form Add Action
         $formAddAction = '';
         foreach ($columns as $column) {
-            $formAddAction .= "form$modelName.$column = '';" . PHP_EOL . '    ';
+            $defaultValue = $model->getConnectionResolver()->connection()->getSchemaBuilder()->getConnection()->getDoctrineColumn($model->getTable(), $column)->getDefault() ?? '';
+            $formAddAction .= "form$modelName.$column = '$defaultValue';" . PHP_EOL . '    ';
         }
 
         // Form Edit Action
