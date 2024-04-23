@@ -79,12 +79,13 @@ trait ManipulateVueResource
         $modalFormSlot = '';
         foreach ($columns as $column) {
             $type = $model->getConnectionResolver()->connection()->getSchemaBuilder()->getColumnType($model->getTable(), $column);
+            $required = $model->getConnectionResolver()->connection()->getSchemaBuilder()->getConnection()->getDoctrineColumn($model->getTable(), $column)->getNotnull();
             $label = Str::headline($column);
             if ($column === $primaryKey || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at') {
                 continue;
             }
 
-            $modalFormSlot .= FormBuilder::build($type, $modelName, $column, $label);
+            $modalFormSlot .= FormBuilder::build($type, $modelName, $column, $label, $required);
         }
 
         // Permission

@@ -70,6 +70,12 @@ class InstallCommand extends Command implements PromptsForMissingInput
         if (!$existInComposer) {
             $this->runCommands(['composer require spatie/laravel-permission:^6.1']);
         }
+
+        $existInComposer = file_exists(base_path('composer.json')) &&
+            ! empty(json_decode(file_get_contents(base_path('composer.json')), true)['require']['doctrine/dbal']);
+        if (!$existInComposer) {
+            $this->runCommands(['composer require doctrine/dbal:*']);
+        }
     }
 
     /**
