@@ -120,7 +120,7 @@ class FormBuilder
 
         self::$form = "
                 <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
-                    <el-switch v-model=\"form$modelName.$column\" active-color=\"#13ce66\" inactive-color=\"#ff4949\" />
+                    <el-switch v-model=\"form$modelName.$column\" active-color=\"#13ce66\" inactive-color=\"#ff4949\" :active-value=\"'1'\" :inactive-value=\"'0'\" />
                 </el-form-item>" . PHP_EOL . '                ';
 
         return self::$form;
