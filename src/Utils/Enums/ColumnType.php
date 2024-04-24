@@ -11,7 +11,8 @@ enum ColumnType: string
     case FLOAT = 'double';
     case TINYINT = 'tinyint';
     case DECIMAL = 'decimal';
-    case STRING = 'varchar';
+    case STRING = 'string';
+    case BOOLEAN = 'boolean';
     case TEXT = 'text';
     case ENUM = 'enum';
     case JSON = 'json';

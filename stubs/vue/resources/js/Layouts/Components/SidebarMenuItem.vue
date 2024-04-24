@@ -3,7 +3,7 @@
         { 'rounded-md gap-4': !sidemenu },
         { 'rounded-full w-10': sidemenu },
         { 'mb-4':!hasSubmenu||sidemenu},
-    ]" @click="() => expanded = !expanded">
+    ]" @click.stop="() => expanded = !expanded">
         <Link 
             :href="menuItem.href" 
             class="group"

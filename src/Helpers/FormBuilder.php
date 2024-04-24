@@ -29,8 +29,9 @@ class FormBuilder
             case ColumnType::SMALLINTEGER->value:
             case ColumnType::FLOAT->value:
             case ColumnType::DECIMAL->value:
-                return self::setFormWithTypeNumber();
             case ColumnType::TINYINT->value:
+                return self::setFormWithTypeNumber();
+            case ColumnType::BOOLEAN->value:
                 return self::setFormWithTypeBoolean();
             case ColumnType::DATE->value:
                 return self::setFormWithTypeDate();
