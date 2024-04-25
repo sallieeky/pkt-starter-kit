@@ -11,10 +11,10 @@ class LeaderApi
      *
      * @return object
      */
-    public static function getAllKaryawan()
+    public static function getAllEmployee()
     {
         $response = Http::withHeaders([
-            'Api-Key' => 'LEMVwsRTN20Pq7PP0VTh'
+            'Api-Key' => env('LEADER_API_KEY')
         ])->get('https://leader.pupukkaltim.com/api/Api_leader/get_all_karyawan');
 
         // {
@@ -49,10 +49,10 @@ class LeaderApi
      *
      * @return object
      */
-    public static function getAllUnitKerja()
+    public static function getAllWorkUnit()
     {
         $response = Http::withHeaders([
-            'Api-Key' => 'LEMVwsRTN20Pq7PP0VTh'
+            'Api-Key' => env('LEADER_API_KEY')
         ])->get('https://leader.pupukkaltim.com/api/Api_leader/get_all_unit_kerja');
         
         // {
@@ -84,14 +84,14 @@ class LeaderApi
     public static function getAllPlt()
     {
         $response = Http::withHeaders([
-            'Api-Key' => 'LEMVwsRTN20Pq7PP0VTh'
+            'Api-Key' => env('LEADER_API_KEY')
         ])->get('https://leader.pupukkaltim.com/api/Api_leader/get_all_plt');
 
         // {
         //   "code": 1,
         //   "message": "Success",
         //   "data": {
-        //       "API_REQUEST": "GET ALL UNIT KERJA",
+        //       "API_REQUEST": "GET ALL PLT",
         //       "PLT_COUNT": 31,
         //       "PLT_LIST": [
         //           {
