@@ -75,7 +75,6 @@ trait ManipulateVueResource
         }
 
         // ModalFormSlot
-        // ModalFormSlot
         $modalFormSlot = '';
         foreach ($columns as $column) {
             $type = $model->getConnectionResolver()->connection()->getSchemaBuilder()->getColumnType($model->getTable(), $column);

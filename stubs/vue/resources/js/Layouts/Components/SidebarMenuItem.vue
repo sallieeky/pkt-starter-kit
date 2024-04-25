@@ -127,7 +127,7 @@ const hasSubmenu = computed(() => {
 });
 onMounted(()=>{
     var currentUrl = window.location.pathname;
-    if(currentUrl.startsWith(props.menuItem.href)){
+    if(currentUrl.startsWith(props.menuItem.href) && currentUrl === props.menuItem.href){
         emit("expand");
     }
 })
