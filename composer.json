@@ -29,7 +29,8 @@
         "illuminate/filesystem": "^10.17",
         "illuminate/support": "^10.17",
         "illuminate/validation": "^10.17",
-        "illuminate/database": "^10.0"
+        "illuminate/database": "^10.0",
+        "doctrine/dbal": "*"
     },
     "extra": {
         "branch-alias": {

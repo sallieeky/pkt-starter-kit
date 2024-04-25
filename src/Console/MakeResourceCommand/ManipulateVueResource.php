@@ -33,7 +33,7 @@ trait ManipulateVueResource
 
         $this->manipulateVuePage();
         $this->manipulateController();
-        $this->manipulatRequest();
+        $this->manipulateRequest();
         $this->manipulateRoute();
         $this->manipulateSidemenuItem();
         $this->manipulatePermissions();
@@ -74,7 +74,6 @@ trait ManipulateVueResource
             $columnTableSlot .= '<DxColumn data-field="'. $column . '" caption="' . $label .'" :allowHeaderFiltering="false" />' . PHP_EOL . '                ';
         }
 
-        // ModalFormSlot
         // ModalFormSlot
         $modalFormSlot = '';
         foreach ($columns as $column) {
@@ -173,7 +172,7 @@ trait ManipulateVueResource
      *
      * @return void
      */
-    private function manipulatRequest()
+    private function manipulateRequest()
     {
         $modelName = $this->nameArgument;
         $modelLabel = Str::headline($modelName);
@@ -189,7 +188,10 @@ trait ManipulateVueResource
             if ($column === $this->model->getKeyName() || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at') {
                 continue;
             }
-            $rules .= "'$column' => ['required'],\n" . '            ';
+            $required = $this->model->getConnectionResolver()->connection()->getSchemaBuilder()->getConnection()->getDoctrineColumn($this->model->getTable(), $column)->getNotnull() ? 'required' : null;
+            if ($required) {
+                $rules .= "'$column' => ['required'],\n" . '            ';
+            }
         }
 
         $this->replaceContent(app_path('Http/Requests/' . $modelName . '/Create' . $modelName . 'Request.php'), [

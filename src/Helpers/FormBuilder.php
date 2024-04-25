@@ -1,7 +1,8 @@
 <?php
 
 namespace Pkt\StarterKit\Helpers;
-use Pkt\StarterKit\Utils\Enums\ColumnType;
+
+use Doctrine\DBAL\Types\Types;
 
 class FormBuilder
 {
@@ -19,24 +20,21 @@ class FormBuilder
         self::$required = $required ? 'true' : 'false';
 
         switch ($type) {
-            case ColumnType::CHAR->value:
-            case ColumnType::STRING->value:
+            case Types::STRING:
                 return self::setFormWithTypeString();
-            case ColumnType::TEXT->value:
+            case Types::TEXT:
                 return self::setFormWithTypeText();
-            case ColumnType::INTEGER->value:
-            case ColumnType::BIGINTEGER->value:
-            case ColumnType::SMALLINTEGER->value:
-            case ColumnType::FLOAT->value:
-            case ColumnType::DECIMAL->value:
+            case Types::INTEGER:
+            case Types::FLOAT:
+            case Types::DECIMAL:
                 return self::setFormWithTypeNumber();
-            case ColumnType::TINYINT->value:
+            case Types::BOOLEAN:
                 return self::setFormWithTypeBoolean();
-            case ColumnType::DATE->value:
+            case Types::DATE_MUTABLE:
                 return self::setFormWithTypeDate();
-            case ColumnType::TIME->value:
+            case Types::TIME_MUTABLE:
                 return self::setFormWithTypeTime();
-            case ColumnType::DATETIME->value:
+            case Types::DATETIME_MUTABLE:
                 return self::setFormWithTypeDatetime();
             default:
                 return self::setFormWithTypeString();
@@ -119,7 +117,7 @@ class FormBuilder
 
         self::$form = "
                 <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
-                    <el-switch v-model=\"form$modelName.$column\" active-color=\"#13ce66\" inactive-color=\"#ff4949\" />
+                    <el-switch v-model=\"form$modelName.$column\" active-color=\"#13ce66\" inactive-color=\"#ff4949\" :active-value=\"'1'\" :inactive-value=\"'0'\" />
                 </el-form-item>" . PHP_EOL . '                ';
 
         return self::$form;
