@@ -57,7 +57,7 @@ class FormBuilder
 
         self::$form = "
                 <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
-                    <el-input v-model=\"form$modelName.$column\" autocomplete=\"one-time-code\" autocorrect=\"off\" spellcheck=\"false\" />
+                    <el-input v-model=\"form$modelName.$column\" autocomplete=\"one-time-code\" autocorrect=\"off\" spellcheck=\"false\" class=\"!w-full\" />
                 </el-form-item>" . PHP_EOL . '                ';
 
         return self::$form;
@@ -77,7 +77,7 @@ class FormBuilder
 
         self::$form = "
                 <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
-                    <el-input type=\"textarea\" v-model=\"form$modelName.$column\" autocomplete=\"one-time-code\" autocorrect=\"off\" spellcheck=\"false\" />
+                    <el-input type=\"textarea\" v-model=\"form$modelName.$column\" autocomplete=\"one-time-code\" autocorrect=\"off\" spellcheck=\"false\" class=\"!w-full\" />
                 </el-form-item>" . PHP_EOL . '                ';
 
         return self::$form;
@@ -97,7 +97,7 @@ class FormBuilder
 
         self::$form = "
                 <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
-                    <el-input-number v-model=\"form$modelName.$column\" autocomplete=\"one-time-code\" autocorrect=\"off\" spellcheck=\"false\" />
+                    <el-input type=\"number\" v-model=\"form$modelName.$column\" autocomplete=\"one-time-code\" autocorrect=\"off\" spellcheck=\"false\" class=\"!w-full\" />
                 </el-form-item>" . PHP_EOL . '                ';
 
         return self::$form;
@@ -137,7 +137,7 @@ class FormBuilder
 
         self::$form = "
                 <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
-                    <el-date-picker v-model=\"form$modelName.$column\" type=\"date\" placeholder=\"Pick a date\" />
+                    <el-date-picker v-model=\"form$modelName.$column\" type=\"date\" placeholder=\"Pick a date\" class=\"!w-full\"/>
                 </el-form-item>" . PHP_EOL . '                ';
 
         return self::$form;
@@ -157,7 +157,7 @@ class FormBuilder
 
         self::$form = "
                 <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
-                    <el-time-picker v-model=\"form$modelName.$column\" placeholder=\"Pick a time\" />
+                    <el-time-picker v-model=\"form$modelName.$column\" placeholder=\"Pick a time\" class=\"!w-full\" />
                 </el-form-item>" . PHP_EOL . '                ';
 
         return self::$form;
@@ -177,7 +177,7 @@ class FormBuilder
 
         self::$form = "
                 <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
-                    <el-date-picker v-model=\"form$modelName.$column\" type=\"datetime\" placeholder=\"Pick a datetime\" />
+                    <el-date-picker v-model=\"form$modelName.$column\" type=\"datetime\" placeholder=\"Pick a datetime\" class=\"!w-full\" />
                 </el-form-item>" . PHP_EOL . '                ';
 
         return self::$form;
