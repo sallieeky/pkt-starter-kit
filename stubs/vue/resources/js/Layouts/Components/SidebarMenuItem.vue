@@ -126,10 +126,7 @@ const hasSubmenu = computed(() => {
     return props.menuItem.submenu != null && props.menuItem.submenu.length > 0;
 });
 onMounted(()=>{
-    var currentUrl = window.location.pathname;
-    if(currentUrl.startsWith(props.menuItem.href)){
-        emit("expand");
-    }
+    if(usePage().url == props.menuItem.href || usePage().url.startsWith(props.menuItem.href + '/')) emit("expand");
 })
 const onChildExpand = ()=>{
     expanded.value = true;
