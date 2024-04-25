@@ -156,3 +156,27 @@ After you run the command, it's recommended to re-seed the role and permission t
 ```cmd
 php artisan db:seed --class=RoleAndPermissionSeeder
 ```
+
+## Helpers
+
+### Leader API Integration
+You can consume PKT Leader API by using helper from this library to get list of all employee, work unit, and PLT.
+
+First you need to setup **.env** file and add this line
+```.env
+LEADER_API_KEY=<ask admin>
+```
+
+And to use the helper
+```php
+use Pkt\StarterKit\Helpers\LeaderApi;
+
+$employee = LeaderApi::getAllEmployee();
+$workUnit = LeaderApi::getAllWorkUnit();
+$plt = LeaderApi::getAllPlt();
+
+// To get data
+$employeeData = LeaderApi::getAllEmployee()->data->USERS_LIST;
+$workUnitData = LeaderApi::getAllWorkUnit()->data->UK_LIST;
+$pltData = LeaderApi::getAllPlt()->data->PLT_LIST;
+```

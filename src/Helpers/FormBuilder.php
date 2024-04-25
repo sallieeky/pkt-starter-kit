@@ -1,7 +1,8 @@
 <?php
 
 namespace Pkt\StarterKit\Helpers;
-use Pkt\StarterKit\Utils\Enums\ColumnType;
+
+use Doctrine\DBAL\Types\Types;
 
 class FormBuilder
 {
@@ -9,32 +10,31 @@ class FormBuilder
     private static string $modelName;
     private static string $column;
     private static string $label;
+    private static string $required;
 
-    public static function build(string $type, string $modelName, string $column, string $label): string
+    public static function build(string $type, string $modelName, string $column, string $label, bool $required): string
     {
         self::$modelName = $modelName;
         self::$column = $column;
         self::$label = $label;
+        self::$required = $required ? 'true' : 'false';
 
         switch ($type) {
-            case ColumnType::CHAR->value:
-            case ColumnType::STRING->value:
+            case Types::STRING:
                 return self::setFormWithTypeString();
-            case ColumnType::TEXT->value:
+            case Types::TEXT:
                 return self::setFormWithTypeText();
-            case ColumnType::INTEGER->value:
-            case ColumnType::BIGINTEGER->value:
-            case ColumnType::SMALLINTEGER->value:
-            case ColumnType::FLOAT->value:
-            case ColumnType::DECIMAL->value:
+            case Types::INTEGER:
+            case Types::FLOAT:
+            case Types::DECIMAL:
                 return self::setFormWithTypeNumber();
-            case ColumnType::TINYINT->value:
+            case Types::BOOLEAN:
                 return self::setFormWithTypeBoolean();
-            case ColumnType::DATE->value:
+            case Types::DATE_MUTABLE:
                 return self::setFormWithTypeDate();
-            case ColumnType::TIME->value:
+            case Types::TIME_MUTABLE:
                 return self::setFormWithTypeTime();
-            case ColumnType::DATETIME->value:
+            case Types::DATETIME_MUTABLE:
                 return self::setFormWithTypeDatetime();
             default:
                 return self::setFormWithTypeString();
@@ -53,9 +53,10 @@ class FormBuilder
         $modelName = self::$modelName;
         $column = self::$column;
         $label = self::$label;
+        $required = self::$required;
 
         self::$form = "
-                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"true\">
+                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
                     <el-input v-model=\"form$modelName.$column\" autocomplete=\"one-time-code\" autocorrect=\"off\" spellcheck=\"false\" />
                 </el-form-item>" . PHP_EOL . '                ';
 
@@ -72,9 +73,10 @@ class FormBuilder
         $modelName = self::$modelName;
         $column = self::$column;
         $label = self::$label;
+        $required = self::$required;
 
         self::$form = "
-                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"true\">
+                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
                     <el-input type=\"textarea\" v-model=\"form$modelName.$column\" autocomplete=\"one-time-code\" autocorrect=\"off\" spellcheck=\"false\" />
                 </el-form-item>" . PHP_EOL . '                ';
 
@@ -91,9 +93,10 @@ class FormBuilder
         $modelName = self::$modelName;
         $column = self::$column;
         $label = self::$label;
+        $required = self::$required ;
 
         self::$form = "
-                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"true\">
+                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
                     <el-input-number v-model=\"form$modelName.$column\" autocomplete=\"one-time-code\" autocorrect=\"off\" spellcheck=\"false\" />
                 </el-form-item>" . PHP_EOL . '                ';
 
@@ -110,10 +113,11 @@ class FormBuilder
         $modelName = self::$modelName;
         $column = self::$column;
         $label = self::$label;
+        $required = self::$required;
 
         self::$form = "
-                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"true\">
-                    <el-switch v-model=\"form$modelName.$column\" active-color=\"#13ce66\" inactive-color=\"#ff4949\" />
+                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
+                    <el-switch v-model=\"form$modelName.$column\" active-color=\"#13ce66\" inactive-color=\"#ff4949\" :active-value=\"'1'\" :inactive-value=\"'0'\" />
                 </el-form-item>" . PHP_EOL . '                ';
 
         return self::$form;
@@ -129,9 +133,10 @@ class FormBuilder
         $modelName = self::$modelName;
         $column = self::$column;
         $label = self::$label;
+        $required = self::$required;
 
         self::$form = "
-                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"true\">
+                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
                     <el-date-picker v-model=\"form$modelName.$column\" type=\"date\" placeholder=\"Pick a date\" />
                 </el-form-item>" . PHP_EOL . '                ';
 
@@ -148,9 +153,10 @@ class FormBuilder
         $modelName = self::$modelName;
         $column = self::$column;
         $label = self::$label;
+        $required = self::$required;
 
         self::$form = "
-                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"true\">
+                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
                     <el-time-picker v-model=\"form$modelName.$column\" placeholder=\"Pick a time\" />
                 </el-form-item>" . PHP_EOL . '                ';
 
@@ -167,9 +173,10 @@ class FormBuilder
         $modelName = self::$modelName;
         $column = self::$column;
         $label = self::$label;
+        $required = self::$required;
 
         self::$form = "
-                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"true\">
+                <el-form-item :error=\"getFormError('$column')\" prop=\"$column\" label=\"$label\" :required=\"$required\">
                     <el-date-picker v-model=\"form$modelName.$column\" type=\"datetime\" placeholder=\"Pick a datetime\" />
                 </el-form-item>" . PHP_EOL . '                ';
 

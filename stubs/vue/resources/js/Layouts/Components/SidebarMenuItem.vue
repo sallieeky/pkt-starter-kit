@@ -3,7 +3,7 @@
         { 'rounded-md gap-4': !sidemenu },
         { 'rounded-full w-10': sidemenu },
         { 'mb-4':!hasSubmenu||sidemenu},
-    ]" @click="() => expanded = !expanded">
+    ]" @click.stop="() => expanded = !expanded">
         <Link 
             :href="menuItem.href" 
             class="group"
@@ -127,7 +127,7 @@ const hasSubmenu = computed(() => {
 });
 onMounted(()=>{
     var currentUrl = window.location.pathname;
-    if(currentUrl.startsWith(props.menuItem.href)){
+    if(currentUrl.startsWith(props.menuItem.href) && currentUrl === props.menuItem.href){
         emit("expand");
     }
 })

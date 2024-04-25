@@ -33,7 +33,7 @@ trait ManipulateVueResource
 
         $this->manipulateVuePage();
         $this->manipulateController();
-        $this->manipulatRequest();
+        $this->manipulateRequest();
         $this->manipulateRoute();
         $this->manipulateSidemenuItem();
         $this->manipulatePermissions();
@@ -75,16 +75,16 @@ trait ManipulateVueResource
         }
 
         // ModalFormSlot
-        // ModalFormSlot
         $modalFormSlot = '';
         foreach ($columns as $column) {
             $type = $model->getConnectionResolver()->connection()->getSchemaBuilder()->getColumnType($model->getTable(), $column);
+            $required = $model->getConnectionResolver()->connection()->getSchemaBuilder()->getConnection()->getDoctrineColumn($model->getTable(), $column)->getNotnull();
             $label = Str::headline($column);
             if ($column === $primaryKey || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at') {
                 continue;
             }
 
-            $modalFormSlot .= FormBuilder::build($type, $modelName, $column, $label);
+            $modalFormSlot .= FormBuilder::build($type, $modelName, $column, $label, $required);
         }
 
         // Permission
@@ -110,7 +110,8 @@ trait ManipulateVueResource
         // Form Add Action
         $formAddAction = '';
         foreach ($columns as $column) {
-            $formAddAction .= "form$modelName.$column = '';" . PHP_EOL . '    ';
+            $defaultValue = $model->getConnectionResolver()->connection()->getSchemaBuilder()->getConnection()->getDoctrineColumn($model->getTable(), $column)->getDefault() ?? '';
+            $formAddAction .= "form$modelName.$column = '$defaultValue';" . PHP_EOL . '    ';
         }
 
         // Form Edit Action
@@ -171,7 +172,7 @@ trait ManipulateVueResource
      *
      * @return void
      */
-    private function manipulatRequest()
+    private function manipulateRequest()
     {
         $modelName = $this->nameArgument;
         $modelLabel = Str::headline($modelName);
@@ -187,7 +188,10 @@ trait ManipulateVueResource
             if ($column === $this->model->getKeyName() || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at') {
                 continue;
             }
-            $rules .= "'$column' => ['required'],\n" . '            ';
+            $required = $this->model->getConnectionResolver()->connection()->getSchemaBuilder()->getConnection()->getDoctrineColumn($this->model->getTable(), $column)->getNotnull() ? 'required' : null;
+            if ($required) {
+                $rules .= "'$column' => ['required'],\n" . '            ';
+            }
         }
 
         $this->replaceContent(app_path('Http/Requests/' . $modelName . '/Create' . $modelName . 'Request.php'), [
