@@ -14,7 +14,7 @@
                 <div>
                     <div class="grid grid-cols-12 grid-flow-row-dense gap-4">
                         <div class="col-span-12 lg:col-span-3 p-4">
-                            <BsProfilePicture/>
+                            <BsProfilePicture :npk="user.npk"/>
                         </div>
                         <div class="col-span-12 lg:col-span-9 p-4">
                             <table class="w-full">
@@ -32,11 +32,11 @@
                                 </tr>
                                 <tr>
                                     <td class="font-bold w-60">Departement</td>
-                                    <td>{{ '-' }}</td>
+                                    <td>{{ user.position ?? '-' }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="font-bold w-60">Jabatan</td>
-                                    <td>{{ '-' }}</td>
+                                    <td class="font-bold w-60">Position</td>
+                                    <td>{{ user.work_unit ?? '-' }}</td>
                                 </tr>
                                 <tr>
                                     <td class="font-bold w-60">Role</td>

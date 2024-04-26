@@ -59,11 +59,11 @@
             </DxDataGrid>
         </div>
 
-        <!-- MODAL TAMBAH EDIT -->
+        <!-- MODAL CREATE & EDIT -->
         <el-dialog v-model="dialogFormVisible" width="500px" :append-to-body="true" :destroy-on-close="true"
             class="!rounded-xl">
             <template #header>
-                <span class="font-bold text-lg">{{ !editMode ? 'Tambah' : 'Edit' }} ModelLabel</span>
+                <span class="font-bold text-lg">{{ !editMode ? 'Create' : 'Edit' }} ModelLabel</span>
             </template>
             <el-form ref="formModelNameRef" :model="formModelName" label-width="200px" label-position="top"
                 require-asterisk-position="right" autocomplete="off">
