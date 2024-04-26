@@ -19,7 +19,7 @@
                     </button>
                     <button class="group text-start">
                         <div class="shrink-0 rounded-lg py-2 px-5 border-2 border-[#f1f4f6] flex align-middle items-center bg-white group-hover:bg-primary-surface cursor-pointer">
-                            <BsProfilePicture class="w-7 h-7 md:mr-2 rounded-full"/>
+                            <BsProfilePicture class="w-10 h-10 md:mr-2 rounded-full shadow-lg" :npk="user.npk"/>
                             <div class="hidden md:flex items-center">
                                 <div class=" flex flex-col text-gray-900">
                                     <div class="w-32 truncate text-xs font-bold">{{ $page.props.auth.user.name }}</div>
@@ -63,7 +63,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import BsIcon from '@/Components/BsIcon.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { useSidemenuStore } from '@/Stores/sidemenu';
 import BsProfilePicture from '@/Components/BsProfilePicture.vue';
 
@@ -74,4 +74,6 @@ const sidemenu = computed(()=>sideMenuStore.sidemenu);
 
 const toggleSideMenu = sideMenuStore.toggleSidemenu;
 const toggleDrawer = sideMenuStore.toggleDrawer;
+
+var user = ref(usePage().props.auth.user);
 </script>

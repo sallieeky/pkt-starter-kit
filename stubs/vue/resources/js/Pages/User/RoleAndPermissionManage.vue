@@ -98,9 +98,7 @@
                                     <el-tab-pane label="User" name="user">
                                         <div v-for="user in roleUsers">
                                             <div class="shrink-0 rounded-lg py-2 px-5 border-2 border-[#f1f4f6] flex align-middle items-center bg-white group-hover:bg-primary-surface cursor-pointer mt-2">
-                                                <div class="bg-[#e4e4e5] p-4 w-10 h-10 rounded-full text-gray-800 font-bold flex items-center justify-center mr-2">
-                                                    {{ user.name.charAt(0).toUpperCase() }}
-                                                </div>
+                                                <BsProfilePicture :npk="user.npk" class="w-10 h-10 rounded-full shadow-lg mr-2" />
                                                 <div class="flex items-center">
                                                     <div class=" flex flex-col text-gray-900">
                                                         <div class="w-32 truncate text-md font-bold">{{ user.name }}</div>
@@ -150,6 +148,7 @@ import { Head, usePage, router, useForm } from '@inertiajs/vue3';
 import { ref, computed, reactive } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { can } from '@/Core/Helpers/permission-check';
+import BsProfilePicture from '@/Components/BsProfilePicture.vue';
 
 // CRUD user role
 const dialogFormRoleVisible = ref(false);
