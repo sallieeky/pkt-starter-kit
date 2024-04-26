@@ -43,8 +43,5 @@ class RoleAndPermissionSeeder extends Seeder
         ], [
             'guard_name' => 'web'
         ]);
-        $viewerRole->givePermissionTo([
-            
-        ]);
     }
 }
