@@ -29,6 +29,12 @@ class User extends Authenticatable
         'email',
         'password',
         'is_active',
+        'hierarchy_code',
+        'position_id',
+        'position',
+        'work_unit_id',
+        'work_unit',
+        'users_flag',
     ];
 
     /**
