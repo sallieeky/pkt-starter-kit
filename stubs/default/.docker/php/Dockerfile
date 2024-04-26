@@ -9,6 +9,10 @@ WORKDIR /var/www/html
 RUN apt-get update \
   && apt-get install -y --no-install-recommends apt-utils curl gnupg locales apt-transport-https zlib1g-dev libzip-dev unzip libcurl4-openssl-dev pkg-config libssl-dev libxml2-dev
 
+RUN apt-get update && apt-get install -y \
+  software-properties-common \
+  npm
+
 RUN apt-get update \
   && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
   && curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list \
@@ -48,10 +52,6 @@ RUN apt-get update && apt-get install -y \
     nano \
     supervisor \
     cron
-
-RUN apt-get update && apt-get install -y \
-    software-properties-common \
-    npm
 
 RUN npm install && npm run build
 

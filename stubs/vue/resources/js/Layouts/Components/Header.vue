@@ -19,7 +19,7 @@
                     </button>
                     <button class="group text-start">
                         <div class="shrink-0 rounded-lg py-2 px-5 border-2 border-[#f1f4f6] flex align-middle items-center bg-white group-hover:bg-primary-surface cursor-pointer">
-                            <img src="/images/avatar-default.png" class="bg-[#e4e4e5] h-7 w-7 min-w-7 md:mr-2 rounded-full" name="profile-picture" alt="profile-picture" />
+                            <BsProfilePicture class="w-10 h-10 md:mr-2 rounded-full shadow-lg" :npk="user.npk"/>
                             <div class="hidden md:flex items-center">
                                 <div class=" flex flex-col text-gray-900">
                                     <div class="w-32 truncate text-xs font-bold">{{ $page.props.auth.user.name }}</div>
@@ -34,8 +34,8 @@
                             <div class="py-1" role="none">
                                 <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                                 <Link href="/account" class="flex flex-row px-4 py-2 text-gray-900 text-sm hover:bg-primary-surface hover:rounded-md" role="menuitem" tabindex="-1" id="menu-item-0">
-                                    <bs-icon icon="cog-8-tooth" class="mr-2"></bs-icon>
-                                    Account settings
+                                    <bs-icon icon="user" class="mr-2"></bs-icon>
+                                    Account
                                 </Link>
                                 <Link href="/logout" method="post" as="button" class="flex flex-row text-danger px-4 py-2 text-sm hover:bg-primary-surface hover:rounded-md w-full" role="menuitem" tabindex="-1" id="menu-item-2">
                                     <bs-icon icon="arrow-right-on-rectangle" class="mr-2"></bs-icon>
@@ -63,8 +63,9 @@
 <script setup>
 import { ref, computed } from 'vue';
 import BsIcon from '@/Components/BsIcon.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { useSidemenuStore } from '@/Stores/sidemenu';
+import BsProfilePicture from '@/Components/BsProfilePicture.vue';
 
 const sideMenuStore = useSidemenuStore();
 
@@ -73,4 +74,6 @@ const sidemenu = computed(()=>sideMenuStore.sidemenu);
 
 const toggleSideMenu = sideMenuStore.toggleSidemenu;
 const toggleDrawer = sideMenuStore.toggleDrawer;
+
+var user = ref(usePage().props.auth.user);
 </script>

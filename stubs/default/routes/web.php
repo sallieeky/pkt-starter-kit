@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\RoleAndPermissionController;
 use App\Http\Controllers\UserController;
@@ -26,6 +27,10 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->
 
     Route::get('/', fn () => redirect()->route('home'));
     Route::get('/dashboard', fn () => Inertia::render('Home', []))->name('home');
+
+    Route::controller(AccountController::class)->group(function(){
+        Route::get('/account','accountPage')->name('account');
+    });
 
     Route::controller(UserController::class)->group(function () {
         Route::get('/user', 'userManagePage')->name('user.browse')->can('user.browse');
