@@ -48,7 +48,7 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
 
         // check if leader already installed
         if (file_exists(database_path('migrations/2024_04_04_000000_add_leader_to_users_table.php'))) {
-            $this->error('You already sync the leader.');
+            $this->info('You already sync the leader.');
 
             // ask to sync again
             if (!$this->confirm('Do you want to sync again?')) {
@@ -79,7 +79,7 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
                     'work_unit' => $employee->USERS_UNIT_KERJA,
                     'users_flag' => $employee->USERS_FLAG,
                     'is_active' => false,
-                    'password' => bcrypt($employee->USERS_NPK . '@pupukkaltim.com'),
+                    'password' => bcrypt('2024@'.$employee->USERS_NPK),
                 ]);
                 $user->assignRole('Viewer');
             });
