@@ -29,11 +29,6 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
      */
     public function handle()
     {
-        // ask to confirm before proceed
-        if (!$this->confirm('This command will sync users data from PKT Leader API. Do you want to proceed?')) {
-            return 0;
-        }
-
         // make sure the user already run pkt:install
         if (!file_exists(resource_path('js/Core/Config/SidemenuItem.js')) && !file_exists(config_path('permissions.php'))) {
             $this->error('Please run php artisan pkt:install first');
@@ -43,6 +38,11 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
         // make sure the user already set the LEADER_API_KEY
         if (!env('LEADER_API_KEY')) {
             $this->error('Please set the LEADER_API_KEY in .env file');
+            return 0;
+        }
+
+        // ask to confirm before proceed
+        if (!$this->confirm('This command will sync users data from PKT Leader API. Do you want to proceed?')) {
             return 0;
         }
 
