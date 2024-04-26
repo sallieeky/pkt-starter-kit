@@ -174,9 +174,4 @@ use Pkt\StarterKit\Helpers\LeaderApi;
 $employee = LeaderApi::getAllEmployee();
 $workUnit = LeaderApi::getAllWorkUnit();
 $plt = LeaderApi::getAllPlt();
-
-// To get data
-$employeeData = LeaderApi::getAllEmployee()->data->USERS_LIST;
-$workUnitData = LeaderApi::getAllWorkUnit()->data->UK_LIST;
-$pltData = LeaderApi::getAllPlt()->data->PLT_LIST;
 ```
