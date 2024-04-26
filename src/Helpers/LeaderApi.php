@@ -23,6 +23,7 @@ class LeaderApi
      *     "USERS_ID_UNIT_KERJA": string,
      *     "USERS_UNIT_KERJA": string,
      *     "USERS_FLAG": string
+     *  }
      * >
      */
     public static function getAllEmployee(): Collection
@@ -43,6 +44,7 @@ class LeaderApi
      *    "UnitKerja": string,
      *    "Keterangan": string,
      *    "IsAktif": int
+     *  }
      * >
      */
     public static function getAllWorkUnit(): Collection
@@ -63,6 +65,7 @@ class LeaderApi
      *   "VALID_FROM": string,
      *   "VALID_TO": string,
      *   "NAMA_POSISI": string
+     *  }
      * >
      */
     public static function getAllPlt(): Collection
