@@ -74,7 +74,7 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
                 'work_unit' => $employee->USERS_UNIT_KERJA,
                 'users_flag' => $employee->USERS_FLAG,
                 'is_active' => false,
-                'password' => bcrypt($employee->USERS_NPK),
+                'password' => bcrypt($employee->USERS_NPK . '@pupukkaltim.com'),
             ]);
 
             $user->assignRole('Viewer');
