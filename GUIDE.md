@@ -157,8 +157,13 @@ After you run the command, it's recommended to re-seed the role and permission t
 php artisan db:seed --class=RoleAndPermissionSeeder
 ```
 
-### 2. Leader Command
+### 2. Sync Leader Command
+First you need to setup `.env` file and add this line.
+```.env
+LEADER_API_KEY=<ask admin>
+```
 
+If you already set `LEADER_API_KEY` to your `.env` file, than run this command.
 ```cmd
 php artisan pkt:leader-sync
 ```
@@ -181,7 +186,7 @@ users_flag      => string
 ### Leader API Integration
 You can consume PKT Leader API by using helper from this library to get list of all employee, work unit, and PLT.
 
-First you need to setup **.env** file and add this line
+First you need to setup `.env` file and add this line
 ```.env
 LEADER_API_KEY=<ask admin>
 ```
