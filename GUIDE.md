@@ -129,7 +129,7 @@ export const navItems = [
 
 ## Additional Command
 
-### Make resource command
+### 1. Make resource command
 This command will help you to create basic single page <strong>CRUD</strong> by only execute 1 command
 
 ```cmd
@@ -157,12 +157,36 @@ After you run the command, it's recommended to re-seed the role and permission t
 php artisan db:seed --class=RoleAndPermissionSeeder
 ```
 
+### 2. Sync Leader Command
+First you need to setup `.env` file and add this line.
+```.env
+LEADER_API_KEY=<ask admin>
+```
+
+If you already set `LEADER_API_KEY` to your `.env` file, than run this command.
+```cmd
+php artisan pkt:leader-sync
+```
+This command will **syncronize** or **create new** user from PKT Leader, also will add new column to users table.
+
+```
+(additional column)
+
+hierarchy_code  => string
+position_id     => string
+position        => string
+work_unit_id    => string
+work_unit       => string
+users_flag      => string
+```
+
+
 ## Helpers
 
 ### Leader API Integration
 You can consume PKT Leader API by using helper from this library to get list of all employee, work unit, and PLT.
 
-First you need to setup **.env** file and add this line
+First you need to setup `.env` file and add this line
 ```.env
 LEADER_API_KEY=<ask admin>
 ```
