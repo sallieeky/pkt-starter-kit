@@ -27,6 +27,10 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->
     Route::get('/', fn () => redirect()->route('home'));
     Route::get('/dashboard', fn () => Inertia::render('Home', []))->name('home');
 
+    Route::controller(AccountController::class)->group(function(){
+        Route::get('/account','accountPage')->name('account');
+    });
+
     Route::controller(UserController::class)->group(function () {
         Route::get('/user', 'userManagePage')->name('user.browse')->can('user.browse');
         Route::get('/user/data-processing', 'dataprocessing')->name('user.data_processing')->can('user.browse');
