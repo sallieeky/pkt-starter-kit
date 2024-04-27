@@ -168,6 +168,10 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/resources/css/dx.material.pkt-scheme.css', resource_path('css/dx.material.pkt-scheme.css'));
             (new Filesystem)->ensureDirectoryExists(resource_path('js/Core'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/resources/js/Core', resource_path('js/Core'));
+            (new Filesystem)->ensureDirectoryExists(resource_path('views/errors'));
+            copy(__DIR__.'/../../stubs/default/resources/views/errors/403.blade.php', resource_path('views/errors/403.blade.php'));
+            copy(__DIR__.'/../../stubs/default/resources/views/errors/404.blade.php', resource_path('views/errors/404.blade.php'));
+            copy(__DIR__.'/../../stubs/default/resources/views/errors/500.blade.php', resource_path('views/errors/500.blade.php'));
             // End Resources
 
             // Routes
