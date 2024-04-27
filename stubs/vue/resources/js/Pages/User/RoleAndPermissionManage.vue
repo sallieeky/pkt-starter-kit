@@ -96,14 +96,14 @@
                                         </div>
                                     </el-tab-pane>
                                     <el-tab-pane label="User" name="user">
-                                        <div v-if="totalUser > 0">
-                                            <div class="flex justify-start">
-                                                <el-input placeholder="Search" v-model="searchUser" class="!w-60">
-                                                    <template #prefix>
-                                                        <BsIcon icon="magnifying-glass"></BsIcon>
-                                                    </template>
-                                                </el-input>
-                                            </div>
+                                        <div class="flex justify-start">
+                                            <el-input placeholder="Search" v-model="searchUser" class="!w-60">
+                                                <template #prefix>
+                                                    <BsIcon icon="magnifying-glass"></BsIcon>
+                                                </template>
+                                            </el-input>
+                                        </div>
+                                        <div v-if="userPaginated.length > 0">
                                             <div class="mb-4">
                                                 <div v-for="user in userPaginated" :key="user.id">
                                                     <div class="shrink-0 rounded-lg py-2 px-5 border-2 border-[#f1f4f6] flex align-middle items-center bg-white group-hover:bg-primary-surface cursor-pointer mt-2">
@@ -382,7 +382,7 @@ function onSwitchChange(idRole, permissionData, newValue){
 const userPage = ref(1);
 const searchUser = ref('');
 const filteredUser = computed(()=>{
-    return roleUsers.value.filter(user => user.name.toLowerCase().includes(searchUser.value.toLowerCase()));
+    return roleUsers.value?.filter(user => user.name.toLowerCase().includes(searchUser.value.toLowerCase())) ?? [];
 });
 const filteredUserCount = computed(()=>filteredUser.value.length);
 const userPaginated = computed(()=>{
