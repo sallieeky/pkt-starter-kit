@@ -1,22 +1,11 @@
 <template>
 
     <Head title="Login" />
-    <div class="bg-[url('/images/background-pkt.jpg')] w-full h-screen bg-cover bg-no-repeat flex">
-        <div class="absolute">
-            <img src="/images/logo-white.png" class="w-64 ml-24 mt-6" />
-        </div>
-        <div class="grow my-auto mx-24">
-            <h1 class="text-4xl font-bold text-white">Pupuk Kaltim Smart Production</h1>
-            <p class="text-white pt-6">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam varius, arcu in sagittis congue, ante
-                turpis porta purus, nec dignissim mauris elit vel odio. Fusce molestie felis sed facilisis egestas.
-                Nullam pretium luctus urna nec egestas. Vestibulum tempus nunc tortor, ac feugiat lorem facilisis ut.
-                Donec mattis ex ut venenatis sagittis. Class aptent taciti sociosqu ad litora torquent per conubia
-                nostra, per inceptos himenaeos. Integer vitae quam lorem.
-            </p>
-        </div>
-        <div class="rounded-2xl bg-white p-8 shadow-xl my-auto grow-0 mr-10">
-            <div class="flex align-middle items-center flex-col">
+
+    <div class="w-full h-screen bg-cover bg-no-repeat flex flex-col md:flex-row">
+        <div class="w-full h-3/4 bg-white order-2 md:w-96 md:h-full md:order-1 relative shadow-xl">
+            <div class="bg-[url('/images/pkt-pattern.png')] absolute bottom-0 w-full h-1/2"></div>
+            <div class="flex flex-col items-center justify-center h-full relative">
                 <img src="/images/logo.png" class="h-32 w-28" />
                 <span class="pt-8 font-extrabold text-center text-2xl">Welcome Back !</span>
                 <div class="w-80 pt-8">
@@ -32,12 +21,21 @@
                             :disabled="form.processing" :loading="form.processing">Login</el-button>
                     </el-form>
                 </div>
+                <p class="absolute bottom-6 text-primary text-center mt-6 text-sm">{{ year }}&copy; PT. Pupuk Kalimantan Timur</p>
             </div>
         </div>
-        <div class="absolute bottom-0">
-            <p class="text-white ml-24 mb-6">{{ year }}&copy; PT. Pupuk Kalimantan Timur</p>
+
+        <div class="order-1 md:order-2 grow relative">
+            <div class="mt-6 ml-6">
+                <h1 class="text-primary font-extrabold text-2xl md:text-3xl">Welcome To Pupuk Kaltim</h1>
+                <p class="text-primary">
+                    The innovation Leader of Chemical Industry
+                </p>
+            </div>
+            <div class="absolute bg-[url('/images/bg-login-pabrik.png')] bg-cover bg-no-repeat bg-bottom bottom-0 left-0 right-0 h-full -z-10"></div>
         </div>
     </div>
+    
 </template>
 <script setup>
 import { ref } from 'vue';
@@ -73,6 +71,5 @@ const login = async () => {
         }
     })
 }
-
 
 </script>
