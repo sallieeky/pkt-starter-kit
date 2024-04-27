@@ -96,15 +96,39 @@
                                         </div>
                                     </el-tab-pane>
                                     <el-tab-pane label="User" name="user">
-                                        <div v-for="user in roleUsers">
-                                            <div class="shrink-0 rounded-lg py-2 px-5 border-2 border-[#f1f4f6] flex align-middle items-center bg-white group-hover:bg-primary-surface cursor-pointer mt-2">
-                                                <BsProfilePicture :npk="user.npk" class="w-10 h-10 rounded-full shadow-lg mr-2" />
-                                                <div class="flex items-center">
-                                                    <div class=" flex flex-col text-gray-900">
-                                                        <div class="w-32 truncate text-md font-bold">{{ user.name }}</div>
-                                                        <div class="w-32 truncate text-xs font-thin">{{ user.username }}</div>
+                                        <div v-if="totalUser > 0">
+                                            <div class="flex justify-start">
+                                                <el-input placeholder="Search" v-model="searchUser" class="!w-60">
+                                                    <template #prefix>
+                                                        <BsIcon icon="magnifying-glass"></BsIcon>
+                                                    </template>
+                                                </el-input>
+                                            </div>
+                                            <div class="mb-4">
+                                                <div v-for="user in userPaginated" :key="user.id">
+                                                    <div class="shrink-0 rounded-lg py-2 px-5 border-2 border-[#f1f4f6] flex align-middle items-center bg-white group-hover:bg-primary-surface cursor-pointer mt-2">
+                                                        <BsProfilePicture :npk="user.npk" class="w-10 h-10 rounded-full shadow-lg mr-2" :key="user.npk"/>
+                                                        <div class="flex items-center">
+                                                            <div class=" flex flex-col text-gray-900">
+                                                                <div class="truncate text-md font-bold">{{ user.name }}</div>
+                                                                <div class="truncate text-xs font-thin">{{ user.username }}</div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="flex justify-end">
+                                                <el-pagination 
+                                                    background layout="prev, pager, next" 
+                                                    :total="filteredUserCount" 
+                                                    v-model:current-page="userPage" 
+                                                    pager-count="4" 
+                                                    @current-change="userPageChange"/>
+                                            </div>
+                                        </div>
+                                        <div v-else>
+                                            <div class="flex h-20 items-center justify-center italic text-gray-800">
+                                                 No User
                                             </div>
                                         </div>
                                     </el-tab-pane>
@@ -277,6 +301,8 @@ const permissionLoading = ref(false);
 function selectingRole(dataRole){
     idSelectedRole.value = dataRole.id;
     permissionLoading.value = true;
+    userPage.value = 1;
+    activeTab.value = 'permission';
     axios.get(route('role.permission_list',dataRole.id))
         .then((response) => {
             var responseData = response.data;
@@ -351,5 +377,19 @@ function onSwitchChange(idRole, permissionData, newValue){
             });
         });
 }
+
+// USER PAGINATION
+const userPage = ref(1);
+const searchUser = ref('');
+const filteredUser = computed(()=>{
+    return roleUsers.value.filter(user => user.name.toLowerCase().includes(searchUser.value.toLowerCase()));
+});
+const filteredUserCount = computed(()=>filteredUser.value.length);
+const userPaginated = computed(()=>{
+    const startIndex = (userPage.value - 1) * 10;
+    const endIndex = startIndex + 10;
+    const paginatedUsers = filteredUser.value?.slice(startIndex, endIndex) ?? [];
+    return paginatedUsers;
+});
 
 </script>
