@@ -41,9 +41,7 @@
                         </el-popover>
                     </div>
                 </template>
-                <DxColumn data-field="is_active" caption="Status" cell-template="user-status" width="110"
-                    alignment="center" :allowFiltering="false" :allowHeaderFiltering="true"
-                    :customizeText="statusText" />
+                <DxColumn data-field="is_active" caption="Status" cell-template="user-status" width="110" alignment="center" :allowFiltering="true" :allowHeaderFiltering="false" data-type="boolean" false-text="Inactive" true-text="Active" :filter-values="[0, 1]"/>
                 <template #user-status="{ data }">
                     <span v-if="data.data.is_active"
                         class="px-4 py-2 rounded-md bg-success text-white text-xs">Active</span>
@@ -85,8 +83,8 @@
                     <div class="flex flex-row w-full">
                         <Transition name="fadetransition" mode="out-in" appear>
                             <div v-if="!itemSelected">
-                                <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">
-                                    Add User</BsButton>
+                                <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+                                <BsButton type="primary" icon="arrows-up-down" @click="syncLeader" v-if="btnSyncLeaderVisible && can('user.update')">Sync Leader</BsButton>
                                 <BsButton type="primary" icon="arrow-path" @click="refreshDatagrid">Refresh</BsButton>
                             </div>
                             <div v-else class="h-auto flex items-center px-4">
@@ -178,6 +176,8 @@ const formUserRef = ref();
 const dialogFormVisible = ref(false);
 const editMode = ref(false);
 const roles = computed(() => usePage().props.roles);
+const btnSyncLeaderVisible = computed(()=>usePage().props.leader_enabled);
+
 const formUser = useForm({
     user_id: '',
     user_uuid: '',
@@ -330,6 +330,25 @@ function switchUserStatus(dataUser, status) {
         }
     });
 }
+function syncLeader(){
+    formUser.post(route('user.sync_leader'), {
+        onSuccess: (response) => {
+            ElMessage({
+                message: response.props.flash.message,
+                type: 'success',
+            });
+            refreshDatagrid();
+        },
+        onError: (errors) => {
+            if('message' in errors){
+                ElMessage({
+                    message: errors.message,
+                    type: 'error',
+                });
+            }
+        }
+    });
+}
 
 // DEVEXTREME DATAGRID
 const datagridRef = ref();
@@ -422,10 +441,6 @@ function onExporting(e) {
 
     e.cancel = true;
 };
-
-function statusText(data) {
-    return data.value == 0 ? 'Inactive' : 'Active';
-}
 
 function clearSelection() {
     const dataGrid = datagridRef.value.instance;

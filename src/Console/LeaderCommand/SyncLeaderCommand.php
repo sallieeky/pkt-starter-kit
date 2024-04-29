@@ -4,6 +4,7 @@ namespace Pkt\StarterKit\Console\LeaderCommand;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
+use Illuminate\Support\Facades\DB;
 use Pkt\StarterKit\Helpers\LeaderApi;
 
 class SyncLeaderCommand extends Command implements PromptsForMissingInput
@@ -20,7 +21,7 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
      *
      * @var string
      */
-    protected $description = 'Initialize PKT Leader with sync users data from PKT Leader';
+    protected $description = 'Sync PKT Leader sync users data';
 
     /**
      * Execute the console command.
@@ -36,8 +37,8 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
         }
 
         // make sure the user already set the LEADER_API_KEY
-        if (!env('LEADER_API_KEY')) {
-            $this->error('Please set the LEADER_API_KEY in .env file');
+        if (!env('LEADER_API_KEY') || !file_exists(database_path('migrations/2024_04_04_000000_add_leader_to_users_table.php'))) {
+            $this->error('Please initialize PKT Leader first. Run php artisan pkt:leader-init');
             return 0;
         }
 
@@ -46,43 +47,36 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
             return 0;
         }
 
-        // check if leader already installed
-        if (file_exists(database_path('migrations/2024_04_04_000000_add_leader_to_users_table.php'))) {
-            $this->info('You already sync the leader.');
-
-            // ask to sync again
-            if (!$this->confirm('Do you want to sync again?')) {
-                return 0;
-            }
-        }
-
-        // copy migration and run migrate
-        $this->components->task('Updating users table and migrate...', function () {
-            copy(__DIR__.'/../../../leader-stubs/database/migrations/2024_04_04_000000_add_leader_to_users_table.php', database_path('migrations/2024_04_04_000000_add_leader_to_users_table.php'));
-            $this->call('migrate');
-        });
-
         // get all employee from Leader API
         $this->components->task('Syncing users data...', function () {
             $employees = LeaderApi::getAllEmployee();
-            $employees->each(function ($employee) {
-                $user = app('App\\Models\\User')::updateOrCreate([
-                    'npk' => $employee->USERS_NPK
-                ], [
-                    'name' => $employee->USERS_NAME,
-                    'email' => $employee->USERS_EMAIL,
-                    'username' => $employee->USERS_USERNAME,
-                    'hierarchy_code' => $employee->USERS_HIERARCHY_CODE,
-                    'position_id' => $employee->USERS_ID_POSISI,
-                    'position' => $employee->USERS_POSISI,
-                    'work_unit_id' => $employee->USERS_ID_UNIT_KERJA,
-                    'work_unit' => $employee->USERS_UNIT_KERJA,
-                    'users_flag' => $employee->USERS_FLAG,
-                    'is_active' => false,
-                    'password' => bcrypt('2024@'.$employee->USERS_NPK),
-                ]);
-                $user->assignRole('Viewer');
-            });
+            DB::beginTransaction();
+            try {
+                $employees = LeaderApi::getAllEmployee();
+                $employees->each(function ($employee) {
+                    $user = app('App\\Models\\User')::updateOrCreate([
+                        'npk' => $employee->USERS_NPK
+                    ], [
+                        'name' => $employee->USERS_NAME,
+                        'email' => $employee->USERS_EMAIL,
+                        'username' => $employee->USERS_USERNAME,
+                        'hierarchy_code' => $employee->USERS_HIERARCHY_CODE,
+                        'position_id' => $employee->USERS_ID_POSISI,
+                        'position' => $employee->USERS_POSISI,
+                        'work_unit_id' => $employee->USERS_ID_UNIT_KERJA,
+                        'work_unit' => $employee->USERS_UNIT_KERJA,
+                        'users_flag' => $employee->USERS_FLAG,
+                        'is_active' => false,
+                        'password' => bcrypt('2024@'.$employee->USERS_NPK),
+                    ]);
+                    $user->assignRole('Viewer');
+                });
+            } catch (\Exception $e) {
+                DB::rollBack();
+                $this->error('Failed to get users data from PKT Leader API.');
+                return 0;
+            }
+            DB::commit();
 
             $this->info('Synced ' . $employees->count() . ' users from PKT Leader.');
         });

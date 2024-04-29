@@ -76,6 +76,12 @@ class InstallCommand extends Command implements PromptsForMissingInput
         if (!$existInComposer) {
             $this->runCommands(['composer require doctrine/dbal:*']);
         }
+
+        $existInComposer = file_exists(base_path('composer.json')) &&
+            ! empty(json_decode(file_get_contents(base_path('composer.json')), true)['require']['staudenmeir/laravel-migration-views']);
+        if (!$existInComposer) {
+            $this->runCommands(['composer require staudenmeir/laravel-migration-views:^1.7']);
+        }
     }
 
     /**
@@ -142,6 +148,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/config/sso-session.php', config_path('sso-session.php'));
             copy(__DIR__.'/../../stubs/default/config/logging.php', config_path('logging.php'));
             copy(__DIR__.'/../../stubs/default/config/permissions.php', config_path('permissions.php'));
+            copy(__DIR__.'/../../stubs/default/config/leader.php', config_path('leader.php'));
             // End Config
 
             // Migrations
@@ -168,6 +175,10 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/resources/css/dx.material.pkt-scheme.css', resource_path('css/dx.material.pkt-scheme.css'));
             (new Filesystem)->ensureDirectoryExists(resource_path('js/Core'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/resources/js/Core', resource_path('js/Core'));
+            (new Filesystem)->ensureDirectoryExists(resource_path('views/errors'));
+            copy(__DIR__.'/../../stubs/default/resources/views/errors/403.blade.php', resource_path('views/errors/403.blade.php'));
+            copy(__DIR__.'/../../stubs/default/resources/views/errors/404.blade.php', resource_path('views/errors/404.blade.php'));
+            copy(__DIR__.'/../../stubs/default/resources/views/errors/500.blade.php', resource_path('views/errors/500.blade.php'));
             // End Resources
 
             // Routes
