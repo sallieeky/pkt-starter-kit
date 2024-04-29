@@ -6,14 +6,14 @@ use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Pkt\StarterKit\Helpers\LeaderApi;
 
-class SyncLeaderCommand extends Command implements PromptsForMissingInput
+class InitLeaderCommand extends Command implements PromptsForMissingInput
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'pkt:leader-sync';
+    protected $signature = 'pkt:leader-init';
 
     /**
      * The console command description.
@@ -88,7 +88,7 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
         });
 
         $this->line('');
-        $this->info('PKT Leader sync successfully.');
+        $this->info('PKT Leader init and sync successfully.');
         return 1;
     }
 }

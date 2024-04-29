@@ -157,7 +157,7 @@ After you run the command, it's recommended to re-seed the role and permission t
 php artisan db:seed --class=RoleAndPermissionSeeder
 ```
 
-### 2. Sync Leader Command
+### 2. Init Leader Command
 First you need to setup `.env` file and add this line.
 ```.env
 LEADER_API_KEY=<ask admin>
@@ -165,9 +165,9 @@ LEADER_API_KEY=<ask admin>
 
 If you already set `LEADER_API_KEY` to your `.env` file, than run this command.
 ```cmd
-php artisan pkt:leader-sync
+php artisan pkt:leader-init
 ```
-This command will **syncronize** or **create new** user from PKT Leader, also will add new column to users table.
+This command will initialize and setup users table to sync with PKT Leader user, it also will **syncronize** or **create new** user from PKT Leader
 
 ```
 (additional column)
