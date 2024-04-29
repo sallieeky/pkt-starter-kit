@@ -180,6 +180,17 @@ work_unit       => string
 users_flag      => string
 ```
 
+### 3. Sync Leader Command
+First you need to setup `.env` file and add this line.
+```.env
+LEADER_API_KEY=<ask admin>
+```
+
+If you already set `LEADER_API_KEY` to your `.env` file, than run this command.
+```cmd
+php artisan pkt:leader-sync
+```
+This command will sync users from PKT Leader
 
 ## Helpers
 
