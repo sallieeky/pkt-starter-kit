@@ -76,6 +76,12 @@ class InstallCommand extends Command implements PromptsForMissingInput
         if (!$existInComposer) {
             $this->runCommands(['composer require doctrine/dbal:*']);
         }
+
+        $existInComposer = file_exists(base_path('composer.json')) &&
+            ! empty(json_decode(file_get_contents(base_path('composer.json')), true)['require']['staudenmeir/laravel-migration-views']);
+        if (!$existInComposer) {
+            $this->runCommands(['composer require staudenmeir/laravel-migration-views:^1.7']);
+        }
     }
 
     /**
