@@ -41,9 +41,7 @@
                         </el-popover>
                     </div>
                 </template>
-                <DxColumn data-field="is_active" caption="Status" cell-template="user-status" width="110"
-                    alignment="center" :allowFiltering="false" :allowHeaderFiltering="true"
-                    :customizeText="statusText" />
+                <DxColumn data-field="is_active" caption="Status" cell-template="user-status" width="110" alignment="center" :allowFiltering="true" :allowHeaderFiltering="false" data-type="boolean" false-text="Inactive" true-text="Active" :filter-values="[0, 1]"/>
                 <template #user-status="{ data }">
                     <span v-if="data.data.is_active"
                         class="px-4 py-2 rounded-md bg-success text-white text-xs">Active</span>
@@ -422,10 +420,6 @@ function onExporting(e) {
 
     e.cancel = true;
 };
-
-function statusText(data) {
-    return data.value == 0 ? 'Inactive' : 'Active';
-}
 
 function clearSelection() {
     const dataGrid = datagridRef.value.instance;

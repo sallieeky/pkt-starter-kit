@@ -191,6 +191,8 @@ trait ManipulateVueResource
             $required = $this->model->getConnectionResolver()->connection()->getSchemaBuilder()->getConnection()->getDoctrineColumn($this->model->getTable(), $column)->getNotnull() ? 'required' : null;
             if ($required) {
                 $rules .= "'$column' => ['required'],\n" . '            ';
+            }else{
+                $rules .= "'$column' => ['nullable'],\n" . '            ';
             }
         }
 
