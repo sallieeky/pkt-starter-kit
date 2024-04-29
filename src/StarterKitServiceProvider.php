@@ -33,6 +33,7 @@ class StarterKitServiceProvider extends ServiceProvider implements DeferrablePro
             Console\MakeResourceCommand\MakeResourceCommand::class,
             Console\LeaderCommand\InitLeaderCommand::class,
             Console\LeaderCommand\SyncLeaderCommand::class,
+            Console\MakeViewCommand\MakeViewCommand::class,
         ]);
     }
 
@@ -48,6 +49,7 @@ class StarterKitServiceProvider extends ServiceProvider implements DeferrablePro
             Console\MakeResourceCommand\MakeResourceCommand::class,
             Console\LeaderCommand\InitLeaderCommand::class,
             Console\LeaderCommand\SyncLeaderCommand::class,
+            Console\MakeViewCommand\MakeViewCommand::class,
         ];
     }
 }
