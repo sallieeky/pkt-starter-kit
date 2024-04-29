@@ -192,6 +192,61 @@ php artisan pkt:leader-sync
 ```
 This command will sync users from PKT Leader
 
+### 4. Make Database View Table
+
+This command will create new `migration` and `model` for your database view table
+```cmd
+php artisan pkt:make-view <ViewModelName> --model=<RelatedModel>
+```
+
+#### Example
+If you want to make view for active user, you can execute command
+```cmd
+php artisan pkt:make-view VwActiveUser --model=User
+```
+this command wil generate
+```
+app/Models/Views/VwActiveUser.php
+database/migrations/..._create_vw_active_users_view.php
+```
+
+Inside file **database/migrations/..._create_vw_active_users_view.php**
+```php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
+use Staudenmeir\LaravelMigrationViews\Facades\Schema as FacadesSchema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        $query = \App\Models\User::query()
+            ->where('is_active', true);
+        FacadesSchema::createView('vw_active_users', $query);
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        FacadesSchema::dropViewIfExists('vw_active_users');
+    }
+};
+```
+
+Then migrate your database
+```cmd
+php artisan migrate
+```
+
+
+
 ## Helpers
 
 ### Leader API Integration
