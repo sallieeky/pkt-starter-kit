@@ -85,8 +85,8 @@ class UserController extends Controller
     public function syncLeader(Request $request)
     {
         DB::beginTransaction();
-        $employees = LeaderApi::getAllEmployee();
         try {
+            $employees = LeaderApi::getAllEmployee();
             $employees->each(function ($employee) {
                 User::updateOrCreate([
                     'npk' => $employee->USERS_NPK
@@ -102,11 +102,11 @@ class UserController extends Controller
                     'users_flag' => $employee->USERS_FLAG,
                 ]);
             });
-            DB::commit();
-            return redirect()->back()->with('message', 'Success sync leader');
         } catch (\Throwable $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['message' => 'Failed to sync leader']);
         }
+        DB::commit();
+        return redirect()->back()->with('message', 'Success sync leader');
     }
 }

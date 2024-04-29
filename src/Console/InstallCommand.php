@@ -148,6 +148,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/config/sso-session.php', config_path('sso-session.php'));
             copy(__DIR__.'/../../stubs/default/config/logging.php', config_path('logging.php'));
             copy(__DIR__.'/../../stubs/default/config/permissions.php', config_path('permissions.php'));
+            copy(__DIR__.'/../../stubs/default/config/leader.php', config_path('leader.php'));
             // End Config
 
             // Migrations
