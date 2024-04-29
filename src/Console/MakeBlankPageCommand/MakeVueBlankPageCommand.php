@@ -4,6 +4,7 @@ namespace Pkt\StarterKit\Console\MakeBlankPageCommand;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
+use Illuminate\Filesystem\Filesystem;
 
 class MakeVueBlankPageCommand extends Command implements PromptsForMissingInput
 {
@@ -13,7 +14,7 @@ class MakeVueBlankPageCommand extends Command implements PromptsForMissingInput
      * @var string
      */
     protected $signature = 'pkt:make-page 
-                            {name : page name/path}';
+                    {name : page name/path}';
 
     /**
      * The console command description.
