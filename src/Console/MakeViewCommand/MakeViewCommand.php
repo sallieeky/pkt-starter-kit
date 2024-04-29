@@ -15,7 +15,8 @@ class MakeViewCommand extends Command implements PromptsForMissingInput
      * @var string
      */
     protected $signature = 'pkt:make-view
-        {name : The name of the view model}';
+        {name : The name of the view model}
+        {--model= : The name of the related model}';
 
     /**
      * The console command description.
@@ -31,7 +32,6 @@ class MakeViewCommand extends Command implements PromptsForMissingInput
      */
     public function handle()
     {
-        
         $modelName = $this->argument('name');
         $path = app_path('Models/Views/' . $modelName);
         $viewName = Str::snake(Str::pluralStudly($modelName));
@@ -49,9 +49,10 @@ class MakeViewCommand extends Command implements PromptsForMissingInput
             'table_name' => $viewName,
         ]);
 
+        $relatedModel = $this->option('model') ?? $modelName;
         copy(__DIR__.'/../../../database-view-stubs/migrations/create_view_table.php', $migrationPath);
-        $this->replaceContent($path, [
-            'ModelName' => $modelName,
+        $this->replaceContent($migrationPath, [
+            'ModelName' => $relatedModel,
             'table_name' => $viewName,
         ]);
         
