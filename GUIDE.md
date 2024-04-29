@@ -157,7 +157,21 @@ After you run the command, it's recommended to re-seed the role and permission t
 php artisan db:seed --class=RoleAndPermissionSeeder
 ```
 
-### 2. Init Leader Command
+### 2. Make Blank Page Command
+This command will generate blank page file for your frontend
+```cmd
+php artisan pkt:make-page <Filepath/Filename>
+```
+
+#### Example
+```cmd
+php artisan pkt:make-page MasterData/Equipment
+```
+
+this command will generate file `resources/js/Pages/MasterData/Equipment.vue`
+
+
+### 3. Init Leader Command
 First you need to setup `.env` file and add this line.
 ```.env
 LEADER_API_KEY=<ask admin>
@@ -180,7 +194,7 @@ work_unit       => string
 users_flag      => string
 ```
 
-### 3. Sync Leader Command
+### 4. Sync Leader Command
 First you need to setup `.env` file and add this line.
 ```.env
 LEADER_API_KEY=<ask admin>
@@ -192,7 +206,7 @@ php artisan pkt:leader-sync
 ```
 This command will sync users from PKT Leader
 
-### 4. Make Database View Table
+### 5. Make Database View Table
 
 This command will create new `migration` and `model` for your database view table
 ```cmd
@@ -244,8 +258,6 @@ Then migrate your database
 ```cmd
 php artisan migrate
 ```
-
-
 
 ## Helpers
 

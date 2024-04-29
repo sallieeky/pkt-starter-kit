@@ -5,6 +5,7 @@ namespace Pkt\StarterKit\Console\MakeBlankPageCommand;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
 
 class MakeVueBlankPageCommand extends Command implements PromptsForMissingInput
 {
@@ -42,8 +43,10 @@ class MakeVueBlankPageCommand extends Command implements PromptsForMissingInput
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages/'.$dirName));
         copy(__DIR__.'/../../../resource-template/vue/resources/js/Pages/BlankPage.vue', resource_path('js/Pages/' . $nameArgument . '.vue'));
         $this->replaceContent(resource_path('js/Pages/' . $nameArgument . '.vue'), [
-            'ResourceTitle' => $fileName,
+            'ResourceTitle' => Str::headline($fileName),
         ]);
+
+        $this->info('Page ' . resource_path('js/Pages/' . $nameArgument . '.vue') . ' created successfully.');
         return 1;
     }
 
