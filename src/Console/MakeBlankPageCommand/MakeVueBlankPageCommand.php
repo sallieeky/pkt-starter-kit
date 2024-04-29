@@ -41,6 +41,12 @@ class MakeVueBlankPageCommand extends Command implements PromptsForMissingInput
         $fileName = basename($nameArgument);
         
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages/'.$dirName));
+
+        if(file_exists(resource_path('js/Pages/' . $nameArgument . '.vue'))){
+            $this->error('Page ' . resource_path('js/Pages/' . $nameArgument . '.vue') . ' already exists.');
+            return 0;
+        }
+
         copy(__DIR__.'/../../../resource-template/vue/resources/js/Pages/BlankPage.vue', resource_path('js/Pages/' . $nameArgument . '.vue'));
         $this->replaceContent(resource_path('js/Pages/' . $nameArgument . '.vue'), [
             'ResourceTitle' => Str::headline($fileName),
