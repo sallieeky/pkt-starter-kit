@@ -84,10 +84,12 @@ class UserController extends Controller
     }
     public function syncLeader(Request $request)
     {
+        set_time_limit(0);
         DB::beginTransaction();
         try {
             $employees = LeaderApi::getAllEmployee();
             $employees->each(function ($employee) {
+                $user = User::query()->where('npk', $employee->USERS_NPK)->first();
                 User::updateOrCreate([
                     'npk' => $employee->USERS_NPK
                 ], [
@@ -100,6 +102,8 @@ class UserController extends Controller
                     'work_unit_id' => $employee->USERS_ID_UNIT_KERJA,
                     'work_unit' => $employee->USERS_UNIT_KERJA,
                     'users_flag' => $employee->USERS_FLAG,
+                    'is_active' => $user->is_active ?? false,
+                    'password' => $user->password ?? bcrypt('2024@' . $employee->USERS_NPK),
                 ]);
             });
         } catch (\Throwable $e) {
