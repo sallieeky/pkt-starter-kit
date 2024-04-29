@@ -27,14 +27,6 @@ class MakeVueBlankPageCommand extends Command implements PromptsForMissingInput
      *
      * @return int|null
      */
-
-    
-    protected function replaceContent($file, $replacements)
-    {
-        $content = file_get_contents($file);
-        $content = str_replace(array_keys($replacements), array_values($replacements), $content);
-        file_put_contents($file, $content);
-     }
     public function handle()
     {
         $nameArgument = ucfirst($this->argument('name'));
@@ -54,4 +46,12 @@ class MakeVueBlankPageCommand extends Command implements PromptsForMissingInput
         ]);
         return 1;
     }
+
+    
+    protected function replaceContent($file, $replacements)
+    {
+        $content = file_get_contents($file);
+        $content = str_replace(array_keys($replacements), array_values($replacements), $content);
+        file_put_contents($file, $content);
+     }
 }
