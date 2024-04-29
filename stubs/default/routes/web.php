@@ -39,6 +39,7 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->
         Route::put('/user/{user:user_uuid}', 'update')->name('user.update')->can('user.update');
         Route::delete('/user/{user:user_uuid}', 'delete')->name('user.delete')->can('user.delete');
         Route::put('/user/{user:user_uuid}/switch-status', 'switchStatus')->name('user.switch_status')->can('user.update');
+        Route::post('/user/sync-leader', 'syncLeader')->name('user.sync_leader')->can('user.update');
     });
     Route::controller(RoleAndPermissionController::class)->group(function () {
         Route::get('/role-and-permission', 'roleAndPemissionManagePage')->name('role.browse')->can('role.browse');
