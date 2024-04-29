@@ -83,8 +83,8 @@
                     <div class="flex flex-row w-full">
                         <Transition name="fadetransition" mode="out-in" appear>
                             <div v-if="!itemSelected">
-                                <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">
-                                    Add User</BsButton>
+                                <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+                                <BsButton type="primary" icon="arrows-up-down" @click="syncLeader" v-if="btnSyncLeaderVisible && can('user.update')">Sync Leader</BsButton>
                                 <BsButton type="primary" icon="arrow-path" @click="refreshDatagrid">Refresh</BsButton>
                             </div>
                             <div v-else class="h-auto flex items-center px-4">
@@ -176,6 +176,8 @@ const formUserRef = ref();
 const dialogFormVisible = ref(false);
 const editMode = ref(false);
 const roles = computed(() => usePage().props.roles);
+const btnSyncLeaderVisible = computed(()=>usePage().props.leader_enabled);
+
 const formUser = useForm({
     user_id: '',
     user_uuid: '',
@@ -325,6 +327,25 @@ function switchUserStatus(dataUser, status) {
             formUserErrors.value = errors;
         },
         onFinish: () => {
+        }
+    });
+}
+function syncLeader(){
+    formUser.post(route('user.sync_leader'), {
+        onSuccess: (response) => {
+            ElMessage({
+                message: response.props.flash.message,
+                type: 'success',
+            });
+            refreshDatagrid();
+        },
+        onError: (errors) => {
+            if('message' in errors){
+                ElMessage({
+                    message: errors.message,
+                    type: 'error',
+                });
+            }
         }
     });
 }
