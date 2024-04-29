@@ -12,7 +12,7 @@ class MakeVueBlankPageCommand extends Command implements PromptsForMissingInput
      *
      * @var string
      */
-    protected $signature = 'pkt:create-page 
+    protected $signature = 'pkt:make-page 
                             {name : page name/path}';
 
     /**
@@ -37,9 +37,8 @@ class MakeVueBlankPageCommand extends Command implements PromptsForMissingInput
         }
         $dirName = dirname($nameArgument);
         $fileName = basename($nameArgument);
-        if (!file_exists(resource_path('js/Pages/'.$dirName))) {
-            mkdir(resource_path('js/Pages/'.$dirName), 0755, true);
-        }
+        
+        (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages/'.$dirName));
         copy(__DIR__.'/../../../resource-template/vue/resources/js/Pages/BlankPage.vue', resource_path('js/Pages/' . $nameArgument . '.vue'));
         $this->replaceContent(resource_path('js/Pages/' . $nameArgument . '.vue'), [
             'ResourceTitle' => $fileName,
