@@ -19,7 +19,7 @@
 
 <body class="flex items-center justify-center" style="height: 100vh" x-data>
     <div class="flex flex-col items-center justify-center text-center">
-        <img src="{{ asset('images/errors/404.svg') }}" alt="404 Error" class="w-1/2">
+        <img src="{{ asset('images\illustration\illustration_2.png') }}" alt="404 Error" class="w-96">
         <h1 class="text-3xl font-bold text-gray-900 my-6">Oops! Error 404: Page Not Found</h1>
         <h2 class="text-xl font-semibold text-gray-900">This is awkward...</h2>
         <p class="text-gray-600">We can't find the page you're looking for. But don't worry, it's probably not your
