@@ -17,8 +17,8 @@
                         <el-form-item prop="password" label="Password" :required="true">
                             <el-input size="large" :type="showPassword ? 'text' : 'password'" v-model="form.password">
                                 <template #suffix>
-                                    <BsIconButton type="button" @click.prevent="showPassword = !showPassword" icon="eye-slash" class="text-black" v-if="showPassword" />
-                                    <BsIconButton type="button" @click.prevent="showPassword = !showPassword" icon="eye" class="text-black" v-else />
+                                    <BsIcon @click="showPassword = !showPassword" icon="eye-slash" class="text-black cursor-pointer" v-if="showPassword" />
+                                    <BsIcon @click="showPassword = !showPassword" icon="eye" class="text-black cursor-pointer" v-else />
                                 </template>
                             </el-input>
                         </el-form-item>
@@ -46,7 +46,7 @@
 import { ref } from 'vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { ElMessage } from 'element-plus';
-import BsIconButton from '@/Components/BsIconButton.vue';
+import BsIcon from '@/Components/BsIcon.vue';
 
 const showPassword = ref(false);
 const year = new Date().getFullYear();
