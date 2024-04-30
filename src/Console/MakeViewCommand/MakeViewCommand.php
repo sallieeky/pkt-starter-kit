@@ -49,7 +49,7 @@ class MakeViewCommand extends Command implements PromptsForMissingInput
             'table_name' => $viewName,
         ]);
 
-        $relatedModel = $this->option('model') ?? $modelName;
+        $relatedModel = $this->option('model') ?? 'Views\\' . $modelName;
         copy(__DIR__.'/../../../database-view-stubs/migrations/create_view_table.php', $migrationPath);
         $this->replaceContent($migrationPath, [
             'ModelName' => $relatedModel,

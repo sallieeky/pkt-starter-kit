@@ -15,7 +15,12 @@
                             <el-input size="large" type="text" v-model="form.username" />
                         </el-form-item>
                         <el-form-item prop="password" label="Password" :required="true">
-                            <el-input size="large" type="password" v-model="form.password" />
+                            <el-input size="large" :type="showPassword ? 'text' : 'password'" v-model="form.password">
+                                <template #suffix>
+                                    <BsIconButton type="button" @click.prevent="showPassword = !showPassword" icon="eye-slash" class="text-black" v-if="showPassword" />
+                                    <BsIconButton type="button" @click.prevent="showPassword = !showPassword" icon="eye" class="text-black" v-else />
+                                </template>
+                            </el-input>
                         </el-form-item>
                         <el-button native-type="submit" type="primary" size="large" class="w-full mt-6" @click="login"
                             :disabled="form.processing" :loading="form.processing">Login</el-button>
@@ -35,15 +40,16 @@
             <div class="absolute bg-[url('/images/bg-login-pabrik.png')] bg-cover bg-no-repeat bg-bottom bottom-0 left-0 right-0 h-full -z-10"></div>
         </div>
     </div>
-    
+
 </template>
 <script setup>
 import { ref } from 'vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { ElMessage } from 'element-plus';
+import BsIconButton from '@/Components/BsIconButton.vue';
 
+const showPassword = ref(false);
 const year = new Date().getFullYear();
-
 const form = useForm({
     username: '',
     password: '',
