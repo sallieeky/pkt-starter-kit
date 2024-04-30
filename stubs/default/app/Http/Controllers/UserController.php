@@ -106,7 +106,7 @@ class UserController extends Controller
                     $user->update($dataUser);
                 }else{
                     $dataUser['is_active'] = false;
-                    $dataUser['password'] = bcrypt('2024@' . $employee->USERS_NPK);
+                    $dataUser['password'] = '$2y$12$K7iSlaMTjZpgfiLEFMHbM.3O3LADzHvQYWkYaXJMQYWAIjgAF3.hy'; // Bontang123@2024
                     $user = User::create($dataUser);
                     $user->assignRole('Viewer');
                 }
