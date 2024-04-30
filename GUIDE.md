@@ -157,7 +157,21 @@ After you run the command, it's recommended to re-seed the role and permission t
 php artisan db:seed --class=RoleAndPermissionSeeder
 ```
 
-### 2. Init Leader Command
+### 2. Make Blank Page Command
+This command will generate blank page file for your frontend
+```cmd
+php artisan pkt:make-page <Filepath/Filename>
+```
+
+#### Example
+```cmd
+php artisan pkt:make-page MasterData/Equipment
+```
+
+this command will generate file `resources/js/Pages/MasterData/Equipment.vue`
+
+
+### 3. Init Leader Command
 First you need to setup `.env` file and add this line.
 ```.env
 LEADER_API_KEY=<ask admin>
@@ -180,7 +194,7 @@ work_unit       => string
 users_flag      => string
 ```
 
-### 3. Sync Leader Command
+### 4. Sync Leader Command
 First you need to setup `.env` file and add this line.
 ```.env
 LEADER_API_KEY=<ask admin>
@@ -191,6 +205,59 @@ If you already set `LEADER_API_KEY` to your `.env` file, than run this command.
 php artisan pkt:leader-sync
 ```
 This command will sync users from PKT Leader
+
+### 5. Make Database View Table
+
+This command will create new `migration` and `model` for your database view table
+```cmd
+php artisan pkt:make-view <ViewModelName> --model=<RelatedModel>
+```
+
+#### Example
+If you want to make view for active user, you can execute command
+```cmd
+php artisan pkt:make-view VwActiveUser --model=User
+```
+this command wil generate
+```
+app/Models/Views/VwActiveUser.php
+database/migrations/..._create_vw_active_users_view.php
+```
+
+Inside file **database/migrations/..._create_vw_active_users_view.php**
+```php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
+use Staudenmeir\LaravelMigrationViews\Facades\Schema as FacadesSchema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        $query = \App\Models\User::query()
+            ->where('is_active', true);
+        FacadesSchema::createView('vw_active_users', $query);
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        FacadesSchema::dropViewIfExists('vw_active_users');
+    }
+};
+```
+
+Then migrate your database
+```cmd
+php artisan migrate
+```
 
 ## Helpers
 

@@ -48,12 +48,14 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
 
         // check if leader already installed
         if (file_exists(database_path('migrations/2024_04_04_000000_add_leader_to_users_table.php'))) {
-            $this->info('You already sync the leader.');
+            $this->info('You already initialize the leader.');
 
             // ask to sync again
-            if (!$this->confirm('Do you want to sync again?')) {
-                return 0;
+            if ($this->confirm('Do you want to sync user?')) {
+                $this->call('pkt:leader-sync');
             }
+
+            return 0;
         }
 
         // copy migration and run migrate
@@ -63,6 +65,10 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
         });
 
         // get all employee from Leader API
+        if (!$this->confirm('Do you want to sync user?')) {
+            return 0;
+        }
+
         $this->components->task('Syncing users data...', function () {
             $employees = LeaderApi::getAllEmployee();
             $employees->each(function ($employee) {

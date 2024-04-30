@@ -170,6 +170,7 @@ import { Workbook } from 'exceljs';
 import { saveAs } from 'file-saver';
 import BsIcon from '@/Components/BsIcon.vue';
 import BsIconButton from '@/Components/BsIconButton.vue';
+import { ElLoading } from 'element-plus';
 
 // DIALOG FORM
 const formUserRef = ref();
@@ -331,6 +332,10 @@ function switchUserStatus(dataUser, status) {
     });
 }
 function syncLeader(){
+    const loading = ElLoading.service({
+        lock: true,
+        text: "Sync PKT Leader ...",
+    });
     formUser.post(route('user.sync_leader'), {
         onSuccess: (response) => {
             ElMessage({
@@ -338,6 +343,8 @@ function syncLeader(){
                 type: 'success',
             });
             refreshDatagrid();
+            loading.close();
+
         },
         onError: (errors) => {
             if('message' in errors){
@@ -346,6 +353,7 @@ function syncLeader(){
                     type: 'error',
                 });
             }
+            loading.close();
         }
     });
 }

@@ -90,11 +90,10 @@ class UserController extends Controller
             $employees = LeaderApi::getAllEmployee();
             $employees->each(function ($employee) {
                 $user = User::query()->where('npk', $employee->USERS_NPK)->first();
-                User::updateOrCreate([
-                    'npk' => $employee->USERS_NPK
-                ], [
+                $dataUser = [
                     'name' => $employee->USERS_NAME,
                     'email' => $employee->USERS_EMAIL,
+                    'npk' => $employee->USERS_NPK,
                     'username' => $employee->USERS_USERNAME,
                     'hierarchy_code' => $employee->USERS_HIERARCHY_CODE,
                     'position_id' => $employee->USERS_ID_POSISI,
@@ -102,9 +101,15 @@ class UserController extends Controller
                     'work_unit_id' => $employee->USERS_ID_UNIT_KERJA,
                     'work_unit' => $employee->USERS_UNIT_KERJA,
                     'users_flag' => $employee->USERS_FLAG,
-                    'is_active' => $user->is_active ?? false,
-                    'password' => $user->password ?? bcrypt('2024@' . $employee->USERS_NPK),
-                ]);
+                ];
+                if($user){
+                    $user->update($dataUser);
+                }else{
+                    $dataUser['is_active'] = false;
+                    $dataUser['password'] = bcrypt('2024@' . $employee->USERS_NPK);
+                    $user = User::create($dataUser);
+                    $user->assignRole('Viewer');
+                }
             });
         } catch (\Throwable $e) {
             DB::rollBack();
