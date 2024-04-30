@@ -19,7 +19,7 @@
 
 <body class="flex items-center justify-center" style="height: 100vh" x-data>
     <div class="flex flex-col items-center justify-center text-center">
-        <img src="{{ asset('images/errors/500.svg') }}" alt="500 Error" class="w-1/2">
+        <img src="{{ asset('images\illustration\illustration_7.png') }}" alt="500 Error" class="w-96">        
         <h1 class="text-3xl font-bold text-gray-900 my-6">
             Error 500: Server Error
         </h1>
