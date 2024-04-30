@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $query = \App\Models\Views\ModelName::query();
+        $query = \App\Models\ModelName::query();
         FacadesSchema::createView('table_name', $query);
     }
 
