@@ -23,7 +23,7 @@
                                 <div class="font-bold">Notifications</div>
                                 <div class="text-xs text-primary cursor-pointer" @click="readNotification()" v-if="notifications.length > 0">Read all</div>
                             </div>
-                            <div class="py-1 mt-12" role="none">
+                            <div class="py-1 mt-10" role="none">
                                 <div v-for="notification in notifications">
                                     <div @click="notificationAction(notification)" class="group/item text-start flex flex-row px-4 py-2 text-gray-900 text-sm hover:bg-primary-surface hover:rounded-md">
                                         <div class="w-3/4">
