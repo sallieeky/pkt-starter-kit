@@ -14,8 +14,29 @@
                     </a>
                 </div>
                 <div class="flex shrink-0 align-middle items-center m-2 relative">
-                    <button class="mr-2 p-2" aria-label="notification-btn">
-                        <bs-icon icon="bell" class=""></bs-icon>
+                    <button class="group relative">
+                        <el-badge :is-dot="notifications.length !== 0" :offset="[-10,10]" class="mr-2 p-2 hover:bg-slate-100 rounded-full cursor-pointer">
+                            <bs-icon icon="bell"></bs-icon>
+                        </el-badge>
+                        <div class="hidden group-focus:block group-hover:block absolute top-13 mr-2 right-0 z-10 mt-2 w-64 md:w-[24rem] max-h-[24rem] overflow-y-auto origin-top-right rounded-md bg-white focus:outline-none shadow-lg" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                            <div class="font-bold text-start p-2 border-b-2 fixed bg-white w-64 md:w-[24rem]">Notifications</div>
+                            <div class="py-1 mt-12" role="none">
+                                <div v-for="notification in notifications">
+                                    <div @click="notificationAction(notification)" class="group/item text-start flex flex-row px-4 py-2 text-gray-900 text-sm hover:bg-primary-surface hover:rounded-md">
+                                        <div class="w-3/4">
+                                            <h1 class="font-bold">{{ notification.data.title }}</h1>
+                                            <p class="text-xs">{{ notification.data.message }}</p>
+                                        </div>
+                                        <div @click.stop="readNotification(notification.id)" class="hidden ml-auto group-hover/item:block text-[.75rem] hover:group/item:bg-white hover:text-primary">
+                                            Mark as read
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-if="notifications.length == 0" class="text-center text-gray-900 text-sm py-2">
+                                    No notifications
+                                </div>
+                            </div>
+                        </div>
                     </button>
                     <button class="group text-start">
                         <div class="shrink-0 rounded-lg py-2 px-5 border-2 border-[#f1f4f6] flex align-middle items-center bg-white group-hover:bg-primary-surface cursor-pointer">
@@ -30,7 +51,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="hidden group-focus:block group-hover:block absolute top-11 mr-2 right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white focus:outline-none shadow-lg" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                        <div class="hidden group-focus:block group-hover:block absolute top-13 mr-2 right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white focus:outline-none shadow-lg" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                             <div class="py-1" role="none">
                                 <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                                 <Link href="/account" class="flex flex-row px-4 py-2 text-gray-900 text-sm hover:bg-primary-surface hover:rounded-md" role="menuitem" tabindex="-1" id="menu-item-0">
@@ -63,7 +84,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import BsIcon from '@/Components/BsIcon.vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import { useSidemenuStore } from '@/Stores/sidemenu';
 import BsProfilePicture from '@/Components/BsProfilePicture.vue';
 
@@ -76,4 +97,20 @@ const toggleSideMenu = sideMenuStore.toggleSidemenu;
 const toggleDrawer = sideMenuStore.toggleDrawer;
 
 var user = ref(usePage().props.auth.user);
+let notifications = computed(() => usePage().props.notifications);
+const readNotification = (notification) => {
+    router.post('/notifications/read', {
+        notification: notification,
+    });
+}
+
+const notificationAction = (notification) => {
+    router.post('/notifications/read', {
+        notification: notification.id,
+    });
+
+    if (notification.data?.url == null) return;
+    router.visit(notification.data?.url);
+}
+
 </script>
