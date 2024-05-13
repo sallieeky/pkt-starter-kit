@@ -19,7 +19,10 @@
                             <bs-icon icon="bell"></bs-icon>
                         </el-badge>
                         <div class="hidden group-focus:block group-hover:block absolute top-13 mr-2 right-0 z-10 mt-2 w-64 md:w-[24rem] max-h-[24rem] overflow-y-auto origin-top-right rounded-md bg-white focus:outline-none shadow-lg" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-                            <div class="font-bold text-start p-2 border-b-2 fixed bg-white w-64 md:w-[24rem]">Notifications</div>
+                            <div class="p-2 text-start border-b-2 fixed bg-white w-64 md:w-[24rem] cursor-default flex justify-between items-center">
+                                <div class="font-bold">Notifications</div>
+                                <div class="text-xs text-primary cursor-pointer" @click="readNotification()" v-if="notifications.length > 0">Read all</div>
+                            </div>
                             <div class="py-1 mt-12" role="none">
                                 <div v-for="notification in notifications">
                                     <div @click="notificationAction(notification)" class="group/item text-start flex flex-row px-4 py-2 text-gray-900 text-sm hover:bg-primary-surface hover:rounded-md">
@@ -32,7 +35,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div v-if="notifications.length == 0" class="text-center text-gray-900 text-sm py-2">
+                                <div v-if="notifications.length == 0" class="text-center text-gray-900 text-sm py-2 cursor-default">
                                     No notifications
                                 </div>
                             </div>
@@ -53,7 +56,6 @@
                         </div>
                         <div class="hidden group-focus:block group-hover:block absolute top-13 mr-2 right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white focus:outline-none shadow-lg" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                             <div class="py-1" role="none">
-                                <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                                 <Link href="/account" class="flex flex-row px-4 py-2 text-gray-900 text-sm hover:bg-primary-surface hover:rounded-md" role="menuitem" tabindex="-1" id="menu-item-0">
                                     <bs-icon icon="user" class="mr-2"></bs-icon>
                                     Account
