@@ -75,7 +75,7 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
                         $user->assignRole('Viewer');
                     }
                 });
-            } catch (\Throwable $e) {
+            } catch (\Exception $e) {
                 DB::rollBack();
                 $this->error('Failed to get users data from PKT Leader API.');
                 return 0;
