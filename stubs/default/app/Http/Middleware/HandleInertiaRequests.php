@@ -43,6 +43,7 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy())->toArray(),
                 'location' => $request->url(),
             ],
+            'notifications' => Auth::user() ? Auth::user()->unreadNotifications : null,
         ];
     }
 }
