@@ -49,16 +49,15 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
 
         // get all employee from Leader API
         $this->components->task('Syncing users data...', function () {
-            $employees = LeaderApi::getAllEmployee();
             DB::beginTransaction();
             try {
                 $employees = LeaderApi::getAllEmployee();
                 $employees->each(function ($employee) {
-                    $user = app('App\\Models\\User')::updateOrCreate([
-                        'npk' => $employee->USERS_NPK
-                    ], [
+                    $user = app('App\\Models\\User')::query()->where('npk', $employee->USERS_NPK)->first();
+                    $dataUser = [
                         'name' => $employee->USERS_NAME,
                         'email' => $employee->USERS_EMAIL,
+                        'npk' => $employee->USERS_NPK,
                         'username' => $employee->USERS_USERNAME,
                         'hierarchy_code' => $employee->USERS_HIERARCHY_CODE,
                         'position_id' => $employee->USERS_ID_POSISI,
@@ -66,10 +65,15 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
                         'work_unit_id' => $employee->USERS_ID_UNIT_KERJA,
                         'work_unit' => $employee->USERS_UNIT_KERJA,
                         'users_flag' => $employee->USERS_FLAG,
-                        'is_active' => false,
-                        'password' => '$2y$12$K7iSlaMTjZpgfiLEFMHbM.3O3LADzHvQYWkYaXJMQYWAIjgAF3.hy', // Bontang123@2024
-                    ]);
-                    $user->assignRole('Viewer');
+                    ];
+                    if($user){
+                        $user->update($dataUser);
+                    }else{
+                        $dataUser['is_active'] = false;
+                        $dataUser['password'] = '$2y$12$K7iSlaMTjZpgfiLEFMHbM.3O3LADzHvQYWkYaXJMQYWAIjgAF3.hy'; // Bontang123@2024
+                        $user = app('App\\Models\\User')::create($dataUser);
+                        $user->assignRole('Viewer');
+                    }
                 });
             } catch (\Exception $e) {
                 DB::rollBack();
@@ -77,7 +81,6 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
                 return 0;
             }
             DB::commit();
-
             $this->info('Synced ' . $employees->count() . ' users from PKT Leader.');
         });
 

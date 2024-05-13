@@ -56,13 +56,14 @@ class LoginRequest extends FormRequest
         $credential = $this->only('username','password');
 
         $ldap = $this->ldapZimbraAuth($credential['username'], $credential['password']);
-
         if ($ldap) {
             foreach ($ldap['mail'] as $mail) {
                 $user_name = explode('@', $mail)[0];
-                $user = User::where('npk', $user_name)->first();
+                $user = User::where('username', $user_name)->first();
                 if ($user && $user->is_active) {
                     Auth::login($user);
+                } else if ($user && !$user->is_active) {
+                    throw new AuthenticationException('User does not have access');
                 }
             }
         }else{
@@ -104,11 +105,16 @@ class LoginRequest extends FormRequest
     }
 
     private function ldapZimbraAuth($username, $pass){
-        $ldap['host'] = env('LDAP_HOST');
-        $ldap['port'] = env('LDAP_PORT');
-        $ldap['dn'] = env('LDAP_DN');
-        $ldap['pass'] = env('LDAP_PASS');
-        $ldap['tree'] = env('LDAP_TREE');
+        $ldap['host'] = config('ldap.LDAP_HOST');
+        $ldap['port'] = config('ldap.LDAP_PORT');
+        $ldap['dn'] = config('ldap.LDAP_DN');
+        $ldap['pass'] = config('ldap.LDAP_PASS');
+        $ldap['tree'] = config('ldap.LDAP_TREE');
+        $ldap['enable'] = config('ldap.LDAP_ENABLE');
+
+        if (!$ldap['enable']) {
+            return false;
+        }
 
         $ldap['conn'] = ldap_connect($ldap['host'], $ldap['port']);
         ldap_set_option($ldap['conn'], LDAP_OPT_PROTOCOL_VERSION, 3);
