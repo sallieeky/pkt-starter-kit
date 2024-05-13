@@ -277,3 +277,14 @@ $employee = LeaderApi::getAllEmployee();
 $workUnit = LeaderApi::getAllWorkUnit();
 $plt = LeaderApi::getAllPlt();
 ```
+
+### Notification
+
+<img src="/art/Notification.png" alt="Notification">
+
+```php
+use Pkt\StarterKit\Notifications\Notification;
+
+$user = Auth::user();
+$user->notify(new Notification('title', 'message', '/url'));
+```
