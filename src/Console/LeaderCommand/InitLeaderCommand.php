@@ -65,10 +65,6 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
         });
 
         // get all employee from Leader API
-        if (!$this->confirm('Do you want to sync user?')) {
-            return 0;
-        }
-
         $this->components->task('Syncing users data...', function () {
             $employees = LeaderApi::getAllEmployee();
             $employees->each(function ($employee) {

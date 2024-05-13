@@ -99,6 +99,7 @@ Before you use between ldap or portal, first you need to have production server 
 ### Ldap
 To enable ldap functionality, first you need to add this to the `.env` file and ask <strong>admin</strong> for the credential
 ```env
+LDAP_ENABLE=<true|false>
 LDAP_HOST=<ask admin>
 LDAP_PORT=<ask admin>
 LDAP_DN=<ask admin>

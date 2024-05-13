@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'LDAP_ENABLE' => env('LDAP_ENABLE', false),
     'LDAP_HOST' => env('LDAP_HOST'),
     'LDAP_PORT' => env('LDAP_PORT'),
     'LDAP_DN' => env('LDAP_DN'),
