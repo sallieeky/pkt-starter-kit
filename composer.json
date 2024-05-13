@@ -30,6 +30,8 @@
         "illuminate/support": "^10.17",
         "illuminate/validation": "^10.17",
         "illuminate/database": "^10.0",
+        "illuminate/bus": "*",
+        "illuminate/notifications": "*",
         "doctrine/dbal": "*"
     },
     "extra": {

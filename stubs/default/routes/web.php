@@ -5,8 +5,10 @@ use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\RoleAndPermissionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserLogController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Pkt\StarterKit\Notifications\Notification;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,5 +55,9 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->
     Route::controller(UserLogController::class)->group(function () {
         Route::get('/user-log', 'userLogPage')->name('user_log.browse')->can('user_log.browse');
         Route::get('/user-log/{filename}', 'getLogFileDetail')->name('user_log.detail')->can('user_log.browse');
+    });
+
+    Route::controller(NotificationController::class)->group(function() {
+        Route::post('/notifications/read', 'markAsRead')->name('notification.mark_as_read');
     });
 });

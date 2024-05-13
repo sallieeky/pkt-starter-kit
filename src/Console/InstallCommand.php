@@ -115,6 +115,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/RoleAndPermissionController.php', app_path('Http/Controllers/RoleAndPermissionController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/UserController.php', app_path('Http/Controllers/UserController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/UserLogController.php', app_path('Http/Controllers/UserLogController.php'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/NotificationController.php', app_path('Http/Controllers/NotificationController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/Api/SsoSessionController.php', app_path('Http/Controllers/Api/SsoSessionController.php'));
             // End Controllers
 
@@ -156,6 +157,8 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/database/migrations/2014_10_12_000000_create_users_table.php', database_path('migrations/2014_10_12_000000_create_users_table.php'));
             copy(__DIR__.'/../../stubs/default/database/migrations/2024_04_01_000000_create_permission_tables.php', database_path('migrations/2024_04_01_000000_create_permission_tables.php'));
             copy(__DIR__.'/../../stubs/default/database/migrations/2024_04_01_000000_create_sso_sessions_table.php', database_path('migrations/2024_04_01_000000_create_sso_sessions_table.php'));
+            copy(__DIR__.'/../../stubs/default/database/migrations/2024_05_01_000000_create_notifications_table.php', database_path('migrations/2024_05_01_000000_create_notifications_table.php'));
+            
             // End Migrations
 
             // Seeders

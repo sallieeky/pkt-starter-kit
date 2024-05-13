@@ -144,7 +144,7 @@
             <template #header>
                 <span class="font-bold text-lg">{{ !editMode ? 'Tambah' : 'Edit' }} User Role</span>
             </template>
-            <el-form ref="formUserRoleRef" :model="formUserRole" label-width="200px" label-position="top"
+            <el-form ref="formUserRoleRef" @submit.prevent :model="formUserRole" label-width="200px" label-position="top"
                 require-asterisk-position="right" autocomplete="off">
                 <el-form-item prop="name" label="Nama" :required="true">
                     <el-input v-model="formUserRole.name" autocomplete="one-time-code" autocorrect="off"
