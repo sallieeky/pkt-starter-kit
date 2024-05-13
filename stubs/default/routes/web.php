@@ -8,6 +8,7 @@ use App\Http\Controllers\UserLogController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Pkt\StarterKit\Notifications\Notification;
 
 /*
 |--------------------------------------------------------------------------
