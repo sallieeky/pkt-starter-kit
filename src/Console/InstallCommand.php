@@ -83,6 +83,12 @@ class InstallCommand extends Command implements PromptsForMissingInput
         if (!$existInComposer) {
             $this->runCommands(['composer require pusher/pusher-php-server:^7.2']);
         }
+        
+        $existInComposer = file_exists(base_path('composer.json')) &&
+            ! empty(json_decode(file_get_contents(base_path('composer.json')), true)['require']['laravel/reverb']);
+        if (!$existInComposer) {
+            $this->runCommands(['composer require laravel/reverb:@beta']);
+        }
 
         $existInComposer = file_exists(base_path('composer.json')) &&
             ! empty(json_decode(file_get_contents(base_path('composer.json')), true)['require']['staudenmeir/laravel-migration-views']);
