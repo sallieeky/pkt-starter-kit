@@ -288,3 +288,16 @@ use Pkt\StarterKit\Notifications\Notification;
 $user = Auth::user();
 $user->notify(new Notification('title', 'message', '/url'));
 ```
+
+By default notification is not <b>real time</b>, to enable real time functional support by <b>Laravel Reverb</b> you can enable it by change the `BROADCAST_DRIVER` from **log** to **reverb** in `.env` file.
+
+```env
+...
+BROADCAST_DRIVER=reverb
+...
+```
+
+Then run command in your terminal
+```cmd
+php artisan reverb:start
+```
