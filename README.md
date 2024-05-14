@@ -199,6 +199,9 @@ service supervisor stop
     <a href="https://github.com/laravel/breeze">
         <img src="/art/LaravelBreeze.png" alt="Laravel Breeze" width="200">
     </a>
+    <a href="https://reverb.laravel.com/">
+        <img src="/art/LaravelReverb.png" alt="Laravel Reverb" width="200">
+    </a>
     <a href="https://github.com/spatie/laravel-permission">
         <img src="/art/SpatieRolePermission.png" alt="Spatie Role and Permission" width="200">
     </a>
@@ -215,6 +218,6 @@ service supervisor stop
 
 ## Authors
 
-- [@sallieeky](https://www.github.com/sallieeky)
-- [@ardmgtm](https://www.github.com/ardmgtm)
-- [@sallixie](https://www.github.com/sallixie)
+<a href="https://github.com/sallieeky/pkt-starter-kit/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=sallieeky/pkt-starter-kit" />
+</a>
