@@ -3,6 +3,7 @@
 namespace Pkt\StarterKit\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification as NotificationTrait;
 use Illuminate\Support\HtmlString;
 
@@ -34,7 +35,7 @@ class Notification extends NotificationTrait
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -49,5 +50,17 @@ class Notification extends NotificationTrait
             'message' => $this->message,
             'url' => $this->url,
         ];
+    }
+
+    /**
+     * Get the broadcastable representation of the notification.
+     */
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage([
+            'title' => $this->title,
+            'message' => $this->message,
+            'url' => $this->url,
+        ]);
     }
 }
