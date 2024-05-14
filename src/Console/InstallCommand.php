@@ -207,7 +207,6 @@ class InstallCommand extends Command implements PromptsForMissingInput
 
             // Reverb
             $this->addEnvironmentVariables();
-            $this->publishConfiguration();
             $this->updateBroadcastingConfiguration();
             $this->enableBroadcasting();
             // End Reverb
