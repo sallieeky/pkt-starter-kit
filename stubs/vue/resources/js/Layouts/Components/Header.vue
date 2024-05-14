@@ -28,7 +28,7 @@
                                     <div @click="notificationAction(notification)" class="group/item text-start flex flex-row px-4 py-2 text-gray-900 text-sm hover:bg-primary-surface hover:rounded-md">
                                         <div class="w-3/4">
                                             <h1 class="font-bold">{{ notification.data.title }}</h1>
-                                            <p class="text-xs">{{ notification.data.message }}</p>
+                                            <p class="text-xs" v-html="notification.data.message"></p>
                                         </div>
                                         <div @click.stop="readNotification(notification.id)" class="hidden ml-auto group-hover/item:block text-[.75rem] hover:group/item:bg-white hover:text-primary">
                                             Mark as read

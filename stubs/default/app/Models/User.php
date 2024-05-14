@@ -67,4 +67,22 @@ class User extends Authenticatable
     {
         return ['user_uuid'];
     }
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted(): void
+    {
+        parent::booted();
+
+        static::created(function (User $user) {
+            $user->notify(new \Pkt\StarterKit\Notifications\Notification(
+                'Welcome! 🎉',
+                'Welcome to ' . config('app.name') . '.',
+                route('home')
+            ));
+        });
+    }
 }
