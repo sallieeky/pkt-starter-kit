@@ -35,8 +35,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div v-if="notifications.length == 0" class="text-center text-gray-900 text-sm py-2 cursor-default">
+                                <div v-if="notifications.length == 0" class="text-center italic text-gray-900 text-sm py-8 cursor-default">
                                     No notifications
+                                </div>
+                                <div class="cursor-default flex justify-center items-center mt-4">
+                                    <a :href="route('notification.browse')" class="text-sm italic text-primary hover:text-primary-hover">view all</a>
                                 </div>
                             </div>
                         </div>
