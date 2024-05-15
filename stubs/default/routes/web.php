@@ -58,6 +58,8 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->
     });
 
     Route::controller(NotificationController::class)->group(function() {
+        Route::get('/notification','notificationPage')->name('notification.browse');
+        Route::get('/notification/data','notificationPagination')->name('notification.data');
         Route::post('/notifications/read', 'markAsRead')->name('notification.mark_as_read');
     });
 });
