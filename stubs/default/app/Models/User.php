@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Pkt\StarterKit\Traits\GlobalSearch;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasUuids, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasUuids, SoftDeletes, GlobalSearch;
 
     // primary key user_id
     protected $primaryKey = 'user_id';
@@ -84,5 +85,61 @@ class User extends Authenticatable
                 route('home')
             ));
         });
+    }
+
+    /**
+     * Get the columns that can be searched.
+     *
+     * @return array
+     */
+    public function searchableAttributes(): array
+    {
+        return [
+            'username',
+            'name',
+            'npk',
+            'email',
+        ];
+    }
+
+    /**
+     * Get the columns id that can be searched.
+     *
+     * @return int|string
+     */
+    public function searchableAttributeId(): int|string
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * Get action url for searchable record.
+     *
+     * @return ?string
+     */
+    public function searchableRecordActionUrl($record): ?string
+    {
+        return route('user.browse');
+    }
+
+    /**
+     * Get the columns that should receive a unique identifier.
+     *
+     * @return string
+     */
+    public function searchableFormatRecord($record): string
+    {
+        return $record->npk . ' - ' . $record->name;
+    }
+
+    /**
+     * Get the eloquent query.
+     *
+     * @return object
+     */
+    public function searchableEloquentQuery(): object
+    {
+        return $this->query()
+            ->where('is_active', 1);
     }
 }
