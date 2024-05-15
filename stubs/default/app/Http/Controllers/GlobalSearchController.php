@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\GlobalSearch;
 use Illuminate\Http\Request;
+use Pkt\StarterKit\Helpers\GlobalSearch;
 
 class GlobalSearchController extends Controller
 {
