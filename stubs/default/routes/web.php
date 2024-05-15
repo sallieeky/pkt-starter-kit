@@ -8,7 +8,7 @@ use App\Http\Controllers\UserLogController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Pkt\StarterKit\Notifications\Notification;
+use App\Http\Controllers\GlobalSearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,4 +60,6 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->
     Route::controller(NotificationController::class)->group(function() {
         Route::post('/notifications/read', 'markAsRead')->name('notification.mark_as_read');
     });
+
+    Route::get('/global-search', GlobalSearchController::class)->name('global.search');
 });

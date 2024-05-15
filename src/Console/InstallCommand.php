@@ -129,7 +129,9 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/UserController.php', app_path('Http/Controllers/UserController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/UserLogController.php', app_path('Http/Controllers/UserLogController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/NotificationController.php', app_path('Http/Controllers/NotificationController.php'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/GlobalSearchController.php', app_path('Http/Controllers/GlobalSearchController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/Api/SsoSessionController.php', app_path('Http/Controllers/Api/SsoSessionController.php'));
+
             // End Controllers
 
             // Helpers

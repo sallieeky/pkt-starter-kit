@@ -14,6 +14,22 @@
                     </a>
                 </div>
                 <div class="flex shrink-0 align-middle items-center m-2 relative">
+                    <div class="hidden md:block group relative" v-if="isEnableGlobalSearch">
+                        <el-input class="peer" v-model="globalSearch" @change="search" placeholder="Search..."/>
+                        <div class="hidden peer-focus-within:block hover:block absolute top-13 right-0 z-10 mt-2 w-64 md:w-[26rem] max-h-[24rem] overflow-y-auto origin-top-right rounded-md bg-white focus:outline-none shadow-lg" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                            <div class="py-1 cursor-default" role="none">
+                                <div v-for="(records, model) in globalSearchResult">
+                                    <div class="sticky p-2 font-semibold bg-primary-surface">{{ model }}</div>
+                                    <div v-for="record in records" class="border-y-[1px]">
+                                        <a :href="record.url" class="block text-sm px-5 py-2">{{ record.value }}</a>
+                                    </div>
+                                </div>
+                                <div v-if="globalSearchResult.length == 0" class="text-center text-gray-900 text-sm py-2 cursor-default">
+                                    Not found
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <button class="group relative">
                         <el-badge :is-dot="notifications.length !== 0" :offset="[-10,10]" class="mr-2 p-2 hover:bg-slate-100 rounded-full cursor-pointer">
                             <bs-icon icon="bell"></bs-icon>
@@ -101,18 +117,34 @@ const toggleDrawer = sideMenuStore.toggleDrawer;
 var user = ref(usePage().props.auth.user);
 let notifications = computed(() => usePage().props.notifications);
 const readNotification = (notification) => {
-    router.post('/notifications/read', {
+    router.post(route('notification.mark_as_read'), {
         notification: notification,
     });
 }
-
 const notificationAction = (notification) => {
-    router.post('/notifications/read', {
+    router.post(route('notification.mark_as_read'), {
         notification: notification.id,
     });
-
     if (notification.data?.url == null) return;
     router.visit(notification.data?.url);
+}
+
+let globalSearch = ref('');
+let globalSearchResult = ref([]);
+let isEnableGlobalSearch = ref(usePage().props.isEnableGlobalSearch);
+
+const search = () => {
+    if (globalSearch.value.length < 1) {
+        globalSearchResult.value = [];
+        return;
+    }
+    axios.get(route('global.search'), {
+        params: {
+            search: globalSearch.value,
+        }
+    }).then((response) => {
+        globalSearchResult.value = response.data.data;
+    });
 }
 
 </script>
