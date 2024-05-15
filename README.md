@@ -202,6 +202,15 @@ service supervisor stop
     <a href="https://reverb.laravel.com/">
         <img src="/art/LaravelReverb.png" alt="Laravel Reverb" width="200">
     </a>
+    <a href="https://github.com/laravel/echo">
+        <img src="/art/LaravelEcho.svg" alt="Laravel Echo" width="200">
+    </a>
+    <a href="https://pestphp.com/">
+        <img src="/art/Pest.jpeg" alt="PEST" width="200">
+    </a>
+    <a href="https://docs.docker.com/">
+        <img src="/art/Docker.png" alt="Docker" width="200">
+    </a>
     <a href="https://github.com/spatie/laravel-permission">
         <img src="/art/SpatieRolePermission.png" alt="Spatie Role and Permission" width="200">
     </a>
