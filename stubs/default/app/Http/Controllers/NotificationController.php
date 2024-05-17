@@ -27,6 +27,7 @@ class NotificationController extends Controller
 
     public function notificationPage(Request $request)
     {
+        Auth::user()->unreadNotifications->markAsRead();
         return Inertia::render('Notification');
     }
 
@@ -34,15 +35,8 @@ class NotificationController extends Controller
     {
         $paginatedNotifications = Auth::user()->notifications()
             ->orderBy('created_at', 'desc')
-            ->selectRaw("*, DATE(created_at) as date, TIME_FORMAT(created_at, '%H:%i') as time")
             ->paginate(10);
 
-        $modifiedCollection = $paginatedNotifications->getCollection()->map(function ($notification) {
-            $time = Carbon::createFromFormat('H:i', $notification->time, 'UTC')->setTimezone('Asia/Makassar')->format('H:i');
-            $notification->time = $time;
-            return $notification;
-        });
-        $paginatedNotifications = new LengthAwarePaginator($modifiedCollection, $paginatedNotifications->total(), $paginatedNotifications->perPage());
         return json_encode($paginatedNotifications);
     }
 }
