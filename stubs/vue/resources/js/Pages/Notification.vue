@@ -6,22 +6,22 @@
                 <li v-for="notificationGroupItem, date in notificationsGroup" :key="date">
                     <div class="flex space-x-2 mb-2 items-center w-full">
                         <div class="font-bold mb-2 text-lg">
-                            {{ formatDate(date) }}
+                            {{ DatetimeFormatter.formatDateHumanReadable(date) }}
                         </div>
                         <div class="font-bold mb-2 text-gray-700 text-md italic">
-                            {{ new Date(date).toLocaleDateString('id-ID') }}
+                            {{ DatetimeFormatter.formatDateCalender(date) }}
                         </div>
                     </div>
                     <el-timeline>
                         <el-timeline-item v-for="notification in notificationGroupItem" :key="notification.id"
-                            :timestamp="notification.time" placement="top" color="#f47920">
-                            <div class="rounded-lg border border-gray-500 p-2">
-                                <div class="flex flex-row">
+                            :timestamp="DatetimeFormatter.formatTime(notification.created_at)" placement="top" color="#f47920">
+                            <div class="rounded-lg border border-gray-500 p-2 hover:bg-primary-surface group">
+                                <a class="flex flex-row" :href="notification.data.url ?? 'javascript:void(0)'">
                                     <div>
-                                        <div class=" font-bold ">{{ notification.data.title }}</div>
-                                        <div>{{ notification.data.message }}</div>
+                                        <a class="text-md font-bold group-hover:text-primary">{{ notification.data.title }}</a>
+                                        <div v-html="notification.data.message"></div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                         </el-timeline-item>
                     </el-timeline>
@@ -41,33 +41,25 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import MainLayout from '@/Layouts/MainLayout.vue';
-import { Head, router, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import moment from 'moment';
+
+import DatetimeFormatter from '@/Core/Helpers/datetime-formatter.js';
 
 const paginatedNotifications = ref([]);
 const notificationsGroup = computed(() => {
     const groupedData = {};
     if (Object.keys(paginatedNotifications.value).length > 0) {
         paginatedNotifications.value.data.forEach((notification) => {
-            const date = notification.date;
+            const createdAt = notification.created_at;
+            const date = moment(createdAt).format('YYYY-MM-DD');
             groupedData[date] = groupedData[date] || [];
             groupedData[date].push(notification);
         });
     }
     return groupedData;
 });
-
-function formatDate(strDate) {
-    const date = new Date(strDate);
-    const relativeTime = moment(date).calendar(null, {
-        sameDay: '[Today]',
-        lastDay: '[Yesterday]',
-        lastWeek: '[Last] dddd',
-        sameElse: 'L'
-    });
-    return relativeTime;
-}
 
 const currentPage = ref(1);
 
@@ -81,7 +73,6 @@ function getNotification(page) {
         .then((response) => {
             var responseData = response.data;
             paginatedNotifications.value = responseData;
-            console.log(notificationsGroup.value);
             window.scrollTo(0, 0);
         });
 }
