@@ -39,7 +39,7 @@
                     </div>
                     
                     <button class="group relative">
-                        <el-badge :is-dot="notifications.length !== 0" :offset="[-10,10]" class="mr-2 p-2 hover:bg-slate-100 rounded-full cursor-pointer">
+                        <el-badge :is-dot="notifications.length !== 0" :offset="[-10,10]" class="mx-2 p-2 hover:bg-slate-100 rounded-full cursor-pointer">
                             <bs-icon icon="bell"></bs-icon>
                         </el-badge>
                         <div class="hidden group-focus:block group-hover:block absolute top-13 mr-2 right-0 z-10 mt-2 w-64 md:w-[24rem] max-h-[24rem] overflow-y-auto origin-top-right rounded-md bg-white focus:outline-none shadow-lg" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
