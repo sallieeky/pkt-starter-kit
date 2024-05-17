@@ -159,6 +159,11 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/app/Models/SSOSession.php', app_path('Models/SSOSession.php'));
             // End Models
 
+            // Providers
+            (new Filesystem)->ensureDirectoryExists(app_path('Providers'));
+            copy(__DIR__.'/../../stubs/default/app/Providers/RouteServiceProvider.php', app_path('Providers/RouteServiceProvider.php'));
+            // End Providers
+
             // Config
             copy(__DIR__.'/../../stubs/default/config/ldap.php', config_path('ldap.php'));
             copy(__DIR__.'/../../stubs/default/config/sso-session.php', config_path('sso-session.php'));
@@ -205,6 +210,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/routes/web.php', base_path('routes/web.php'));
             copy(__DIR__.'/../../stubs/default/routes/api.php', base_path('routes/api.php'));
             copy(__DIR__.'/../../stubs/default/routes/channels.php', base_path('routes/channels.php'));
+            copy(__DIR__.'/../../stubs/default/routes/starter.php', base_path('routes/starter.php'));
             (new Filesystem)->delete(base_path('routes/auth.php'));
             // End Routes
 
