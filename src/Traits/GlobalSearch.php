@@ -34,7 +34,7 @@ trait GlobalSearch
      */
     public function searchableAttributes(): array
     {
-        return ['name'];
+        return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
     }
 
     /**
@@ -44,7 +44,7 @@ trait GlobalSearch
      */
     public function searchableAttributeId(): int|string
     {
-        return $this->id;
+        return $this->getKey();
     }
 
     /**
@@ -54,7 +54,7 @@ trait GlobalSearch
      */
     public function searchableFormatRecord(Model $record): string
     {
-        return (string) $record->name;
+        return (string) $record[$this->getKeyName()];
     }
 
     /**

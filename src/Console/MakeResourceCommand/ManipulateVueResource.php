@@ -68,7 +68,7 @@ trait ManipulateVueResource
         $columnTableSlot = '';
         foreach ($columns as $column) {
             $label = Str::headline($column);
-            if ($column === $primaryKey || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at') {
+            if ($column === $primaryKey || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at' || Str::endsWith($column, '_uuid') || Str::endsWith($column, '_id')) {
                 continue;
             }
             $columnTableSlot .= '<DxColumn data-field="'. $column . '" caption="' . $label .'" :allowHeaderFiltering="false" />' . PHP_EOL . '                ';
@@ -80,7 +80,7 @@ trait ManipulateVueResource
             $type = $model->getConnectionResolver()->connection()->getSchemaBuilder()->getColumnType($model->getTable(), $column);
             $required = $model->getConnectionResolver()->connection()->getSchemaBuilder()->getConnection()->getDoctrineColumn($model->getTable(), $column)->getNotnull();
             $label = Str::headline($column);
-            if ($column === $primaryKey || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at') {
+            if ($column === $primaryKey || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at' || Str::endsWith($column, '_uuid') || Str::endsWith($column, '_id')) {
                 continue;
             }
 
