@@ -35,6 +35,12 @@ class MakeDatabaseTableCommand extends Command implements PromptsForMissingInput
         $singularName = Str::singular($name);
         $pluralName = Str::plural($name);
 
+        // check if model already exists
+        if (file_exists(app_path('Models/'.Str::studly($singularName).'.php'))) {
+            $this->error('Model already exists: '.app_path('Models/'.Str::studly($singularName).'.php'));
+            return 0;
+        }
+
         // ask select master, transaction, or value list
         $type = $this->choice('Select table type', ['transaction (tr)','master (ms)','value list (vl)'], 1);
         $type = match ($type) {
@@ -43,7 +49,7 @@ class MakeDatabaseTableCommand extends Command implements PromptsForMissingInput
             'value list (vl)' => 'vl',
         };
         $tableName = Str::snake($type.$pluralName);
-        $columnName = Str::snake($singularName);
+        $columnName = Str::snake($type.$singularName);
 
         // Create migration file
         $migrationName = date('Y_m_d_His').'_create_'.$tableName.'_table.php';
@@ -61,10 +67,13 @@ class MakeDatabaseTableCommand extends Command implements PromptsForMissingInput
         copy(__DIR__.'/../../../database-table-stubs/Models/model.php', $modelPath);
         $this->replaceContent($modelPath, [
             'ModelName' => $modelName,
+            'table_names' => $tableName,
             'table_name_id' => $columnName.'_id',
             'table_name_uuid' => $columnName.'_uuid',
         ]);
 
+        $this->info('Migration file created: '.database_path('migrations/'.$migrationName));
+        $this->info('Model file created: '.$modelPath);
 
         return 1;
     }
