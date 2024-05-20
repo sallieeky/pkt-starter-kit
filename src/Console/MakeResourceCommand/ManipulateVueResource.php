@@ -185,7 +185,7 @@ trait ManipulateVueResource
         $rules = '';
         $columns = $this->model->getConnection()->getSchemaBuilder()->getColumnListing($this->model->getTable());
         foreach ($columns as $column) {
-            if ($column === $this->model->getKeyName() || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at') {
+            if ($column === $this->model->getKeyName() || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at' || Str::endsWith($column, '_uuid') || Str::endsWith($column, '_id')) {
                 continue;
             }
             $required = $this->model->getConnectionResolver()->connection()->getSchemaBuilder()->getConnection()->getDoctrineColumn($this->model->getTable(), $column)->getNotnull() ? 'required' : null;
