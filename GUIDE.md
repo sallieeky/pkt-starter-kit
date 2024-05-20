@@ -286,6 +286,12 @@ php artisan pkt:leader-sync
 ```
 This command will sync users from PKT Leader
 
+### 5. Make Database Table
+This command will create new `migration` and `model` for your database table including transaction (tr), master (ms), or value list (vl)
+```cmd
+php artisan pkt:make-table <ModelName>
+```
+
 ### 5. Make Database View Table
 
 This command will create new `migration` and `model` for your database view table

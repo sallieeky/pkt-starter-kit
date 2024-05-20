@@ -72,8 +72,8 @@ class MakeDatabaseTableCommand extends Command implements PromptsForMissingInput
             'table_name_uuid' => $columnName.'_uuid',
         ]);
 
-        $this->info('Migration file created: '.database_path('migrations/'.$migrationName));
-        $this->info('Model file created: '.$modelPath);
+        $this->info('Migration file created: '.'database/migrations/'.$migrationName);
+        $this->info('Model file created: '.'app/Models/'.$modelName.'.php');
 
         return 1;
     }
