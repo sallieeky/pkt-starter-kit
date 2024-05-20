@@ -201,10 +201,10 @@ class Role extends ModelsRole
     }
 }
 ```
-- `searchableAttributes(){}` used to define your model column that can be search. By default it only refer to `name` column
+- `searchableAttributes(){}` used to define your model column that can be search. By default it refer to `all` columns
 - `searchableAttributeId(){}` used to define your model unique identifier. By default it refer to `id` column
 - `searchableRecordActionUrl($record){}` used to define action url when you click on the record from your search. By default it's `null`
-- `searchableFormatRecord($record){}` used to format the data shown when you search. By default it's refer to `name` column
+- `searchableFormatRecord($record){}` used to format the data shown when you search. By default it's refer to `id` column
 - `searchableEloquentQuery(){}` used to customize your model query if you need an advance query
 
 ## Additional Command
@@ -290,6 +290,27 @@ This command will sync users from PKT Leader
 This command will create new `migration` and `model` for your database table including transaction (tr), master (ms), or value list (vl)
 ```cmd
 php artisan pkt:make-table <ModelName>
+```
+**(RECOMMENDED)**
+Use singular for ModelName and **don't add** `Tr` or `Ms` or `Vl` to ModelName
+
+#### Example
+If you want to make new master data table for Employee, you can execute command
+```cmd
+php artisan pkt:make-table Employee
+
+# choose
+Select table type [transaction (tr)]:
+  [0] transaction (tr)
+  [1] master (ms)
+  [2] value list (vl)
+ > master (ms)
+```
+
+this will create new migration and model
+```
+app/Models/Employee
+database/migrations/...create_ms_employees_table.php
 ```
 
 ### 6. Make Database View Table

@@ -42,7 +42,7 @@ class MakeDatabaseTableCommand extends Command implements PromptsForMissingInput
         }
 
         // ask select master, transaction, or value list
-        $type = $this->choice('Select table type', ['transaction (tr)','master (ms)','value list (vl)'], 1);
+        $type = $this->choice('Select table type', ['transaction (tr)','master (ms)','value list (vl)'], 0);
         $type = match ($type) {
             'transaction (tr)' => 'tr',
             'master (ms)' => 'ms',
