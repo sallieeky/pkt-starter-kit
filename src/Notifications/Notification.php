@@ -3,23 +3,25 @@
 namespace Pkt\StarterKit\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification as NotificationTrait;
+use Illuminate\Support\HtmlString;
 
 class Notification extends NotificationTrait
 {
     use Queueable;
 
     private string $title;
-    private string $message;
+    private HtmlString|string $message;
     private ?string $url;
 
     /**
      * Create a new notification instance.
      * @param string $title
-     * @param string $message
+     * @param HtmlString|string $message
      * @param string $url
      */
-    public function __construct(string $title, string $message, string $url = null)
+    public function __construct(string $title, HtmlString|string $message, string $url = null)
     {
         $this->title = $title;
         $this->message = $message;
@@ -33,7 +35,7 @@ class Notification extends NotificationTrait
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -48,5 +50,17 @@ class Notification extends NotificationTrait
             'message' => $this->message,
             'url' => $this->url,
         ];
+    }
+
+    /**
+     * Get the broadcastable representation of the notification.
+     */
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage([
+            'title' => $this->title,
+            'message' => $this->message,
+            'url' => $this->url,
+        ]);
     }
 }

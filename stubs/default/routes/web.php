@@ -8,7 +8,7 @@ use App\Http\Controllers\UserLogController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Pkt\StarterKit\Notifications\Notification;
+use App\Http\Controllers\GlobalSearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,10 +30,6 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->
     Route::get('/', fn () => redirect()->route('home'));
     Route::get('/dashboard', fn () => Inertia::render('Home', []))->name('home');
 
-    Route::controller(AccountController::class)->group(function(){
-        Route::get('/account','accountPage')->name('account');
-    });
-
     Route::controller(UserController::class)->group(function () {
         Route::get('/user', 'userManagePage')->name('user.browse')->can('user.browse');
         Route::get('/user/data-processing', 'dataprocessing')->name('user.data_processing')->can('user.browse');
@@ -51,13 +47,5 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->
         Route::get('/role/{role}/permissions', 'getRolePermission')->name('role.permission_list')->can('role.browse');
         Route::get('/role/{role}/users', 'getRoleUser')->name('role.user_list')->can('role.browse');
         Route::put('/role/{role}/switch-permission', 'switchPermission')->name('role.switch_permission')->can('role.assign_permission');
-    });
-    Route::controller(UserLogController::class)->group(function () {
-        Route::get('/user-log', 'userLogPage')->name('user_log.browse')->can('user_log.browse');
-        Route::get('/user-log/{filename}', 'getLogFileDetail')->name('user_log.detail')->can('user_log.browse');
-    });
-
-    Route::controller(NotificationController::class)->group(function() {
-        Route::post('/notifications/read', 'markAsRead')->name('notification.mark_as_read');
     });
 });

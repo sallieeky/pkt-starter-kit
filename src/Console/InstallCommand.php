@@ -7,6 +7,7 @@ use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Symfony\Component\Process\Process;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class InstallCommand extends Command implements PromptsForMissingInput
@@ -78,6 +79,18 @@ class InstallCommand extends Command implements PromptsForMissingInput
         }
 
         $existInComposer = file_exists(base_path('composer.json')) &&
+            ! empty(json_decode(file_get_contents(base_path('composer.json')), true)['require']['pusher/pusher-php-server']);
+        if (!$existInComposer) {
+            $this->runCommands(['composer require pusher/pusher-php-server:^7.2']);
+        }
+        
+        $existInComposer = file_exists(base_path('composer.json')) &&
+            ! empty(json_decode(file_get_contents(base_path('composer.json')), true)['require']['laravel/reverb']);
+        if (!$existInComposer) {
+            $this->runCommands(['composer require laravel/reverb:@beta']);
+        }
+
+        $existInComposer = file_exists(base_path('composer.json')) &&
             ! empty(json_decode(file_get_contents(base_path('composer.json')), true)['require']['staudenmeir/laravel-migration-views']);
         if (!$existInComposer) {
             $this->runCommands(['composer require staudenmeir/laravel-migration-views:^1.7']);
@@ -116,7 +129,9 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/UserController.php', app_path('Http/Controllers/UserController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/UserLogController.php', app_path('Http/Controllers/UserLogController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/NotificationController.php', app_path('Http/Controllers/NotificationController.php'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/GlobalSearchController.php', app_path('Http/Controllers/GlobalSearchController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/Api/SsoSessionController.php', app_path('Http/Controllers/Api/SsoSessionController.php'));
+
             // End Controllers
 
             // Helpers
@@ -144,12 +159,18 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/app/Models/SSOSession.php', app_path('Models/SSOSession.php'));
             // End Models
 
+            // Providers
+            (new Filesystem)->ensureDirectoryExists(app_path('Providers'));
+            copy(__DIR__.'/../../stubs/default/app/Providers/RouteServiceProvider.php', app_path('Providers/RouteServiceProvider.php'));
+            // End Providers
+
             // Config
             copy(__DIR__.'/../../stubs/default/config/ldap.php', config_path('ldap.php'));
             copy(__DIR__.'/../../stubs/default/config/sso-session.php', config_path('sso-session.php'));
             copy(__DIR__.'/../../stubs/default/config/logging.php', config_path('logging.php'));
             copy(__DIR__.'/../../stubs/default/config/permissions.php', config_path('permissions.php'));
             copy(__DIR__.'/../../stubs/default/config/leader.php', config_path('leader.php'));
+            copy(__DIR__.'/../../stubs/default/config/reverb.php', config_path('reverb.php'));
             // End Config
 
             // Migrations
@@ -188,6 +209,8 @@ class InstallCommand extends Command implements PromptsForMissingInput
             (new Filesystem)->ensureDirectoryExists(base_path('routes'));
             copy(__DIR__.'/../../stubs/default/routes/web.php', base_path('routes/web.php'));
             copy(__DIR__.'/../../stubs/default/routes/api.php', base_path('routes/api.php'));
+            copy(__DIR__.'/../../stubs/default/routes/channels.php', base_path('routes/channels.php'));
+            copy(__DIR__.'/../../stubs/default/routes/starter.php', base_path('routes/starter.php'));
             (new Filesystem)->delete(base_path('routes/auth.php'));
             // End Routes
 
@@ -195,6 +218,12 @@ class InstallCommand extends Command implements PromptsForMissingInput
             (new Filesystem)->ensureDirectoryExists(base_path('ssl'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/ssl', base_path('ssl'));
             // End SSL
+
+            // Reverb
+            $this->addEnvironmentVariables();
+            $this->updateBroadcastingConfiguration();
+            $this->enableBroadcasting();
+            // End Reverb
         });
     }
 
@@ -348,5 +377,120 @@ class InstallCommand extends Command implements PromptsForMissingInput
             $modifiedMiddlewareAlias,
             $httpKernel
         ));
+    }
+
+    /**
+     * Add the Reverb variables to the environment file.
+     */
+    protected function addEnvironmentVariables(): void
+    {
+        if (File::missing($env = app()->environmentFile())) {
+            return;
+        }
+
+        $contents = File::get($env);
+        $appId = random_int(100_000, 999_999);
+        $appKey = Str::lower(Str::random(20));
+        $appSecret = Str::lower(Str::random(20));
+
+        $variables = Arr::where([
+            'REVERB_APP_ID' => "REVERB_APP_ID={$appId}",
+            'REVERB_APP_KEY' => "REVERB_APP_KEY={$appKey}",
+            'REVERB_APP_SECRET' => "REVERB_APP_SECRET={$appSecret}",
+            'REVERB_HOST' => 'REVERB_HOST="localhost"',
+            'REVERB_PORT' => 'REVERB_PORT=8080',
+            'REVERB_SCHEME' => 'REVERB_SCHEME=http',
+            'REVERB_NEW_LINE' => null,
+            'VITE_REVERB_APP_KEY' => 'VITE_REVERB_APP_KEY="${REVERB_APP_KEY}"',
+            'VITE_REVERB_HOST' => 'VITE_REVERB_HOST="${REVERB_HOST}"',
+            'VITE_REVERB_PORT' => 'VITE_REVERB_PORT="${REVERB_PORT}"',
+            'VITE_REVERB_SCHEME' => 'VITE_REVERB_SCHEME="${REVERB_SCHEME}"',
+        ], function ($value, $key) use ($contents) {
+            return ! Str::contains($contents, PHP_EOL.$key);
+        });
+
+        $variables = trim(implode(PHP_EOL, $variables));
+
+        if ($variables === '') {
+            return;
+        }
+
+        File::append(
+            $env,
+            Str::endsWith($contents, PHP_EOL) ? PHP_EOL.$variables.PHP_EOL : PHP_EOL.PHP_EOL.$variables.PHP_EOL,
+        );
+    }
+
+    /**
+     * Update the broadcasting.php configuration file.
+     */
+    protected function updateBroadcastingConfiguration(): void
+    {
+        if ($this->laravel->config->has('broadcasting.connections.reverb')) {
+            return;
+        }
+
+        File::replaceInFile(
+            "'connections' => [\n",
+            <<<'CONFIG'
+            'connections' => [
+
+                    'reverb' => [
+                        'driver' => 'reverb',
+                        'key' => env('REVERB_APP_KEY'),
+                        'secret' => env('REVERB_APP_SECRET'),
+                        'app_id' => env('REVERB_APP_ID'),
+                        'options' => [
+                            'host' => env('REVERB_HOST'),
+                            'port' => env('REVERB_PORT', 443),
+                            'scheme' => env('REVERB_SCHEME', 'https'),
+                            'useTLS' => env('REVERB_SCHEME', 'https') === 'https',
+                        ],
+                        'client_options' => [
+                            // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
+                        ],
+                    ],
+
+            CONFIG,
+            app()->configPath('broadcasting.php')
+        );
+    }
+
+    /**
+     * Enable Laravel's broadcasting functionality.
+     */
+    protected function enableBroadcasting(): void
+    {
+        $this->enableBroadcastServiceProvider();
+
+        if (File::exists(base_path('routes/channels.php'))) {
+            return;
+        }
+
+        $enable = confirm('Would you like to enable event broadcasting?', default: true);
+
+        if (! $enable) {
+            return;
+        }
+
+        if ($this->getApplication()->has('install:broadcasting')) {
+            $this->call('install:broadcasting', ['--no-interaction' => true]);
+        }
+    }
+
+    /**
+     * Uncomment the "BroadcastServiceProvider" in the application configuration.
+     */
+    protected function enableBroadcastServiceProvider(): void
+    {
+        $config = File::get(app()->configPath('app.php'));
+
+        if (Str::contains($config, '// App\Providers\BroadcastServiceProvider::class')) {
+            File::replaceInFile(
+                '// App\Providers\BroadcastServiceProvider::class',
+                'App\Providers\BroadcastServiceProvider::class',
+                app()->configPath('app.php'),
+            );
+        }
     }
 }

@@ -127,6 +127,86 @@ export const navItems = [
 ];
 ```
 
+## Manage Global Search
+<img src="/art/GlobalSearch.png" alt="Global Search">
+
+You can use global search functionallity by adding `GlobalSearch` trait in your `Model`. By default User model has already set for global search, so you can check how to use from it.
+
+**Example**
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Pkt\StarterKit\Traits\GlobalSearch;
+use Spatie\Permission\Models\Role as ModelsRole;
+
+class Role extends ModelsRole
+{
+    use HasFactory, GlobalSearch;
+
+    /**
+     * Get the columns that can be searched.
+     *
+     * @return array
+     */
+    public function searchableAttributes(): array
+    {
+        return [
+            'name',
+            'guard',
+        ];
+    }
+
+    /**
+     * Get the columns id that can be searched.
+     *
+     * @return int|string
+     */
+    public function searchableAttributeId(): int|string
+    {
+        return $this->role_id;
+    }
+
+    /**
+     * Get action url for searchable record.
+     *
+     * @return ?string
+     */
+    public function searchableRecordActionUrl($record): ?string
+    {
+        return route('role.browse');
+    }
+
+    /**
+     * Get the columns that should receive a unique identifier.
+     *
+     * @return string
+     */
+    public function searchableFormatRecord($record): string
+    {
+        return $record->name . ' ('. $record->users->count() . ' users)';
+    }
+
+    /**
+     * Get the eloquent query.
+     *
+     * @return object
+     */
+    public function searchableEloquentQuery(): object
+    {
+        return $this->query()
+            ->where('active', true);
+    }
+}
+```
+- `searchableAttributes(){}` used to define your model column that can be search. By default it only refer to `name` column
+- `searchableAttributeId(){}` used to define your model unique identifier. By default it refer to `id` column
+- `searchableRecordActionUrl($record){}` used to define action url when you click on the record from your search. By default it's `null`
+- `searchableFormatRecord($record){}` used to format the data shown when you search. By default it's refer to `name` column
+- `searchableEloquentQuery(){}` used to customize your model query if you need an advance query
+
 ## Additional Command
 
 ### 1. Make resource command
@@ -287,4 +367,17 @@ use Pkt\StarterKit\Notifications\Notification;
 
 $user = Auth::user();
 $user->notify(new Notification('title', 'message', '/url'));
+```
+
+By default notification is not <b>real time</b>, to enable real time functional support by <b>Laravel Reverb</b> you can enable it by change the `BROADCAST_DRIVER` from **log** to **reverb** in `.env` file.
+
+```env
+...
+BROADCAST_DRIVER=reverb
+...
+```
+
+Then run command in your terminal
+```cmd
+php artisan reverb:start
 ```

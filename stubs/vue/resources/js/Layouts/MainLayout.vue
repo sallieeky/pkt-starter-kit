@@ -26,11 +26,13 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import Header from './Components/Header.vue';
 import Sidebar from './Components/Sidebar.vue';
 import Footer from './Components/Footer.vue';
 import { useSidemenuStore } from '@/Stores/sidemenu';
+import { router, usePage } from '@inertiajs/vue3';
+import { ElNotification } from 'element-plus';
 
 const sideMenuStore = useSidemenuStore();
 
@@ -41,6 +43,19 @@ const props = defineProps({
         type: String
     }
 });
+
+var userId = ref(usePage().props.auth.user.user_id);
+
+Echo.private("App.Models.User."+userId.value)
+    .notification((notification) => {
+        router.reload({only: ['notifications']});
+        ElNotification({
+            title: notification.title,
+            message: notification.message,
+            position: 'bottom-right',
+            type: 'info'
+        });
+    });
 </script>
 
 <style scoped>
