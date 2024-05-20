@@ -4,6 +4,7 @@ namespace Pkt\StarterKit\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Pkt\StarterKit\Helpers\GlobalSearch as HelpersGlobalSearch;
+use Illuminate\Support\Str;
 
 trait GlobalSearch
 {
@@ -34,7 +35,11 @@ trait GlobalSearch
      */
     public function searchableAttributes(): array
     {
-        return ['name'];
+        return collect($this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable()))
+            ->filter(function ($column) {
+                return !Str::endsWith($column, '_id') && !Str::endsWith($column, '_uuid');
+            })
+            ->toArray();
     }
 
     /**
@@ -44,7 +49,7 @@ trait GlobalSearch
      */
     public function searchableAttributeId(): int|string
     {
-        return $this->id;
+        return $this->getKey();
     }
 
     /**
@@ -54,7 +59,7 @@ trait GlobalSearch
      */
     public function searchableFormatRecord(Model $record): string
     {
-        return (string) $record->name;
+        return (string) $record[$this->getKeyName()];
     }
 
     /**
