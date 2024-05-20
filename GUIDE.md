@@ -292,7 +292,7 @@ This command will create new `migration` and `model` for your database table inc
 php artisan pkt:make-table <ModelName>
 ```
 
-### 5. Make Database View Table
+### 6. Make Database View Table
 
 This command will create new `migration` and `model` for your database view table
 ```cmd
