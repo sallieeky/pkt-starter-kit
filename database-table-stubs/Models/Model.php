@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ModelName extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
+    protected $table = 'table_names';
+    protected $primaryKey = 'table_name_id';
     protected $guarded = ['table_name_id', 'table_name_uuid'];
 
     /**
