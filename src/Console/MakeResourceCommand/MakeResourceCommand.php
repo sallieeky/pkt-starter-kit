@@ -118,6 +118,8 @@ class MakeResourceCommand extends Command implements PromptsForMissingInput
             $this->replaceContent($file, $replacements);
         }
 
+        $this->line('');
+        $this->info('Additional');
         $this->info('Test cases created: tests/Feature/'.$nameArgument);
     }
 }
