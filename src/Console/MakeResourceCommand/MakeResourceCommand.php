@@ -18,6 +18,7 @@ class MakeResourceCommand extends Command implements PromptsForMissingInput
      */
     protected $signature = 'pkt:make-resource {name : The name of the resource}
             {--force : Overwrite existing files}
+            {--test : Create test cases}
             {--generate : Generate the resource with default values}';
 
     /**
@@ -83,6 +84,14 @@ class MakeResourceCommand extends Command implements PromptsForMissingInput
             return 0;
         }
 
+        if ($exist && $this->option('force')) {
+            (new Filesystem)->deleteDirectory(base_path('tests/Feature/'.$nameArgument));
+        }
+
+        if (!$this->option('test')) {
+            return 0;
+        }
+
         (new Filesystem)->ensureDirectoryExists(base_path('tests/Feature/'.$nameArgument));
         copy(__DIR__.'/../../../resource-template/default/tests/BrowseTest.php', base_path('tests/Feature/'.$nameArgument.'/Browse'.$nameArgument.'Test.php'));
         copy(__DIR__.'/../../../resource-template/default/tests/CreateTest.php', base_path('tests/Feature/'.$nameArgument.'/Create'.$nameArgument.'Test.php'));
@@ -95,6 +104,7 @@ class MakeResourceCommand extends Command implements PromptsForMissingInput
             'ModelName' => $nameArgument,
             'Model Name' => Str::headline($nameArgument),
             'primary_key' => $model->getKeyName(),
+            'table_names' => $model->getTable(),
         ];
 
         $files = [
