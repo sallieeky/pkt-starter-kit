@@ -6,7 +6,7 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
-    $this->permission = Permission::create(['name' => 'user.browse']);
+    $this->permission = Permission::create(['name' => 'model_name.browse']);
     $this->role = Role::create(['name' => 'Test']);
     $this->role->givePermissionTo($this->permission);
 
@@ -14,20 +14,18 @@ beforeEach(function () {
     $this->user->assignRole($this->role);
 });
 
-test('not login to access user manage', function () {
-    $response = test()->get(route('user.browse'));
+test('not login to access modelname manage', function () {
+    $response = test()->get(route('model_name.browse'));
     expect($response->status())->toBe(302);
     expect($response->baseResponse->getTargetUrl())->toBe(route('login'));
 });
 
-test('can display user manage', function () {
+test('can display modelname manage', function () {
     $this->actingAs($this->user);
-    $response = test()->get(route('user.browse'));
+    $response = test()->get(route('model_name.browse'));
 
     expect($response->status())->toBe(200);
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('User/UserManage')
-        ->has('roles')
-        ->has('leader_enabled')
+        ->component('ModelName/ModelNameManage')
     );
 });

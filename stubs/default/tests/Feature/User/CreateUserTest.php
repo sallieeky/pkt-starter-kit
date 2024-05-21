@@ -13,13 +13,13 @@ beforeEach(function () {
     $this->user->assignRole($this->role);
 });
 
-test('user does not have access to user create', function () {
+test('does not have access to create user', function () {
     $this->actingAs($this->user);
     $response = test()->post(route('user.browse'));
     expect($response->status())->toBe(403);
 });
 
-test('user can create', function () {
+test('can create user', function () {
     $permission = Permission::create(['name' => 'user.create']);
     $this->user->givePermissionTo($permission);
 

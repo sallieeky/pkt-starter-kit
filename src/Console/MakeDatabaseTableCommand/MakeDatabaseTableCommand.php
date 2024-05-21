@@ -61,6 +61,14 @@ class MakeDatabaseTableCommand extends Command implements PromptsForMissingInput
             'table_name_uuid' => $columnName.'_uuid',
         ]);
 
+        // Create factory file
+        $factoryName = Str::studly($singularName).'Factory';
+        $factoryPath = database_path('factories/'.$factoryName.'.php');
+        copy(__DIR__.'/../../../database-table-stubs/factories/factory.php', $factoryPath);
+        $this->replaceContent($factoryPath, [
+            'ModelName' => Str::studly($singularName),
+        ]);
+
         // Create model file
         $modelName = Str::studly($singularName);
         $modelPath = app_path('Models/'.$modelName.'.php');
@@ -72,8 +80,9 @@ class MakeDatabaseTableCommand extends Command implements PromptsForMissingInput
             'table_name_uuid' => $columnName.'_uuid',
         ]);
 
-        $this->info('Migration file created: '.'database/migrations/'.$migrationName);
         $this->info('Model file created: '.'app/Models/'.$modelName.'.php');
+        $this->info('Migration file created: '.'database/migrations/'.$migrationName);
+        $this->info('Factory file created: '.'database/factories/'.$factoryName.'.php');
 
         return 1;
     }

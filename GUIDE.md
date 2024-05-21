@@ -218,6 +218,7 @@ php artisan pkt:make-resource ModelName <additional-flag>
 
 Additional flag you can use <br>
 - `--force` if you want to force create the resource. <br> <strong>(CAREFULLY)</strong> This will replace all the existing related file.
+- `--test` if you want to automatic create test case for your resource including CRUD test.
 
 
 This command will help you to create and optimize some file such as
@@ -311,6 +312,7 @@ this will create new migration and model
 ```
 app/Models/Employee
 database/migrations/...create_ms_employees_table.php
+database/factories/EmployeeFactory.php
 ```
 
 ### 6. Make Database View Table
