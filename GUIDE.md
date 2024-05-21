@@ -312,6 +312,7 @@ this will create new migration and model
 ```
 app/Models/Employee
 database/migrations/...create_ms_employees_table.php
+database/factories/EmployeeFactory.php
 ```
 
 ### 6. Make Database View Table
