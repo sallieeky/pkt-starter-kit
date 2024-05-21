@@ -82,7 +82,7 @@ class MakeDatabaseTableCommand extends Command implements PromptsForMissingInput
 
         $this->info('Model file created: '.'app/Models/'.$modelName.'.php');
         $this->info('Migration file created: '.'database/migrations/'.$migrationName);
-        $this->info('Factory file created: '.$factoryPath);
+        $this->info('Factory file created: '.'database/factories/'.$factoryName.'.php');
 
         return 1;
     }
