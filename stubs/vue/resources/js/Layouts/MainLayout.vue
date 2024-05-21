@@ -46,16 +46,18 @@ const props = defineProps({
 
 var userId = ref(usePage().props.auth.user.user_id);
 
-Echo.private("App.Models.User."+userId.value)
-    .notification((notification) => {
-        router.reload({only: ['notifications']});
-        ElNotification({
-            title: notification.title,
-            message: notification.message,
-            position: 'bottom-right',
-            type: 'info'
+if (import.meta.env.VITE_BROADCAST_DRIVER !== 'log') {
+    Echo.private("App.Models.User."+userId.value)
+        .notification((notification) => {
+            router.reload({only: ['notifications']});
+            ElNotification({
+                title: notification.title,
+                message: notification.message,
+                position: 'bottom-right',
+                type: 'info'
+            });
         });
-    });
+}
 </script>
 
 <style scoped>
