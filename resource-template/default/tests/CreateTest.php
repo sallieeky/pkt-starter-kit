@@ -25,7 +25,7 @@ test('can create modelname', function () {
     $this->user->givePermissionTo($permission);
 
     $this->actingAs($this->user);
-    $newData = ModelName::factory()->make()->toArray();
+    $newData = ModelName::factory()->create()->toArray();
     $response = test()->post(route('model_name.create'), $newData);
 
     expect($response->status())->toBe(302);

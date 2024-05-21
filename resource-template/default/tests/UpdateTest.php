@@ -16,7 +16,7 @@ beforeEach(function () {
 
 test('does not have access to update modelname', function () {
     $this->actingAs($this->user);
-    $newData = User::factory()->create();
+    $newData = ModelName::factory()->create();
     $response = test()->put(route('model_name.update', $newData->primary_key));
     expect($response->status())->toBe(403);
 });
@@ -37,7 +37,7 @@ test('can update modelname', function () {
     $this->actingAs($this->user);
     $oldData = ModelName::factory()->create();
     $newData = ModelName::factory()->make()->toArray();
-    $response = test()->put(route('user.update', $oldData->primary_key), $newData);
+    $response = test()->put(route('model_name.update', $oldData->primary_key), $newData);
     expect($response->status())->toBe(302);
-    $this->assertDatabaseHas('users', $newData);
+    $this->assertDatabaseHas('table_names', $newData);
 });
