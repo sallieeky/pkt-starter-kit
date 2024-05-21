@@ -23,7 +23,7 @@ class MakeViewCommand extends Command implements PromptsForMissingInput
      *
      * @var string
      */
-    protected $description = 'Make database view table';
+    protected $description = 'Create database view table';
 
     /**
      * Execute the console command.

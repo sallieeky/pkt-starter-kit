@@ -413,6 +413,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             'REVERB_PORT' => 'REVERB_PORT=8080',
             'REVERB_SCHEME' => 'REVERB_SCHEME=http',
             'REVERB_NEW_LINE' => null,
+            'VITE_BROADCAST_DRIVER' => 'VITE_BROADCAST_DRIVER="${BROADCAST_DRIVER}"',
             'VITE_REVERB_APP_KEY' => 'VITE_REVERB_APP_KEY="${REVERB_APP_KEY}"',
             'VITE_REVERB_HOST' => 'VITE_REVERB_HOST="${REVERB_HOST}"',
             'VITE_REVERB_PORT' => 'VITE_REVERB_PORT="${REVERB_PORT}"',
