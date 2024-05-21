@@ -190,6 +190,22 @@ Or if you want to stop supervisor service
 service supervisor stop
 ```
 
+## Testing
+You can find test case in `tests` folder on your base project directory. This starter kit already setup for testing using [Pest](https://pestphp.com/).
+
+Run test case using this command
+```cmd
+./vendor/bin/pest
+
+#or
+
+php artisan test
+```
+
+or for specific file only
+```cmd
+./vendor/bin/pest tests/Feature/ExampleTest.php
+```
 
 ## Included Library
 <p align="left">
