@@ -78,18 +78,18 @@ class MakeResourceCommand extends Command implements PromptsForMissingInput
     protected function createTestCases($model, $nameArgument)
     {
         // cek apakah folder tests ada
-        $exist = (new Filesystem)->exists(base_path('tests/Feature'.$nameArgument));
-        if ($exist) {
-            $this->error('Test already exists: tests/Feature'.$nameArgument);
+        $exist = (new Filesystem)->exists(base_path('tests/Feature/'.$nameArgument));
+        if ($exist && !$this->option('force')) {
+            $this->error('Test already exists: tests/Feature/'.$nameArgument);
             return 0;
         }
 
         // create folder tests/Feature/ModelName
         (new Filesystem)->ensureDirectoryExists(base_path('tests/Feature'.$nameArgument));
-        copy(__DIR__.'/../../../resource-template/default/tests/BrowseTest.php', base_path('tests/Feature'.$nameArgument.'/Browse'.$nameArgument.'Test.php'));
-        copy(__DIR__.'/../../../resource-template/default/tests/CreateTest.php', base_path('tests/Feature'.$nameArgument.'/Create'.$nameArgument.'Test.php'));
-        copy(__DIR__.'/../../../resource-template/default/tests/UpdateTest.php', base_path('tests/Feature'.$nameArgument.'/Update'.$nameArgument.'Test.php'));
-        copy(__DIR__.'/../../../resource-template/default/tests/DeleteTest.php', base_path('tests/Feature'.$nameArgument.'/Delete'.$nameArgument.'Test.php'));
+        copy(__DIR__.'/../../../resource-template/default/tests/BrowseTest.php', base_path('tests/Feature/'.$nameArgument.'/Browse'.$nameArgument.'Test.php'));
+        copy(__DIR__.'/../../../resource-template/default/tests/CreateTest.php', base_path('tests/Feature/'.$nameArgument.'/Create'.$nameArgument.'Test.php'));
+        copy(__DIR__.'/../../../resource-template/default/tests/UpdateTest.php', base_path('tests/Feature/'.$nameArgument.'/Update'.$nameArgument.'Test.php'));
+        copy(__DIR__.'/../../../resource-template/default/tests/DeleteTest.php', base_path('tests/Feature/'.$nameArgument.'/Delete'.$nameArgument.'Test.php'));
 
         $replacements = [
             'modelname' => Str::lower(Str::headline($nameArgument)),
@@ -100,10 +100,10 @@ class MakeResourceCommand extends Command implements PromptsForMissingInput
         ];
 
         $files = [
-            base_path('tests/Feature'.$nameArgument.'/Browse'.$nameArgument.'Test.php'),
-            base_path('tests/Feature'.$nameArgument.'/Create'.$nameArgument.'Test.php'),
-            base_path('tests/Feature'.$nameArgument.'/Update'.$nameArgument.'Test.php'),
-            base_path('tests/Feature'.$nameArgument.'/Delete'.$nameArgument.'Test.php'),
+            base_path('tests/Feature/'.$nameArgument.'/Browse'.$nameArgument.'Test.php'),
+            base_path('tests/Feature/'.$nameArgument.'/Create'.$nameArgument.'Test.php'),
+            base_path('tests/Feature/'.$nameArgument.'/Update'.$nameArgument.'Test.php'),
+            base_path('tests/Feature/'.$nameArgument.'/Delete'.$nameArgument.'Test.php'),
         ];
 
         foreach ($files as $file) {
