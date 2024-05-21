@@ -214,6 +214,12 @@ class InstallCommand extends Command implements PromptsForMissingInput
             (new Filesystem)->delete(base_path('routes/auth.php'));
             // End Routes
 
+            // Test
+            (new Filesystem)->ensureDirectoryExists(base_path('tests'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/tests', base_path('tests'));
+            copy(__DIR__.'/../../stubs/default/phpunit.xml', base_path('phpunit.xml'));
+            // End Test
+
             // SSL
             (new Filesystem)->ensureDirectoryExists(base_path('ssl'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/ssl', base_path('ssl'));
