@@ -173,6 +173,11 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/config/reverb.php', config_path('reverb.php'));
             // End Config
 
+            // Factories
+            (new Filesystem)->ensureDirectoryExists(database_path('factories'));
+            copy(__DIR__.'/../../stubs/default/database/factories/UserFactory.php', database_path('factories/UserFactory.php'));
+            // End Factories
+
             // Migrations
             (new Filesystem)->ensureDirectoryExists(database_path('migrations'));
             copy(__DIR__.'/../../stubs/default/database/migrations/2014_10_12_000000_create_users_table.php', database_path('migrations/2014_10_12_000000_create_users_table.php'));
@@ -215,6 +220,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             // End Routes
 
             // Test
+            (new Filesystem)->deleteDirectory(base_path('tests'));
             (new Filesystem)->ensureDirectoryExists(base_path('tests'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/tests', base_path('tests'));
             copy(__DIR__.'/../../stubs/default/phpunit.xml', base_path('phpunit.xml'));
