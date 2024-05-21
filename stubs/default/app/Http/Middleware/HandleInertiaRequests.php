@@ -46,7 +46,7 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'notifications' => Auth::user() ? Auth::user()->unreadNotifications : null,
-            'isEnableGlobalSearch' => GlobalSearch::isEnable(),
+            'isEnableGlobalSearch' => (new GlobalSearch())->isEnable(),
         ];
     }
 }
