@@ -196,6 +196,10 @@ You can find test case in `tests` folder on your base project directory. This st
 Run test case using this command
 ```cmd
 ./vendor/bin/pest
+
+#or
+
+php artisan test
 ```
 
 or for specific file only
