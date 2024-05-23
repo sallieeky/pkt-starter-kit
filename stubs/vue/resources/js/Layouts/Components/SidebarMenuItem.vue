@@ -2,11 +2,13 @@
     <div :key="key" class="flex flex-col transition-colors duration-300 cursor-pointer pl-4" :class="[
         { 'rounded-md gap-4': !sidemenu },
         { 'rounded-full w-10': sidemenu },
-        { 'mb-4':!hasSubmenu||sidemenu},
     ]" @click.stop="() => expanded = !expanded">
         <Link 
             :href="menuItem.href" 
             class="group"
+            :class="[
+                { 'pb-4':!hasSubmenu||sidemenu},
+            ]"
             v-if="!hasSubmenu"
             @click="menuItemClicked"
         >

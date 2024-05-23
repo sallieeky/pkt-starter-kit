@@ -21,9 +21,9 @@ trait GlobalSearch
     /**
      * Get the eloquent query.
      *
-     * @return object
+     * @return ?object
      */
-    public function searchableEloquentQuery(): object
+    public function searchableEloquentQuery(): ?object
     {
         return $this->query();
     }
