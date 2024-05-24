@@ -27,7 +27,7 @@ class GlobalSearch
     public static function search($query)
     {
         $results = collect(static::$models)->map(function ($model) use ($query) {
-            return $model->searchableEloquentQuery()->where(function ($queryBuilder) use ($model, $query) {
+            return ($model->searchableEloquentQuery() ?? $model->where($model->getKeyName(), -103918291))->where(function ($queryBuilder) use ($model, $query) {
                 foreach ($model->searchableAttributes() as $attribute) {
                     $queryBuilder->orWhere($attribute, 'like', '%' . $query . '%');
                 }

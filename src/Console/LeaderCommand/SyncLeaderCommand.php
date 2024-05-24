@@ -30,12 +30,6 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
      */
     public function handle()
     {
-        // make sure the user already run pkt:install
-        if (!file_exists(resource_path('js/Core/Config/SidemenuItem.js')) && !file_exists(config_path('permissions.php'))) {
-            $this->error('Please run php artisan pkt:install first');
-            return 0;
-        }
-
         // make sure the user already set the LEADER_API_KEY
         if (!env('LEADER_API_KEY') || !file_exists(database_path('migrations/2024_04_04_000000_add_leader_to_users_table.php'))) {
             $this->error('Please initialize PKT Leader first. Run php artisan pkt:leader-init');

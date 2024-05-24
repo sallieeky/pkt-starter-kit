@@ -1,5 +1,5 @@
 <template>
-    <div class="hidden lg:block p-4 fixed h-screen max-h-screen mt-20 overflow-scroll w-20 no-scrollbar transition-[width] 
+    <div class="hidden lg:block p-4 fixed h-screen pb-24 max-h-screen mt-20 overflow-scroll w-20 no-scrollbar transition-[width] 
                 duration-300 ease-in-out bg-[url('/images/pkt-pattern.png')] bg-contain bg-left-bottom bg-no-repeat bg-primary-surface z-50"
         :class="[
             { 'w-20': sidemenu },
