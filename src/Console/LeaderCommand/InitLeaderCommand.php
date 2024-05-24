@@ -29,12 +29,6 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
      */
     public function handle()
     {
-        // make sure the user already run pkt:install
-        if (!file_exists(resource_path('js/Core/Config/SidemenuItem.js')) && !file_exists(config_path('permissions.php'))) {
-            $this->error('Please run php artisan pkt:install first');
-            return 0;
-        }
-
         // make sure the user already set the LEADER_API_KEY
         if (!env('LEADER_API_KEY')) {
             $this->error('Please set the LEADER_API_KEY in .env file');

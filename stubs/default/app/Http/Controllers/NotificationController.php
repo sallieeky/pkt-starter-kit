@@ -34,7 +34,6 @@ class NotificationController extends Controller
     public function notificationPagination(Request $request)
     {
         $paginatedNotifications = Auth::user()->notifications()
-            ->orderBy('created_at', 'desc')
             ->paginate(10);
 
         return json_encode($paginatedNotifications);

@@ -13,6 +13,15 @@ class ModelName extends Model
     protected $table = 'table_names';
     protected $primaryKey = 'table_name_id';
     protected $guarded = ['table_name_id', 'table_name_uuid'];
+    
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        // ...
+    ];
 
     /**
      * Get the columns that should receive a unique identifier.
