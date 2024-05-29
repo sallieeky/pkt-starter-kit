@@ -1,5 +1,5 @@
 <template>
-    <div :key="key" class="flex flex-col transition-colors duration-300 cursor-pointer pl-4" :class="[
+    <div :key="unique" class="flex flex-col transition-colors duration-300 cursor-pointer pl-4" :class="[
         { 'rounded-md gap-4': !sidemenu },
         { 'rounded-full w-10': sidemenu },
     ]" @click.stop="() => expanded = !expanded">
@@ -104,7 +104,7 @@ import { useSidemenuStore } from '@/Stores/sidemenu';
 const emit = defineEmits(['expand']);
 
 const props = defineProps({
-    key: Number,
+    unique: Number,
     menuItem: Object,
     isSubmenu: {
         type: Boolean,
