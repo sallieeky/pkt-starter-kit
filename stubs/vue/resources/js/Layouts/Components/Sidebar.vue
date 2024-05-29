@@ -24,7 +24,7 @@
         <nav class="flex-grow">
             <ul class="my-2 flex flex-col gap-2 items-stretch">
                 <li v-for="menuItem, index in sideMenuItems" :key="index">
-                    <sidebar-menu-item v-if="can(menuItem.permission)" :menu-item="menuItem" :key="index">
+                    <sidebar-menu-item v-if="can(menuItem.permission)" :menu-item="menuItem" :unique="index">
                         {{ menuItem.permission }}
                     </sidebar-menu-item>
                 </li>
