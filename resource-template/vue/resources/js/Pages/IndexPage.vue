@@ -2,7 +2,7 @@
     <Head title="ResourceTitle" />
     <MainLayout title="ResourceTitle">
         <div class="flex flex-col">
-            <DxDataGrid ref="datagridRef" :data-source="dataSource" key-expr="PrimaryKey" :column-auto-width="true"
+            <DxDataGrid ref="datagridRef" :data-source="dataSource" key="PrimaryKey" :column-auto-width="true"
                 :remote-operations="remoteOperations" :item-per-page="10" @selection-changed="onSelectionChanged"
                 @exporting="onExporting">
                 <DxFilterRow :visible="true" />

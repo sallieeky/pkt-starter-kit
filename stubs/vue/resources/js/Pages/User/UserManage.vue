@@ -2,7 +2,7 @@
     <Head title="User Management" />
     <MainLayout title="User Management">
         <div class="flex flex-col">
-            <DxDataGrid ref="datagridRef" :data-source="dataSource" key-expr="user_id" :column-auto-width="true"
+            <DxDataGrid ref="datagridRef" :data-source="dataSource" key="user_id" :column-auto-width="true"
                 :remote-operations="remoteOperations" :item-per-page="10" @selection-changed="onSelectionChanged"
                 @exporting="onExporting">
                 <DxFilterRow :visible="true" />
