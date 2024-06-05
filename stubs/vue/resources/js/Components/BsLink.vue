@@ -1,7 +1,7 @@
 <template>
     <Link
         :href="href"
-        class="inline-block px-3 py-2 text-[12px] align-middle rounded-lg font-bold m-1"
+        class="inline-block px-3 py-2 text-[12px] align-middle rounded-lg font-bold m-1 cursor-pointer"
         :class="style"
     >
         <div class="flex items-center">
@@ -17,6 +17,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { Link } from "@inertiajs/vue3";
 import BsIcon from "@/Components/BsIcon.vue";
 
 const props = defineProps({
