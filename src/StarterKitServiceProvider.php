@@ -36,6 +36,7 @@ class StarterKitServiceProvider extends ServiceProvider implements DeferrablePro
             Console\MakeBlankPageCommand\MakeVueBlankPageCommand::class,
             Console\MakeViewCommand\MakeViewCommand::class,
             Console\MakeDatabaseTableCommand\MakeDatabaseTableCommand::class,
+            Console\MakeComponentCommand\MakeComponentCommand::class,
         ]);
     }
 
@@ -54,6 +55,7 @@ class StarterKitServiceProvider extends ServiceProvider implements DeferrablePro
             Console\MakeBlankPageCommand\MakeVueBlankPageCommand::class,
             Console\MakeViewCommand\MakeViewCommand::class,
             Console\MakeDatabaseTableCommand\MakeDatabaseTableCommand::class,
+            Console\MakeComponentCommand\MakeComponentCommand::class,
         ];
     }
 }
