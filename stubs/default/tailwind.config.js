@@ -26,6 +26,7 @@ export default {
                     'hover':'#0a4f86',
                     'pressed':'#0f416a',
                     'focus':'#edf5fc',
+                    'disabled':'#c7ddf0',
                 },
                 'secondary' : {
                     DEFAULT:'#f47920',
@@ -35,6 +36,7 @@ export default {
                     'hover':'#d36428',
                     'pressed':'#be5a27',
                     'focus':'#fcefe5',
+                    'disabled':'#ffe4d1',
                 },
                 'success' : {
                     DEFAULT:'#7aa659',
@@ -47,6 +49,7 @@ export default {
                     'hover':'#a32821',
                     'pressed':'#80251e',
                     'focus':'#f5dedc',
+                    'disabled':'#f5cbc9',
                 },
                 'gray' : {
                     200:'#f6f6f6',
