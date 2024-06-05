@@ -1,5 +1,6 @@
 <template>
     <Link
+        :disabled="disabled"
         :href="href"
         class="inline-block px-3 py-2 text-[12px] align-middle rounded-lg font-bold m-1 cursor-pointer"
         :class="style"
@@ -44,6 +45,7 @@ const props = defineProps({
 
 // Button Style
 const style = ref([]);
+
 switch(props.type){
     case 'primary':
         style.value = [
@@ -52,6 +54,7 @@ switch(props.type){
             "hover:bg-primary-hover",
             "focus:bg-primary-hover",
             "active:bg-primary-pressed",
+            "disabled:bg-primary-disabled disabled:cursor-not-allowed",
         ]
         break;
     case 'primary-outline':
@@ -65,6 +68,7 @@ switch(props.type){
             "focus:border-primary",
             "active:bg-primary-border",
             "active:border-primary-pressed",
+            "disabled:text-primary-disabled disabled:border-primary-disabled disabled:cursor-not-allowed",
         ]
         break;
     case 'secondary':
@@ -74,6 +78,7 @@ switch(props.type){
             "hover:bg-secondary-hover",
             "focus:bg-secondary-hover",
             "active:bg-secondary-pressed",
+            "disabled:bg-secondary-disabled disabled:cursor-not-allowed",
         ]
         break;
     case 'secondary-outline':
@@ -87,6 +92,7 @@ switch(props.type){
             "focus:border-secondary",
             "active:bg-secondary-border",
             "active:border-secondary-pressed",
+            "disabled:text-secondary-disabled disabled:border-secondary-disabled disabled:cursor-not-allowed",
         ]
         break;
     case 'danger':
@@ -96,6 +102,7 @@ switch(props.type){
             "hover:bg-danger-hover",
             "focus:bg-danger-hover",
             "active:bg-danger-pressed",
+            "disabled:bg-danger-disabled disabled:cursor-not-allowed",
         ]
         break;
     case 'danger-outline':
@@ -109,6 +116,7 @@ switch(props.type){
             "focus:border-danger",
             "active:bg-danger-border",
             "active:border-danger-pressed",
+            "disabled:text-danger-disabled disabled:border-danger-disabled disabled:cursor-not-allowed",
         ]
         break;
     default:
