@@ -1,6 +1,7 @@
 <template>
-    <button 
-        class="px-3 py-2 text-[12px] align-middle rounded-lg font-bold m-1" 
+    <Link
+        :href="href"
+        class="inline-block px-3 py-2 text-[12px] align-middle rounded-lg font-bold m-1"
         :class="style"
     >
         <div class="flex items-center">
@@ -11,7 +12,7 @@
                 <slot/>
             </div>
         </div>
-    </button>
+    </Link>
 </template>
 
 <script setup>
@@ -33,6 +34,10 @@ const props = defineProps({
     },
     icon:{
         type: String
+    },
+    href:{
+        type: String,
+        default: '#'
     }
 });
 
