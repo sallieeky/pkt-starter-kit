@@ -1,22 +1,40 @@
 <template>
-    <button 
-        class="px-3 py-2 text-[12px] align-middle rounded-lg font-bold m-1" 
+    <button
+        class="px-3 py-2 text-[12px] align-middle rounded-lg font-bold m-1"
         :class="style"
+        v-if="href == null"
     >
         <div class="flex items-center">
             <div class="pr-2" v-if="icon != null">
                 <bs-icon :icon="icon"></bs-icon>
             </div>
-            <div class="h-5 flex items-center">
+            <div class="flex items-center h-5">
                 <slot/>
             </div>
         </div>
     </button>
+
+    <Link
+        :href="href"
+        class="inline-block px-3 py-2 text-[12px] align-middle rounded-lg font-bold m-1"
+        :class="style"
+        v-if="href != null"
+    >
+        <div class="flex items-center">
+            <div class="pr-2" v-if="icon != null">
+                <bs-icon :icon="icon"></bs-icon>
+            </div>
+            <div class="flex items-center h-5">
+                <slot/>
+            </div>
+        </div>
+    </Link>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 import BsIcon from "@/Components/BsIcon.vue";
+import { Link } from "@inertiajs/vue3";
 
 const props = defineProps({
     type:{
@@ -32,6 +50,9 @@ const props = defineProps({
         default: "small"
     },
     icon:{
+        type: String
+    },
+    href:{
         type: String
     }
 });

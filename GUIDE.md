@@ -251,8 +251,20 @@ php artisan pkt:make-page MasterData/Equipment
 
 this command will generate file `resources/js/Pages/MasterData/Equipment.vue`
 
+### 3. Make Blank Component Command
+This command will generate blank component file for your frontend
+```cmd
+php artisan pkt:make-component <Filepath/Filename>
+```
 
-### 3. Init Leader Command
+#### Example
+```cmd
+php artisan pkt:make-component Dashboard/AdminTab
+```
+
+this command will generate file `resources/js/Components/Dashboard/AdminTab.vue`
+
+### 4. Init Leader Command
 First you need to setup `.env` file and add this line.
 ```.env
 LEADER_API_KEY=<ask admin>
@@ -275,7 +287,7 @@ work_unit       => string
 users_flag      => string
 ```
 
-### 4. Sync Leader Command
+### 5. Sync Leader Command
 First you need to setup `.env` file and add this line.
 ```.env
 LEADER_API_KEY=<ask admin>
@@ -287,7 +299,7 @@ php artisan pkt:leader-sync
 ```
 This command will sync users from PKT Leader
 
-### 5. Make Database Table
+### 6. Make Database Table
 This command will create new `migration` and `model` for your database table including transaction (tr), master (ms), or value list (vl)
 ```cmd
 php artisan pkt:make-table <ModelName>
@@ -315,7 +327,7 @@ database/migrations/...create_ms_employees_table.php
 database/factories/EmployeeFactory.php
 ```
 
-### 6. Make Database View Table
+### 7. Make Database View Table
 
 This command will create new `migration` and `model` for your database view table
 ```cmd
