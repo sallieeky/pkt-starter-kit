@@ -35,7 +35,8 @@ class User extends Authenticatable
         'position',
         'work_unit_id',
         'work_unit',
-        'users_flag',
+        'user_flag',
+        'user_alias',
     ];
 
     /**

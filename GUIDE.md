@@ -272,7 +272,8 @@ position_id     => string
 position        => string
 work_unit_id    => string
 work_unit       => string
-users_flag      => string
+user_flag       => string
+user_alias      => string
 ```
 
 ### 4. Sync Leader Command

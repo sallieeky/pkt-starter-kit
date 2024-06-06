@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('position')->nullable()->after('position_id');
             $table->string('work_unit_id')->nullable()->after('position');
             $table->string('work_unit')->nullable()->after('work_unit_id');
-            $table->string('users_flag')->nullable()->after('work_unit');
+            $table->string('user_flag')->nullable()->after('work_unit');
+            $table->string('user_alias')->nullable()->after('user_flag');
         });
     }
 
@@ -32,7 +33,8 @@ return new class extends Migration
             $table->dropColumn('position');
             $table->dropColumn('work_unit_id');
             $table->dropColumn('work_unit');
-            $table->dropColumn('users_flag');
+            $table->dropColumn('user_flag');
+            $table->dropColumn('user_alias');
         });
     }
 };

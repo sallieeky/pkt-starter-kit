@@ -64,7 +64,8 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
                         'position' => $employee->USERS_POSISI,
                         'work_unit_id' => $employee->USERS_ID_UNIT_KERJA,
                         'work_unit' => $employee->USERS_UNIT_KERJA,
-                        'users_flag' => $employee->USERS_FLAG,
+                        'user_flag' => $employee->USERS_FLAG,
+                        'user_alias' => $employee->USERS_ALIAS,
                     ];
                     if($user){
                         $user->update($dataUser);

@@ -22,14 +22,15 @@ class LeaderApi
      *     "USERS_POSISI": string,
      *     "USERS_ID_UNIT_KERJA": string,
      *     "USERS_UNIT_KERJA": string,
-     *     "USERS_FLAG": string
+     *     "USERS_FLAG": string,
+     *     "USERS_ALIAS": string
      *  }
      * >
      */
     public static function getAllEmployee(): Collection
     {
         $response = Http::withHeaders([
-            'Api-Key' => env('LEADER_API_KEY')
+            'Api-Key' => config('leader.LEADER_API_KEY')
         ])->get('https://leader.pupukkaltim.com/api/Api_leader/get_all_karyawan');
 
         return collect($response->object()->data->USERS_LIST);
@@ -50,7 +51,7 @@ class LeaderApi
     public static function getAllWorkUnit(): Collection
     {
         $response = Http::withHeaders([
-            'Api-Key' => env('LEADER_API_KEY')
+            'Api-Key' => config('leader.LEADER_API_KEY')
         ])->get('https://leader.pupukkaltim.com/api/Api_leader/get_all_unit_kerja');
         
         return collect($response->object()->data->UK_LIST);
@@ -71,7 +72,7 @@ class LeaderApi
     public static function getAllPlt(): Collection
     {
         $response = Http::withHeaders([
-            'Api-Key' => env('LEADER_API_KEY')
+            'Api-Key' => config('leader.LEADER_API_KEY')
         ])->get('https://leader.pupukkaltim.com/api/Api_leader/get_all_plt');
 
         return collect($response->object()->data->PLT_LIST);
