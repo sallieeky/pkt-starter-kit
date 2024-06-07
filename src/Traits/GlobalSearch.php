@@ -55,6 +55,7 @@ trait GlobalSearch
     /**
      * Get the columns that should receive a unique identifier.
      *
+     * @param  \Illuminate\Database\Eloquent\Model  $record
      * @return string
      */
     public function searchableFormatRecord(Model $record): string
@@ -65,6 +66,7 @@ trait GlobalSearch
     /**
      * Get action url for searchable record.
      *
+     * @param  \Illuminate\Database\Eloquent\Model  $record
      * @return ?string
      */
     public function searchableRecordActionUrl(Model $record): ?string

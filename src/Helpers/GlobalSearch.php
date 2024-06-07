@@ -5,14 +5,37 @@ use Illuminate\Support\Str;
 
 class GlobalSearch
 {
+    /**
+     * The models that should be searchable.
+     *
+     * @var array
+     */
     public static $models = [];
+
+    /**
+     * The columns that can be searched.
+     *
+     * @var array
+     */
     public static $searchableAttributes = [];
 
+    /**
+     * Register a model to be searchable.
+     *
+     * @param  object  $model
+     * @return void
+     */
     public static function registerModel($model)
     {
         static::$models[] = $model;
     }
 
+
+    /**
+     * Construct the helper.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $models = array_diff(scandir(app_path('Models')), ['.', '..']);
@@ -24,6 +47,12 @@ class GlobalSearch
         }
     }
 
+    /**
+     * Search for a record query.
+     *
+     * @param  string  $query
+     * @return \Illuminate\Support\Collection
+     */
     public static function search($query)
     {
         $results = collect(static::$models)->map(function ($model) use ($query) {
@@ -47,8 +76,15 @@ class GlobalSearch
         return $results;
     }
 
+    /**
+     * Check if the global search is enabled by any model.
+     *
+     * @return bool
+     */
     public static function isEnable()
     {
-        return !empty(static::$models);
+        return !empty(static::$models) && collect(static::$models)->filter(function ($model) {
+            return !is_null($model->searchableEloquentQuery());
+        })->isNotEmpty();
     }
 }
