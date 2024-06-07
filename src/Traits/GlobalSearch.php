@@ -37,7 +37,11 @@ trait GlobalSearch
     {
         return collect($this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable()))
             ->filter(function ($column) {
-                return !Str::endsWith($column, '_id') && !Str::endsWith($column, '_uuid');
+                return !Str::endsWith($column, '_id') &&
+                    !Str::endsWith($column, '_uuid') &&
+                    !in_array($column, [
+                        'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by'
+                    ]);
             })
             ->toArray();
     }
@@ -55,6 +59,7 @@ trait GlobalSearch
     /**
      * Get the columns that should receive a unique identifier.
      *
+     * @param  \Illuminate\Database\Eloquent\Model  $record
      * @return string
      */
     public function searchableFormatRecord(Model $record): string
@@ -65,6 +70,7 @@ trait GlobalSearch
     /**
      * Get action url for searchable record.
      *
+     * @param  \Illuminate\Database\Eloquent\Model  $record
      * @return ?string
      */
     public function searchableRecordActionUrl(Model $record): ?string
