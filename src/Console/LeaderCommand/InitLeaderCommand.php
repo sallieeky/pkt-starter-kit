@@ -4,6 +4,7 @@ namespace Pkt\StarterKit\Console\LeaderCommand;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
+use Illuminate\Support\Facades\DB;
 use Pkt\StarterKit\Helpers\LeaderApi;
 
 class InitLeaderCommand extends Command implements PromptsForMissingInput
@@ -13,7 +14,8 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
      *
      * @var string
      */
-    protected $signature = 'pkt:leader-init';
+    protected $signature = 'pkt:leader-init
+                            {--add-dx-column : Add dx column to UserManage.vue}';
 
     /**
      * The console command description.
@@ -60,29 +62,56 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
 
         // get all employee from Leader API
         $this->components->task('Syncing users data...', function () {
-            $employees = LeaderApi::getAllEmployee();
-            $employees->each(function ($employee) {
-                $user = app('App\\Models\\User')::updateOrCreate([
-                    'npk' => $employee->USERS_NPK
-                ], [
-                    'name' => $employee->USERS_NAME,
-                    'email' => $employee->USERS_EMAIL,
-                    'username' => $employee->USERS_USERNAME,
-                    'hierarchy_code' => $employee->USERS_HIERARCHY_CODE,
-                    'position_id' => $employee->USERS_ID_POSISI,
-                    'position' => $employee->USERS_POSISI,
-                    'work_unit_id' => $employee->USERS_ID_UNIT_KERJA,
-                    'work_unit' => $employee->USERS_UNIT_KERJA,
-                    'user_flag' => $employee->USERS_FLAG,
-                    'user_alias' => $employee->USERS_ALIAS,
-                    'is_active' => false,
-                    'password' => '$2y$12$K7iSlaMTjZpgfiLEFMHbM.3O3LADzHvQYWkYaXJMQYWAIjgAF3.hy', // Bontang123@2024
-                ]);
-                $user->assignRole('Viewer');
-            });
-
+            DB::beginTransaction();
+            try {
+                $employees = LeaderApi::getAllEmployee();
+                $employees->each(function ($employee) {
+                    $user = app('App\\Models\\User')::updateOrCreate([
+                        'npk' => $employee->USERS_NPK
+                    ], [
+                        'name' => $employee->USERS_NAME,
+                        'email' => $employee->USERS_EMAIL,
+                        'username' => $employee->USERS_USERNAME,
+                        'hierarchy_code' => $employee->USERS_HIERARCHY_CODE,
+                        'position_id' => $employee->USERS_ID_POSISI,
+                        'position' => $employee->USERS_POSISI,
+                        'work_unit_id' => $employee->USERS_ID_UNIT_KERJA,
+                        'work_unit' => $employee->USERS_UNIT_KERJA,
+                        'user_flag' => $employee->USERS_FLAG,
+                        'user_alias' => $employee->USERS_ALIAS,
+                        'is_active' => false,
+                        'password' => '$2y$12$K7iSlaMTjZpgfiLEFMHbM.3O3LADzHvQYWkYaXJMQYWAIjgAF3.hy', // Bontang123@2024
+                    ]);
+                    $user->assignRole('Viewer');
+                });
+            } catch (\Exception $e) {
+                DB::rollBack();
+                $this->error('Failed to get users data from PKT Leader API.');
+                return 0;
+            }
+            DB::commit();
             $this->info('Synced ' . $employees->count() . ' users from PKT Leader.');
         });
+
+        // manipulate user manage when adding flag --add-dx-column
+        if ($this->option('add-dx-column')) {
+            $this->components->task('Manipulating user manage...', function () {
+                $content = file_get_contents(resource_path('js/Pages/User/UserManage.vue'));
+                $additionalDxColumn = "
+                <DxColumn data-field=\"position\" caption=\"Position\" :allowHeaderFiltering=\"false\" />
+                <DxColumn data-field=\"work_unit\" caption=\"Work Unit\" :allowHeaderFiltering=\"false\" />
+                <DxColumn data-field=\"user_alias\" caption=\"User Alias\" :allowHeaderFiltering=\"false\" />
+                <DxColumn data-field=\"user_flag\" caption=\"User Flag\" :allowHeaderFiltering=\"false\" />
+                ";
+                $content = str_replace(
+                    '<DxColumn data-field="email" caption="Email" :allowHeaderFiltering="false" />',
+                    '<DxColumn data-field="email" caption="Email" :allowHeaderFiltering="false" />' .
+                    $additionalDxColumn, $content
+                );
+
+                file_put_contents(resource_path('js/Pages/User/UserManage.vue'), $content);
+            });
+        }
 
         $this->line('');
         $this->info('PKT Leader init and sync successfully.');

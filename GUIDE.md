@@ -272,8 +272,12 @@ LEADER_API_KEY=<ask admin>
 
 If you already set `LEADER_API_KEY` to your `.env` file, than run this command.
 ```cmd
-php artisan pkt:leader-init
+php artisan pkt:leader-init <additional-flag>
 ```
+Additional flag you can use <br>
+- `--add-dx-column` Add additional dx column to UserManage.vue that related with leader.
+
+
 This command will initialize and setup users table to sync with PKT Leader user, it also will **syncronize** or **create new** user from PKT Leader
 
 ```
