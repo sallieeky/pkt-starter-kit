@@ -68,7 +68,16 @@ trait ManipulateVueResource
         $columnTableSlot = '';
         foreach ($columns as $column) {
             $label = Str::headline($column);
-            if ($column === $primaryKey || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at' || Str::endsWith($column, '_uuid') || Str::endsWith($column, '_id')) {
+            if (
+                $column === $primaryKey || 
+                $column === 'created_at' || 
+                $column === 'updated_at' || 
+                $column === 'deleted_at' || 
+                $column === 'created_by' ||
+                $column === 'updated_by' ||
+                Str::endsWith($column, '_uuid') || 
+                Str::endsWith($column, '_id')
+            ) {
                 continue;
             }
             $columnTableSlot .= '<DxColumn data-field="'. $column . '" caption="' . $label .'" :allowHeaderFiltering="false" />' . PHP_EOL . '                ';
