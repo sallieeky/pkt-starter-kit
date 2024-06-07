@@ -3,6 +3,7 @@
 namespace Pkt\StarterKit;
 
 use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\ServiceProvider;
 
 class StarterKitServiceProvider extends ServiceProvider implements DeferrableProvider
@@ -38,6 +39,11 @@ class StarterKitServiceProvider extends ServiceProvider implements DeferrablePro
             Console\MakeDatabaseTableCommand\MakeDatabaseTableCommand::class,
             Console\MakeComponentCommand\MakeComponentCommand::class,
         ]);
+
+        Blueprint::macro('createdUpdatedBy', function () {
+            $this->foreignIdBy(config('auth.providers.users.model'), 'created_by')->nullable();
+            $this->foreignIdBy(config('auth.providers.users.model'), 'updated_by')->nullable();
+        });
     }
 
     /**
