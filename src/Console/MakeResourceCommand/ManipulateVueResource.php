@@ -80,7 +80,16 @@ trait ManipulateVueResource
             $type = $model->getConnectionResolver()->connection()->getSchemaBuilder()->getColumnType($model->getTable(), $column);
             $required = $model->getConnectionResolver()->connection()->getSchemaBuilder()->getConnection()->getDoctrineColumn($model->getTable(), $column)->getNotnull();
             $label = Str::headline($column);
-            if ($column === $primaryKey || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at' || Str::endsWith($column, '_uuid') || Str::endsWith($column, '_id')) {
+            if (
+                $column === $primaryKey || 
+                $column === 'created_at' || 
+                $column === 'updated_at' || 
+                $column === 'deleted_at' || 
+                $column === 'created_by' ||
+                $column === 'updated_by' ||
+                Str::endsWith($column, '_uuid') || 
+                Str::endsWith($column, '_id')
+            ) {
                 continue;
             }
 
@@ -185,7 +194,16 @@ trait ManipulateVueResource
         $rules = '';
         $columns = $this->model->getConnection()->getSchemaBuilder()->getColumnListing($this->model->getTable());
         foreach ($columns as $column) {
-            if ($column === $this->model->getKeyName() || $column === 'created_at' || $column === 'updated_at' || $column === 'deleted_at' || Str::endsWith($column, '_uuid') || Str::endsWith($column, '_id')) {
+            if (
+                $column === $this->model->getKeyName() || 
+                $column === 'created_at' || 
+                $column === 'updated_at' || 
+                $column === 'deleted_at' ||
+                $column === 'created_by' ||
+                $column === 'updated_by' ||
+                Str::endsWith($column, '_uuid') || 
+                Str::endsWith($column, '_id')
+            ) {
                 continue;
             }
             $required = $this->model->getConnectionResolver()->connection()->getSchemaBuilder()->getConnection()->getDoctrineColumn($this->model->getTable(), $column)->getNotnull() ? 'required' : null;
