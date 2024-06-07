@@ -447,7 +447,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tr_transactions', function (Blueprint $table) {
+        Schema::table('tr_transactions', function (Blueprint $table) {
             ...
             $table->createdUpdatedBy();
         });
@@ -458,7 +458,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tr_transactions');
+        Schema::table('tr_transactions', function (Blueprint $table) {
+            ...
+            $table->dropCreatedUpdatedBy();
+        });
     }
 };
 ```
