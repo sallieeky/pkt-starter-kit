@@ -41,8 +41,8 @@ class StarterKitServiceProvider extends ServiceProvider implements DeferrablePro
         ]);
 
         Blueprint::macro('createdUpdatedBy', function () {
-            $this->foreignIdBy(config('auth.providers.users.model'), 'created_by')->nullable();
-            $this->foreignIdBy(config('auth.providers.users.model'), 'updated_by')->nullable();
+            $this->foreignIdFor(config('auth.providers.users.model'), 'created_by')->nullable();
+            $this->foreignIdFor(config('auth.providers.users.model'), 'updated_by')->nullable();
         });
     }
 
