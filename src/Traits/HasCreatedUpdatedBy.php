@@ -25,6 +25,22 @@ trait HasCreatedUpdatedBy
     }
 
     /**
+     * Initialize the has created updated by trait for an instance.
+     *
+     * @return void
+     */
+    public function initializeHasCreatedUpdatedBy(): void
+    {
+        if (! isset($this->casts['created_by'])) {
+            $this->casts['created_by'] = 'integer';
+        }
+
+        if (! isset($this->casts['updated_by'])) {
+            $this->casts['updated_by'] = 'integer';
+        }
+    }
+
+    /**
      * Get the user that created the model.
      * 
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
