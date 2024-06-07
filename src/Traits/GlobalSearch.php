@@ -37,7 +37,11 @@ trait GlobalSearch
     {
         return collect($this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable()))
             ->filter(function ($column) {
-                return !Str::endsWith($column, '_id') && !Str::endsWith($column, '_uuid');
+                return !Str::endsWith($column, '_id') &&
+                    !Str::endsWith($column, '_uuid') &&
+                    !in_array($column, [
+                        'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by'
+                    ]);
             })
             ->toArray();
     }
