@@ -427,3 +427,58 @@ Then run command in your terminal
 ```cmd
 php artisan reverb:start
 ```
+
+### Has Created and Updated By
+
+It's recommended for you to implement created and updated by to audit your data history on your database table. So we provide trait to easily add `created_by` and `updated_by` column on your database table.
+
+Example on your migration, you need to add `$table->createdUpdatedBy();`
+```php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('tr_transactions', function (Blueprint $table) {
+            ...
+            $table->createdUpdatedBy();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('tr_transactions');
+    }
+};
+```
+
+Example on your model, you need to add `HasCreatedUpdatedBy`
+```php
+use Pkt\StarterKit\Traits\HasCreatedUpdatedBy;
+...
+
+class Transaction extends Model
+{
+    use HasCreatedUpdatedBy;
+    ...
+}
+```
+
+If you implemented `HasCreatedUpdatedBy` you can access `createdBy()` and `updatedBy()` relation from your model.
+```php
+$transaction = Transaction::query()->with(['createdBy', 'updatedBy'])->first();
+
+$transaction->createdBy;
+$transaction->updatedBy;
+```
