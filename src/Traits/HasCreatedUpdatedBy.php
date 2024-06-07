@@ -31,7 +31,7 @@ trait HasCreatedUpdatedBy
      */
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(config('auth.providers.users.model'), 'created_by', auth()->user()?->getKeyName());
+        return $this->belongsTo(config('auth.providers.users.model'), 'created_by', auth()->user()?->getKeyName())->withTrashed();
     }
 
     /**
@@ -41,7 +41,7 @@ trait HasCreatedUpdatedBy
      */
     public function updatedBy(): BelongsTo
     {
-        return $this->belongsTo(config('auth.providers.users.model'), 'updated_by', auth()->user()?->getKeyName());
+        return $this->belongsTo(config('auth.providers.users.model'), 'updated_by', auth()->user()?->getKeyName())->withTrashed();
     }
 }
 
