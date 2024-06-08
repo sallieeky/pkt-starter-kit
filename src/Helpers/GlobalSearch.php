@@ -1,6 +1,8 @@
 <?php
 
 namespace Pkt\StarterKit\Helpers;
+
+use Pkt\StarterKit\Casts\Encrypted;
 use Illuminate\Support\Str;
 
 class GlobalSearch
@@ -58,6 +60,10 @@ class GlobalSearch
         $results = collect(static::$models)->map(function ($model) use ($query) {
             return ($model->searchableEloquentQuery() ?? $model->where($model->getKeyName(), -103918291))->where(function ($queryBuilder) use ($model, $query) {
                 foreach ($model->searchableAttributes() as $attribute) {
+                    if (isset($model->getCasts()[$attribute]) && ($model->getCasts()[$attribute] === Encrypted::class)) {
+                        $queryBuilder->orWhereEncrypted($attribute, $query);
+                        continue;
+                    }
                     $queryBuilder->orWhere($attribute, 'like', '%' . $query . '%');
                 }
             })->get();

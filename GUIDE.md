@@ -468,6 +468,8 @@ return new class extends Migration
 
 Example on your model, you need to add `HasCreatedUpdatedBy`
 ```php
+<?php
+
 use Pkt\StarterKit\Traits\HasCreatedUpdatedBy;
 ...
 
@@ -484,4 +486,89 @@ $transaction = Transaction::query()->with(['createdBy', 'updatedBy'])->first();
 
 $transaction->createdBy;
 $transaction->updatedBy;
+```
+
+### Custom Encrypt Helper
+
+This helper is to encrypt and decrypt data. The encrypting method associated with `APP_KEY`, so it's **IMPORTANT** to keep your `APP_KEY` **secure**.
+
+```php
+namespace Pkt\StarterKit\Helpers\Crypt;
+
+$encrypt = Crypt::encrypt('data');
+$decrypt = Crypt::decrypt('l6123hgs/o0adlRkCtf/36+dW19dTkQ==');
+```
+
+### Encrypting Data To Database Table
+
+When you wanna store the **personal** or **restricted** informations on your database, it's **IMPORTANT** to encrypt its data before you store in to the database.
+
+So there's additional helper for you to easily protect the restricted data on the database and querying its data. The encrypting method associated with `APP_KEY`, so it's **IMPORTANT** to keep your `APP_KEY` **secure**.
+
+
+**Example**
+
+If you wanna store the personal number such as NIK on your `ms_employees` table.
+
+On your `migration`, it's **recommended** to make the type of column into `text` because the encrypted data is longer than the original data.
+```php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('ms_employees', function (Blueprint $table) {
+            ...
+            $table->text('nik');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('ms_employees');
+    }
+};
+```
+
+
+On your `model`, you need to cast `nik` column into `Encrypted::class`.
+```php
+<?php
+
+use Pkt\StarterKit\Casts\Encrypted;
+...
+
+class Employee extends Model
+{
+    ...
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'nik' => Encrypted::class,
+    ];
+}
+```
+
+If you already set the cast on your spesific column, it will automatically encrypting your data when store and decrypting when its called.
+
+Additional query builder you can use is `whereEncrypted(column, operator, value)` and `orWhereEncrypted(column, operator, value)` with operator you can only use `=` or `!=`
+```php
+$employees = Employee::query()
+       ->whereEncrypted('nik', 1234567890123456)
+       ->orWhereEncrypted('nik', '!=', 0123456789012345)
+       ->get();
 ```
