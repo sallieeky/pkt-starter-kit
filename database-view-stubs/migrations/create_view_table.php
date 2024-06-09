@@ -1,8 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
-use Staudenmeir\LaravelMigrationViews\Facades\Schema as FacadesSchema;
+use Staudenmeir\LaravelMigrationViews\Facades\Schema;
 
 return new class extends Migration
 {
@@ -11,15 +10,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $query = \App\Models\ModelName::query();
-        FacadesSchema::createView('table_name', $query);
-    }
+        /**
+         * ============================================
+         * Drop the view if it already exists.
+         * ============================================
+         */
+        Schema::dropViewIfExists('table_name');
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        FacadesSchema::dropViewIfExists('table_name');
+        /**
+         * ============================================
+         * Create the view with the given query.
+         * ============================================
+         */
+        $query = \App\Models\ModelName::query();
+        Schema::createView('table_name', $query);
     }
 };
