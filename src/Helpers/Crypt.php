@@ -14,7 +14,7 @@ class Crypt
     {
         $method = "AES-256-CBC";
         $options = 0;
-        $iv = substr(config('app.key'), 0, 16);
+        $iv = substr(explode(':', config('app.key'))[1], 0, 16);
         $key = config('app.key');
 
         $encryptedData = openssl_encrypt($string, $method, $key, $options, $iv);
@@ -31,7 +31,7 @@ class Crypt
     {
         $method = "AES-256-CBC";
         $options = 0;
-        $iv = substr(config('app.key'), 0, 16);
+        $iv = substr(explode(':', config('app.key'))[1], 0, 16);
         $key = config('app.key');
 
         $decryptedData = openssl_decrypt($string, $method, $key, $options, $iv);
