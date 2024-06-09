@@ -35,7 +35,8 @@ class MakeViewCommand extends Command implements PromptsForMissingInput
         $modelName = $this->argument('name');
         $path = app_path('Models/Views/' . $modelName . '.php');
         $viewName = Str::snake(Str::pluralStudly($modelName));
-        $migrationPath = database_path('migrations/' . date('Y_m_d_His') . '_create_' . $viewName . '_view.php');
+        $migrationName = date('Y_m_d_His') . '_create_' . $viewName . '_view.php';
+        $migrationPath = database_path('migrations/' . $migrationName);
         
         if (file_exists($path) || file_exists($migrationPath)) {
             $this->error('View already exists!');
@@ -56,7 +57,10 @@ class MakeViewCommand extends Command implements PromptsForMissingInput
             'table_name' => $viewName,
         ]);
         
-        $this->info('View created successfully.');
+        $this->info('Model file created: '.'app/Models/'.$modelName.'.php');
+        $this->info('Migration file created: '.'database/migrations/'.$migrationName);
+
+        $this->info('View table created successfully');
         return 1;
     }
 
