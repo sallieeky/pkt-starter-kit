@@ -563,7 +563,25 @@ class Employee extends Model
 }
 ```
 
-If you already set the cast on your spesific column, it will automatically encrypting your data when store and decrypting when its called.
+If you already set the cast on your spesific column, it will automatically encrypting your data when store and decrypting when its called. So you can insert or update the data using a normal way without worrying about the encryption. 
+
+```php
+<?php
+
+Employee::create([
+    ...
+    'nik' => 1234567890123456
+]);
+
+# or
+
+Employee::find(1)
+    ->update([
+        ...
+        'nik' => 0123456789012345
+    ]);
+
+```
 
 Additional query builder you can use is `whereEncrypted(column, operator, value)` and `orWhereEncrypted(column, operator, value)` with operator you can only use `=` or `!=`.
 ```php
