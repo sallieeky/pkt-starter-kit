@@ -490,13 +490,44 @@ $transaction->updatedBy;
 
 ### Custom Encrypt Helper
 
-This helper is to encrypt and decrypt data. The encrypting method associated with `APP_KEY`, so it's **IMPORTANT** to keep your `APP_KEY` **secure**.
+This helper is to encrypt and decrypt data. By default, the encrypting method using `AES-256-CBC` algorithm and it's associated with `APP_KEY`, so it's **IMPORTANT** to keep your `APP_KEY` **secure**. Or if you have encrypted data with different key, you can replace the key from params.
+
+```php
+use Pkt\StarterKit\Helpers\Crypt;
+
+/**
+ * Encrypt data
+ * 
+ * @param string|integer $string (required)
+ * @param ?string $method (optional)
+ * @param ?string $iv (optional)
+ * @param ?string $key (optional)
+ * 
+ * @return string
+ */
+$encrypt = Crypt::encrypt(string|integer $string, string $method = null, string $iv = null, string $key = null);
+
+/**
+ * Decrypt the given string.
+ *
+ * @param string|integer $string (required)
+ * @param ?string $method (optional)
+ * @param ?string $iv (optional)
+ * @param ?string $key (optional)
+ *
+ * @return string
+ */
+$decrypt = Crypt::decrypt(string|integer $string, string $method = null, string $iv = null, string $key = null);
+
+```
+
+**Example**
 
 ```php
 use Pkt\StarterKit\Helpers\Crypt;
 
 $encrypt = Crypt::encrypt('data');
-$decrypt = Crypt::decrypt('l6123hgs/o0adlRkCtf/36+dW19dTkQ==');
+$decrypt = Crypt::decrypt('l6123hgs/o0adlRkCtf/36+dW19dTkQ==', iv:'custom_iv_123456', key:'custom_key');
 ```
 
 ### Encrypting Data To Database Table
