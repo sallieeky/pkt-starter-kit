@@ -7,15 +7,19 @@ class Crypt
     /**
      * Encrypt the given string.
      *
-     * @param string $string
+     * @param string|integer $string
+     * @param ?string $method
+     * @param ?string $iv
+     * @param ?string $key
+     * 
      * @return string
      */
-    public static function encrypt($string): string
+    public static function encrypt($string, string $method = null, string $iv = null, string $key = null): string
     {
-        $method = "AES-256-CBC";
+        $method = $method ?? "AES-256-CBC";
         $options = 0;
-        $iv = substr(explode(':', config('app.key'))[1], 0, 16);
-        $key = config('app.key');
+        $iv = $iv ?? substr(explode(':', config('app.key'))[1], 0, 16);
+        $key = $key ?? config('app.key');
 
         $encryptedData = openssl_encrypt($string, $method, $key, $options, $iv);
         return $encryptedData;
@@ -24,15 +28,19 @@ class Crypt
     /**
      * Decrypt the given string.
      *
-     * @param string $string
+     * @param string|integer $string
+     * @param ?string $method
+     * @param ?string $iv
+     * @param ?string $key
+     *
      * @return string
      */
-    public static function decrypt($string): string
+    public static function decrypt($string, string $method = null, string $iv = null, string $key = null): string
     {
-        $method = "AES-256-CBC";
+        $method = $method ?? "AES-256-CBC";
         $options = 0;
-        $iv = substr(explode(':', config('app.key'))[1], 0, 16);
-        $key = config('app.key');
+        $iv = $iv ?? substr(explode(':', config('app.key'))[1], 0, 16);
+        $key = $key ?? config('app.key');
 
         $decryptedData = openssl_decrypt($string, $method, $key, $options, $iv);
         return $decryptedData;
