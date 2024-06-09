@@ -493,7 +493,7 @@ $transaction->updatedBy;
 This helper is to encrypt and decrypt data. The encrypting method associated with `APP_KEY`, so it's **IMPORTANT** to keep your `APP_KEY` **secure**.
 
 ```php
-namespace Pkt\StarterKit\Helpers\Crypt;
+use Pkt\StarterKit\Helpers\Crypt;
 
 $encrypt = Crypt::encrypt('data');
 $decrypt = Crypt::decrypt('l6123hgs/o0adlRkCtf/36+dW19dTkQ==');
