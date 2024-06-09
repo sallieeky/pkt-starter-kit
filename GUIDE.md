@@ -510,7 +510,7 @@ So there's additional helper for you to easily protect the restricted data on th
 
 If you wanna store the personal number such as NIK on your `ms_employees` table.
 
-On your `migration`, it's **recommended** to make the type of column into `text` because the encrypted data is longer than the original data.
+On your `migration`, it's **recommended** to make the type of column into `encrypted` or `text` because the encrypted data is longer than the original data.
 ```php
 <?php
 
@@ -527,7 +527,7 @@ return new class extends Migration
     {
         Schema::create('ms_employees', function (Blueprint $table) {
             ...
-            $table->text('nik');
+            $table->encrypted('nik');
         });
     }
 
@@ -565,7 +565,7 @@ class Employee extends Model
 
 If you already set the cast on your spesific column, it will automatically encrypting your data when store and decrypting when its called.
 
-Additional query builder you can use is `whereEncrypted(column, operator, value)` and `orWhereEncrypted(column, operator, value)` with operator you can only use `=` or `!=`
+Additional query builder you can use is `whereEncrypted(column, operator, value)` and `orWhereEncrypted(column, operator, value)` with operator you can only use `=` or `!=`.
 ```php
 $employees = Employee::query()
        ->whereEncrypted('nik', 1234567890123456)
