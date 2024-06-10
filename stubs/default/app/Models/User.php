@@ -116,6 +116,7 @@ class User extends Authenticatable
     /**
      * Get action url for searchable record.
      *
+     * @param  object  $record
      * @return ?string
      */
     public function searchableRecordActionUrl($record): ?string
@@ -126,6 +127,7 @@ class User extends Authenticatable
     /**
      * Get the columns that should receive a unique identifier.
      *
+     * @param  object  $record
      * @return string
      */
     public function searchableFormatRecord($record): string

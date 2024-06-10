@@ -80,5 +80,79 @@ class StarterKitMacroServiceProvider extends ServiceProvider
         Builder::macro('orWhereEncrypted', function (string $column, $operator = null, $value = null): Builder {
             return $this->whereEncrypted($column, $operator, $value, 'or');
         });
+
+        /**
+         * Add a basic where in clause to the query to support encrypted columns.
+         *
+         * @param  string  $column
+         * @param  array  $values
+         * @param  string  $boolean = 'and'
+         * @param  bool  $not = false
+         * @return \Illuminate\Database\Query\Builder
+         */
+        Builder::macro('whereEncryptedIn', function (string $column, array $values): Builder {
+            $values = array_map(function ($value) {
+                return Crypt::encrypt($value);
+            }, $values);
+            return $this->whereIn($column, $values);
+        });
+
+        /**
+         * Add a basic or where in clause to the query to support encrypted columns.
+         *
+         * @param  string  $column
+         * @param  array  $values
+         * @return \Illuminate\Database\Query\Builder
+         */
+        Builder::macro('orWhereEncryptedIn', function (string $column, array $values): Builder {
+            $values = array_map(function ($value) {
+                return Crypt::encrypt($value);
+            }, $values);
+
+            return $this->orWhereIn($column, $values);
+        });
+
+        /**
+         * Add a basic where not in clause to the query to support encrypted columns.
+         *
+         * @param  string  $column
+         * @param  array  $values
+         * @param  string  $boolean = 'and'
+         * @return \Illuminate\Database\Query\Builder
+         */
+        Builder::macro('whereEncryptedNotIn', function (string $column, array $values): Builder {
+            $values = array_map(function ($value) {
+                return Crypt::encrypt($value);
+            }, $values);
+            return $this->whereNotIn($column, $values);
+        });
+
+        /**
+         * Add a basic or where not in clause to the query to support encrypted columns.
+         *
+         * @param  string  $column
+         * @param  array  $values
+         * @return \Illuminate\Database\Query\Builder
+         */
+        Builder::macro('orWhereEncryptedNotIn', function (string $column, array $values): Builder {
+            $values = array_map(function ($value) {
+                return Crypt::encrypt($value);
+            }, $values);
+
+            return $this->orWhereNotIn($column, $values);
+        });
+
+        /**
+         * Add a basic where null clause to the query to support encrypted columns.
+         *
+         * @param  string  $column
+         * @param  string  $boolean = 'and'
+         * @param  bool  $not = false
+         * @return \Illuminate\Database\Query\Builder
+         */
+        Builder::macro('whereEncryptedRelation', function ($relation, $column, $operator = null, $value = null): Builder {
+            $value = Crypt::encrypt($value);
+            return $this->whereRelation($relation, $column, $operator, $value);
+        });
     }
 }
