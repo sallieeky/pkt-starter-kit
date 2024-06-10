@@ -172,6 +172,7 @@ class Role extends ModelsRole
     /**
      * Get action url for searchable record.
      *
+     * @param  \Illuminate\Database\Eloquent\Model  $record
      * @return ?string
      */
     public function searchableRecordActionUrl($record): ?string
@@ -182,6 +183,7 @@ class Role extends ModelsRole
     /**
      * Get the columns that should receive a unique identifier.
      *
+     * @param  \Illuminate\Database\Eloquent\Model  $record
      * @return string
      */
     public function searchableFormatRecord($record): string
@@ -355,8 +357,7 @@ Inside file **database/migrations/..._create_vw_active_users_view.php**
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
-use Staudenmeir\LaravelMigrationViews\Facades\Schema as FacadesSchema;
+use Staudenmeir\LaravelMigrationViews\Facades\Schema;
 
 return new class extends Migration
 {
@@ -365,17 +366,21 @@ return new class extends Migration
      */
     public function up(): void
     {
+        /**
+         * ============================================
+         * Drop the view if it already exists.
+         * ============================================
+         */
+        Schema::dropViewIfExists('table_name');
+
+        /**
+         * ============================================
+         * Create the view with the given query.
+         * ============================================
+         */
         $query = \App\Models\User::query()
             ->where('is_active', true);
-        FacadesSchema::createView('vw_active_users', $query);
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        FacadesSchema::dropViewIfExists('vw_active_users');
+        Schema::createView('vw_active_users', $query);
     }
 };
 ```
