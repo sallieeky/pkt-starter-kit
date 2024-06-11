@@ -619,10 +619,238 @@ Employee::find(1)
 
 ```
 
-Additional query builder you can use is `whereEncrypted(column, operator, value)` and `orWhereEncrypted(column, operator, value)` with operator you can only use `=` or `!=`.
+Additional query builder you can use.
+1. `whereEncrypted(column, operator, value)`
+```php
+$employees = Employee::query()
+       ->whereEncrypted('nik', 1234567890123456)
+       ->get();
+```
+
+2. `orWhereEncrypted(column, operator, value)`
 ```php
 $employees = Employee::query()
        ->whereEncrypted('nik', 1234567890123456)
        ->orWhereEncrypted('nik', '!=', 0123456789012345)
        ->get();
 ```
+3. `whereEncryptedIn(column, [value])`
+```php
+$employees = Employee::query()
+       ->whereEncryptedIn('nik', [1234567890123456, 0123456789012345])
+       ->get();
+```
+4. `orWhereEncryptedIn(column, [value])`
+```php
+$employees = Employee::query()
+       ->whereEncryptedIn('nik', [1234567890123456, 0123456789012345])
+       ->orWhereEncryptedIn('nik', [1234567890123457])
+       ->get();
+```
+5. `whereEncryptedNotIn(column, [value])`
+```php
+$employees = Employee::query()
+       ->whereEncryptedNotIn('nik', [1234567890123456, 0123456789012345])
+       ->get();
+```
+6. `orWhereEncryptedNotIn(column, [value])`
+```php
+$employees = Employee::query()
+       ->whereEncryptedNotIn('nik', [1234567890123456, 0123456789012345])
+       ->orWhereEncryptedNotIn('nik', [1234567890123457])
+       ->get();
+```
+7. `whereEncryptedRelation(relation, column, operator, value)`
+```php
+$employees = Employee::query()
+       ->whereEncryptedRelation('user', 'userame', 'John Doe')
+       ->get();
+```
+
+### Media Library
+
+In this package, we provide a helper to easily manage your media file such as image, video, or document. The media can be attach to assigned Model so you need to configure your Model before you can use media functional.
+
+Before using media library, you need to initialize first
+```cmd
+php artisan pkt:media-init
+php artisan migrate
+```
+This will create
+```
+app/Http/Controllers/MediaController.php
+app/Models/Media.php
+database/migrations/2024_06_11_000000_create_media_table.php
+database/migrations/2024_06_11_000000_create_mediables_table.php
+```
+Additional **RECOMMENDED** action, you can add this code to `routes/starter`.php or `routes/web.php`
+```php
+use App\Http\Controllers\MediaController;
+
+Route::get('/get-media/{media:uuid}', [MediaController::class, 'getMedia'])->name('get-media');
+```
+
+#### How to use
+
+If you already initialize media library, you can add `InteractsWithMedia` traits to your model that need to interact with media. This will indicate that your model will have a relationship with `Media` table or model. By default the relation with media will be `ManyToMany` so you can attach to existing media if needed.
+
+**Available Method**
+
+Available method you can use to interact with media from your model.
+1. `setMediaCollection($collectionName)`, 
+this will set media collection you want to interact.
+```php
+$issue = Issue::create($validated);
+$issue
+    ->setMediaCollection('evidences')
+    ->attachMediaFromElementRequest($media);
+```
+
+2.  `attachMediaFromElementRequest($media, $collectionName)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from [Elemen Plus](https://element-plus.org/en-US/component/upload.html#file-list-control) upload file request.
+```php
+/**
+ * ================================================
+ * Element request should look like this:
+ * ================================================
+ * 
+ * array:1 [
+ * 0 => array:6 [
+ *   "name" => "filename.pdf"
+ *   "percentage" => "0"
+ *   "status" => "ready"
+ *   "size" => "45018"
+ *   "uid" => "1718114776003"
+ *   "raw" => UploadedFile {
+ *       ...
+ *   }
+ * ],
+ *]
+ */
+
+$issue = Issue::create($validated);
+$issue->attachMediaFromElementRequest($validated['evidences'], 'evidences');
+```
+
+3.  `attachMediaFromExisting($media, $collectionName)`, this will attach an existing media to your data.
+```php
+$issue = Issue::create($validated);
+$media = Media::query()->where('id', 1)->first()
+$issue->attachMediaFromExisting($media, 'evidences');
+```
+
+4. `attachMediaFromUploadedFile($media, $collectionName)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from uploaded file format.
+```php
+$issue = Issue::create($validated);
+$issue->attachMediaFromUploadedFile($media, 'report');
+```
+
+5. `detachMedia($media)`, this will detaching media from your data.
+```php
+$issue = Issue::find(1);
+$issue->detachMedia([1,2,3]);
+```
+
+6. `detachMediaFromCollection($collectionName)`, this will detaching all media on specific collection from your data.
+```php
+$issue = Issue::find(1);
+$issue->detachMediaFromCollection('evidences');
+```
+
+7. `detachAllMedia()`, this will detaching all media from your data.
+```php
+$issue = Issue::find(1);
+$issue->detachAllMedia();
+```
+
+8. `syncMedia($media)`, this will syncing media data on your data.
+```php
+$issue = Issue::find(1);
+$media = Media::query()->whereIn('id', [1,2,3])->get();
+$issue->syncMedia($media);
+```
+
+9. `getAllMedia()`, this will get all media related from data.
+```php
+$issue = Issue::find(1);
+$issue->getAllMedia();
+```
+
+10. `getMediaFromCollection($collectionName)`, this will get all media from specific collection related from data.
+```php
+$issue = Issue::find(1);
+$issue->getMediaFromCollection('evidences');
+```
+
+11. `getFirstMediaFromCollection($collectionName)`, this will get first media from specific collection related from data.
+```php
+$issue = Issue::find(1);
+$issue->getFirstMediaFromCollection('report');
+```
+
+12. `getAcceptedMediaCollections()`, this will display accepted media that can be assign from model.
+```php
+$issue = Issue::query()->getAcceptedMediaCollections();
+```
+
+13. `getAvailableMediaCollections()`, this will display available media collection on your model.
+```php
+$issue = Issue::query()->getAvailableMediaCollections();
+```
+
+**FOR EXAMPLE**
+
+You have `Issue` model that need to interact with `evidence` that can be more than 1 and can be from other issue or existing file, and `report` file that can only 1.
+
+- On your `Issue` model
+```php
+<?php
+
+use Pkt\StarterKit\Traits\InteractsWithMedia;
+...
+
+class Issue extends Authenticatable
+{
+    use InteractsWithMedia;
+    ...
+
+    /**
+     * The collection that accepted on your model
+     *
+     * @var array<int, string>
+     */
+    protected $acceptedMediaCollections = [
+        'evidences', 
+        'report'
+    ];
+
+    ...
+}
+```
+You can use `InteractsWithMedia` traits and **optional** but **recommended** you can add `protected $acceptedMediaCollections` to predefined collections that allowed on your Model, by default you can use any collection name.
+
+- On your create controller
+```php
+<?php
+
+...
+public function create(CreateIssueRequest $request)
+{
+    DB::beginTransaction();
+    try {
+        $validated = $request->validated();
+        $media = Media::query()->whereIn('id', $validated['relatedEvidence'])->get();
+        $issue = Issue::create($validated);
+        
+        $issue->attachMediaFromElementRequest($validated['evidence'], 'evidences');
+        $issue->attachMediaFromExisting($media, 'evidences');
+        $issue->attachMediaFromElementRequest($validated['report'], 'report');
+    } catch (\Throwable $e) {
+        DB::rollBack();
+        return redirect()->back()->withErrors([
+            'message' => 'Failed to create issue'
+        ]);
+    }
+    DB::commit();
+    return redirect()->back()->with('message', 'Success to create issue');
+}
+...
