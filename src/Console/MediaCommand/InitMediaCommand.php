@@ -1,11 +1,11 @@
 <?php
 
-namespace Pkt\StarterKit\Console\MakeComponentCommand;
+namespace Pkt\StarterKit\Console\MediaCommand;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 
-class MakeComponentCommand extends Command implements PromptsForMissingInput
+class InitMediaCommand extends Command implements PromptsForMissingInput
 {
     /**
      * The name and signature of the console command.

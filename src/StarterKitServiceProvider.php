@@ -37,6 +37,7 @@ class StarterKitServiceProvider extends ServiceProvider implements DeferrablePro
             Console\MakeViewCommand\MakeViewCommand::class,
             Console\MakeDatabaseTableCommand\MakeDatabaseTableCommand::class,
             Console\MakeComponentCommand\MakeComponentCommand::class,
+            Console\MediaCommand\InitMediaCommand::class,
         ]);
     }
 
@@ -56,6 +57,7 @@ class StarterKitServiceProvider extends ServiceProvider implements DeferrablePro
             Console\MakeViewCommand\MakeViewCommand::class,
             Console\MakeDatabaseTableCommand\MakeDatabaseTableCommand::class,
             Console\MakeComponentCommand\MakeComponentCommand::class,
+            Console\MediaCommand\InitMediaCommand::class,
         ];
     }
 }
