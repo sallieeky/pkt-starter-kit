@@ -15,7 +15,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, HasUuids, SoftDeletes, GlobalSearch;
 
-    // primary key user_id
     protected $primaryKey = 'user_id';
 
     /**
