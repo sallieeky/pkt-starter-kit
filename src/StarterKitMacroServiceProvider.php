@@ -154,5 +154,17 @@ class StarterKitMacroServiceProvider extends ServiceProvider
             $value = Crypt::encrypt($value);
             return $this->whereRelation($relation, $column, $operator, $value);
         });
+
+        /**
+         * Adds a macro to the Builder class that allows eager loading of media collections.
+         *
+         * @param mixed ...$collectionName The names of the media collections to be loaded.
+         * @return \Illuminate\Database\Eloquent\Builder The modified Builder instance.
+         */
+        Builder::macro('withMedia', function (...$collectionName): Builder {
+            return $this->with([
+                'media' => fn ($query) => $query->wherePivotIn('collection_name', $collectionName),
+            ]);
+        });
     }
 }
