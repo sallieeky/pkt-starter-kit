@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 class MediaController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Get media file.
      */
-    public function __invoke(Media $media)
+    public function getMedia(Media $media, Request $request)
     {
         return response()->file(storage_path('app/public/' . $media->path));
     }

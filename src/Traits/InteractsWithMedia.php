@@ -95,9 +95,16 @@ trait InteractsWithMedia
      * 
      * @return array
      */
-    public function getAvailableMediaCollections(): array
+    public static function getAvailableMediaCollections(): array
     {
-        return $this->media()->get()->unique('pivot.collection_name')->pluck('pivot.collection_name')->toArray();
+        return (new self)
+            ->with('media')
+            ->get()
+            ?->pluck('media')
+            ?->flatten()
+            ?->pluck('pivot.collection_name')
+            ?->unique()
+            ?->toArray();
     }
 
     /**
@@ -119,7 +126,7 @@ trait InteractsWithMedia
             $storedMedia = [];
 
             if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
-                throw new \Exception('Collection name not accepted');
+                throw new \Exception('Collection ' . $collectionName . ' not accepted');
             }
 
             foreach ($media as $item) {
@@ -165,7 +172,7 @@ trait InteractsWithMedia
         DB::beginTransaction();
         try {
             if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
-                throw new \Exception('Collection name not accepted');
+                throw new \Exception('Collection ' . $collectionName . ' not accepted');
             }
 
             if (is_array($media) || $media instanceof Collection) {
@@ -211,7 +218,7 @@ trait InteractsWithMedia
             $storedMedia = [];
 
             if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
-                throw new \Exception('Collection name not accepted');
+                throw new \Exception('Collection ' . $collectionName . ' not accepted');
             }
 
             if ($file instanceof UploadedFile) {
@@ -358,7 +365,7 @@ trait InteractsWithMedia
         DB::beginTransaction();
         try {
             if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
-                throw new \Exception('Collection name not accepted');
+                throw new \Exception('Collection ' . $collectionName . ' not accepted');
             }
 
             if ($media instanceof Collection) {
