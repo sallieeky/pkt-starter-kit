@@ -77,7 +77,7 @@ trait InteractsWithMedia
     public function getFirstMediaFromCollection(?string $collectionName): Media
     {
         $collectionName = $collectionName ?? self::$collectionName;
-        return $this->media()->wherePivot('collection_name', $collectionName)->first();
+        return $this->media()->wherePivot('collection_name', $collectionName)->latest()->first();
     }
 
     /**

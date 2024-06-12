@@ -6,7 +6,10 @@
     "autoload": {
         "psr-4": {
             "Pkt\\StarterKit\\": "src/"
-        }
+        },
+        "files": [
+            "helpers.php"
+        ]
     },
     "authors": [
         {
