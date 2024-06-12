@@ -95,9 +95,16 @@ trait InteractsWithMedia
      * 
      * @return array
      */
-    public function getAvailableMediaCollections(): array
+    public static function getAvailableMediaCollections(): array
     {
-        return $this->media()->get()->unique('pivot.collection_name')->pluck('pivot.collection_name')->toArray();
+        return (new self)
+            ->with('media')
+            ->get()
+            ?->pluck('media')
+            ?->flatten()
+            ?->pluck('pivot.collection_name')
+            ?->unique()
+            ?->toArray();
     }
 
     /**

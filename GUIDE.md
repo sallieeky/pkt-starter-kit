@@ -683,7 +683,7 @@ app/Models/Media.php
 database/migrations/2024_06_11_000000_create_media_table.php
 database/migrations/2024_06_11_000000_create_mediables_table.php
 ```
-Additional **RECOMMENDED** action, you can add this code to `routes/starter`.php or `routes/web.php`
+Additional **RECOMMENDED** action, you can add this code to `routes/starter.php` or `routes/web.php`
 ```php
 use App\Http\Controllers\MediaController;
 
@@ -696,14 +696,25 @@ If you already initialize media library, you can add `InteractsWithMedia` traits
 
 **Available Method**
 
-Available method you can use to interact with media from your model.
+When it's having `Many to Many` relationship between your Model and Media model, you can use all ManyToMany method.
+```php
+$issue = Issue::query()->with('media')->get();
+$issue = Issue::query()->with(['media' => fn($query) => $query->wherePivot('collection_name', 'evidences')])->get();
+
+$issue->media()->get();
+$issue->media()->first();
+
+... (etc)
+```
+
+Available additional method you can use to interact with media from your model.
 1. `setMediaCollection($collectionName)`, 
 this will set media collection you want to interact.
 ```php
 $issue = Issue::create($validated);
 $issue
     ->setMediaCollection('evidences')
-    ->attachMediaFromElementRequest($media);
+    ->attachMediaFromElementRequest($validated['evidences']);
 ```
 
 2.  `attachMediaFromElementRequest($media, $collectionName)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from [Elemen Plus](https://element-plus.org/en-US/component/upload.html#file-list-control) upload file request.
@@ -741,7 +752,8 @@ $issue->attachMediaFromExisting($media, 'evidences');
 4. `attachMediaFromUploadedFile($media, $collectionName)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from uploaded file format.
 ```php
 $issue = Issue::create($validated);
-$issue->attachMediaFromUploadedFile($media, 'report');
+$file = $request->file('report');
+$issue->attachMediaFromUploadedFile($file, 'report');
 ```
 
 5. `detachMedia($media)`, this will detaching media from your data.
@@ -789,12 +801,30 @@ $issue->getFirstMediaFromCollection('report');
 
 12. `getAcceptedMediaCollections()`, this will display accepted media that can be assign from model.
 ```php
-$issue = Issue::query()->getAcceptedMediaCollections();
+$issue = Issue::getAcceptedMediaCollections();
 ```
 
 13. `getAvailableMediaCollections()`, this will display available media collection on your model.
 ```php
-$issue = Issue::query()->getAvailableMediaCollections();
+$issue = Issue::getAvailableMediaCollections();
+```
+
+**Other Method From Media Model**
+1. `getAllCollections()`, this will display all existing collection on your media.
+```php
+$media = Media::getAllCollections();
+```
+
+2. `createFromElementRequest($media, $collectionName)`, this will store your file from [Elemen Plus](https://element-plus.org/en-US/component/upload.html#file-list-control) upload file request to `storage/app/public/[collectionName]` and automatically add the media to database.
+```php
+$elementRequest = $validated['evidences'];
+$media = Media::createFromElementRequest($elementRequest, 'evidences');
+```
+
+3. `createFromUploadedFile($file, $collectionName)`, this will store your file from uploaded file format to `storage/app/public/[collectionName]` and automatically add the media to database.
+```php
+$file = $request->file('report');
+$media = Media::createFromUploadedFile($file, 'report');
 ```
 
 **FOR EXAMPLE**
@@ -854,3 +884,4 @@ public function create(CreateIssueRequest $request)
     return redirect()->back()->with('message', 'Success to create issue');
 }
 ...
+```
