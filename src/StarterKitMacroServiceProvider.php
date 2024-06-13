@@ -2,7 +2,7 @@
 
 namespace Pkt\StarterKit;
 
-use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\ServiceProvider;
