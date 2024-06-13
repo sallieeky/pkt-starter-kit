@@ -43,8 +43,7 @@
         },
         "laravel": {
             "providers": [
-                "Pkt\\StarterKit\\StarterKitServiceProvider",
-                "Pkt\\StarterKit\\StarterKitMacroServiceProvider"
+                "Pkt\\StarterKit\\StarterKitServiceProvider"
             ]
         }
     }
