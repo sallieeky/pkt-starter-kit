@@ -578,7 +578,16 @@ return new class extends Migration
 ```
 
 
-On your `model`, you need to cast `nik` column into `Encrypted::class`.
+On your `model`, you need to cast `nik` column into `Encrypted::class`. By default, return decrypted value will be `string`, but you can also define the actual type of each encrypted column with:
+- `Encrypted::class.':int'`
+- `Encrypted::class.':integer'`
+- `Encrypted::class.':float'`
+- `Encrypted::class.':bool'`
+- `Encrypted::class.':boolean'`
+- `Encrypted::class.':array'`
+- `Encrypted::class.':object'`
+- `Encrypted::class.':collection'`
+
 ```php
 <?php
 
@@ -696,7 +705,7 @@ If you already initialize media library, you can add `InteractsWithMedia` traits
 
 **Available Method**
 
-When it's having `Many to Many` relationship between your Model and Media model, you can use all ManyToMany method. You also can using generic relationship to media using `with` and for the params `mediaCollectionName`.
+When it's having `Many to Many` relationship between your Model and Media model, you can use all ManyToMany method. You also can using dynamic relationship to media using `with` and for the params `mediaCollectionName` where CollectionName is based on existing collections.
 ```php
 $issue = Issue::query()->with('media')->get();
 $issue = Issue::query()->with(['mediaEvidences', 'mediaReport'])->get();
@@ -774,11 +783,11 @@ $issue = Issue::find(1);
 $issue->detachAllMedia();
 ```
 
-8. `syncMedia($media)`, this will syncing media data on your data.
+8. `syncMedia($media, $collectionName)`, this will syncing media data on your data.
 ```php
 $issue = Issue::find(1);
 $media = Media::query()->whereIn('id', [1,2,3])->get();
-$issue->syncMedia($media);
+$issue->syncMedia($media, 'evidences');
 ```
 
 9. `getAllMedia()`, this will get all media related from data.

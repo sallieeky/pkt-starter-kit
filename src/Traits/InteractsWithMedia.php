@@ -9,6 +9,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 trait InteractsWithMedia
 {
@@ -39,10 +40,22 @@ trait InteractsWithMedia
     protected function getDynamicRelationship($method)
     {
         if (preg_match('/^media(.+)$/', $method, $matches)) {
-            $collectionName = lcfirst($matches[1]);
+            $collectionName = [
+                Str::snake($matches[1]),
+                Str::kebab($matches[1]),
+                Str::camel($matches[1]),
+                Str::studly($matches[1]),
+                Str::slug($matches[1]),
+                Str::title($matches[1]),
+                Str::ucfirst($matches[1]),
+                Str::headline($matches[1]),
+                Str::lower(Str::headline($matches[1])),
+            ];
+            $collectionName = array_unique($collectionName);
 
             return $this->morphToMany(Media::class, 'mediable')
-                ->wherePivot('collection_name', $collectionName);
+                ->wherePivotIn('collection_name', $collectionName)
+                ->withPivot('collection_name');
         }
 
         return null;
