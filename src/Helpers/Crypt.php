@@ -21,6 +21,7 @@ class Crypt
         $iv = $iv ?? substr(explode(':', config('app.key'))[1], 0, 16);
         $key = $key ?? config('app.key');
 
+        $string = is_array($string) || is_object($string) ? json_encode($string) : $string;
         $encryptedData = openssl_encrypt($string, $method, $key, $options, $iv);
         return $encryptedData;
     }
