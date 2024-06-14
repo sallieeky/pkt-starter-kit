@@ -696,10 +696,10 @@ If you already initialize media library, you can add `InteractsWithMedia` traits
 
 **Available Method**
 
-When it's having `Many to Many` relationship between your Model and Media model, you can use all ManyToMany method.
+When it's having `Many to Many` relationship between your Model and Media model, you can use all ManyToMany method. You also can using generic relationship to media using `with` and for the params `mediaCollectionName`.
 ```php
 $issue = Issue::query()->with('media')->get();
-$issue = Issue::query()->with(['media' => fn($query) => $query->wherePivot('collection_name', 'evidences')])->get();
+$issue = Issue::query()->with(['mediaEvidences', 'mediaReport'])->get();
 
 $issue->media()->get();
 $issue->media()->first();

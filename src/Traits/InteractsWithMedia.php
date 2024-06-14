@@ -13,6 +13,42 @@ use Illuminate\Support\Facades\Storage;
 trait InteractsWithMedia
 {
     /**
+     * Handle dynamic method calls into the model.
+     *
+     * @param string $method
+     * @param array $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        // Check if the method is a dynamic relationship method
+        if ($relationship = $this->getDynamicRelationship($method)) {
+            return $relationship;
+        }
+
+        // Call the parent method if it's not a dynamic relationship call
+        return parent::__call($method, $parameters);
+    }
+
+    /**
+     * Attempt to get a dynamic relationship based on the method name.
+     *
+     * @param string $method
+     * @return \Illuminate\Database\Eloquent\Relations\Relation|null
+     */
+    protected function getDynamicRelationship($method)
+    {
+        if (preg_match('/^media(.+)$/', $method, $matches)) {
+            $collectionName = lcfirst($matches[1]);
+
+            return $this->morphToMany(Media::class, 'mediable')
+                ->wherePivot('collection_name', $collectionName);
+        }
+
+        return null;
+    }
+
+    /**
      * The collection name to be used when attaching media to the model
      * Collection name can be set using the setMediaCollection method
      * Collection name also used to naming the folder where the media will be stored
