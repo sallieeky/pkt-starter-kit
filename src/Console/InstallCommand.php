@@ -195,8 +195,8 @@ class InstallCommand extends Command implements PromptsForMissingInput
             // Public
             (new Filesystem)->ensureDirectoryExists(public_path('images'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/public/images', public_path('images'));
-            (new Filesystem)->ensureDirectoryExists(public_path('icons'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/public/icons', public_path('icons'));
+            (new Filesystem)->ensureDirectoryExists(public_path('font-icons'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/public/icons', public_path('font-icons'));
             // End Public
 
             // Resources
