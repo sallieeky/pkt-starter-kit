@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\GlobalSearchController;
+// use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserLogController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -33,4 +35,5 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->
     });
 
     Route::get('/global-search', GlobalSearchController::class)->name('global.search');
+    // Route::get('/get-media/{media:uuid}', [MediaController::class, 'getMedia'])->name('get-media');
 });
