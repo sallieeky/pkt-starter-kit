@@ -280,7 +280,7 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])
     {
         $modelName = $this->nameArgument;
         $label = Str::headline($modelName);
-        $route = Str::lower(Str::kebab($modelName));
+        $route = Str::lower(Str::kebab(Str::plural($modelName)));
         $icon = 'cube';
         $permission = Str::lower(Str::snake($modelName)) . '.browse';
 
