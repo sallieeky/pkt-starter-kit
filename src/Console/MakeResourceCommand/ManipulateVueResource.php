@@ -250,18 +250,21 @@ trait ManipulateVueResource
         $modelName = $this->nameArgument;
         $modelNameCamel = Str::camel($this->nameArgument);
         $groupName = Str::lower(Str::snake($nameArgument));
-        $route = Str::lower(Str::kebab($nameArgument));
+        $route = Str::lower(Str::kebab(Str::plural($nameArgument)));
 
         $primaryKey = $this->model->getKeyName();
 
         $route = "
-Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->controller(App\Http\Controllers\\{$modelName}Controller::class)->group(function () {
-    Route::get('/$route', 'managePage')->name('$groupName.browse')->can('$groupName.browse');
-    Route::get('/$route/data-processing', 'dataProcessing')->name('$groupName.data_processing')->can('$groupName.browse');
-    Route::post('/$route', 'create')->name('$groupName.create')->can('$groupName.create');
-    Route::put('/$route/{{$modelNameCamel}:$primaryKey}', 'update')->name('$groupName.update')->can('$groupName.update');
-    Route::delete('/$route/{{$modelNameCamel}:$primaryKey}', 'delete')->name('$groupName.delete')->can('$groupName.delete');
-});";
+Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])
+    ->prefix('$route')
+    ->name('$groupName.')
+    ->controller(App\Http\Controllers\\{$modelName}Controller::class)->group(function () {
+        Route::get('/', 'managePage')->name('browse')->can('$groupName.browse');
+        Route::get('/data-processing', 'dataProcessing')->name('data_processing')->can('$groupName.browse');
+        Route::post('/create', 'create')->name('create')->can('$groupName.create');
+        Route::put('/update/{{$modelNameCamel}:$primaryKey}', 'update')->name('update')->can('$groupName.update');
+        Route::delete('/delete/{{$modelNameCamel}:$primaryKey}', 'delete')->name('delete')->can('$groupName.delete');
+    });";
 
         file_put_contents(base_path('routes/web.php'), $route, FILE_APPEND);
 
