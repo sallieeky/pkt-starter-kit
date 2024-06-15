@@ -55,13 +55,11 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
         }
 
         // copy migration and run migrate
-        $this->components->task('Updating users table and migrate', function () {
-            copy(__DIR__.'/../../../leader-stubs/database/migrations/2024_04_04_000000_add_leader_to_users_table.php', database_path('migrations/2024_04_04_000000_add_leader_to_users_table.php'));
-            $this->call('migrate');
-        });
+        copy(__DIR__.'/../../../leader-stubs/database/migrations/2024_04_04_000000_add_leader_to_users_table.php', database_path('migrations/2024_04_04_000000_add_leader_to_users_table.php'));
+        $this->call('migrate');
 
         // get all employee from Leader API
-        $this->components->task('Syncing users data', function () {
+        $this->components->task('Syncing users data...', function () {
             DB::beginTransaction();
             try {
                 $employees = LeaderApi::getAllEmployee();
@@ -92,12 +90,6 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
             DB::commit();
             $this->info('Synced ' . $employees->count() . ' users from PKT Leader.');
         });
-
-        if (!$this->option('add-dx-column')) {
-            if ($this->confirm('Do you want to add additional dx column to UserManage.vue?', false)) {
-                $this->option('add-dx-column', true);
-            }
-        }
 
         if ($this->option('add-dx-column')) {
             $this->components->task('Manipulating user manage...', function () {
