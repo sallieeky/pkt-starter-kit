@@ -17,7 +17,7 @@ trait ManipulateVueResource
     {
         $this->model = $model;
         $this->nameArgument = $nameArgument;
-        $this->multiPage = $multiPage
+        $this->multiPage = $multiPage;
 
         // check if the vue page already exists
         $exist = (new Filesystem)->exists(resource_path('js/Pages/' . $nameArgument ));
