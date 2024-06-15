@@ -211,7 +211,7 @@ class Role extends ModelsRole
 
 ## Additional Command
 
-### 1. Make resource command
+### Make resource command
 This command will help you to create basic single page <strong>CRUD</strong> by only execute 1 command
 
 ```cmd
@@ -240,7 +240,7 @@ After you run the command, it's recommended to re-seed the role and permission t
 php artisan db:seed --class=RoleAndPermissionSeeder
 ```
 
-### 2. Make Blank Page Command
+### Make Blank Page Command
 This command will generate blank page file for your frontend
 ```cmd
 php artisan pkt:make-page <Filepath/Filename>
@@ -253,7 +253,7 @@ php artisan pkt:make-page MasterData/Equipment
 
 this command will generate file `resources/js/Pages/MasterData/Equipment.vue`
 
-### 3. Make Blank Component Command
+### Make Blank Component Command
 This command will generate blank component file for your frontend
 ```cmd
 php artisan pkt:make-component <Filepath/Filename>
@@ -266,7 +266,7 @@ php artisan pkt:make-component Dashboard/AdminTab
 
 this command will generate file `resources/js/Components/Dashboard/AdminTab.vue`
 
-### 4. Init Leader Command
+### Init Leader Command
 First you need to setup `.env` file and add this line.
 ```.env
 LEADER_API_KEY=<ask admin>
@@ -294,7 +294,7 @@ user_flag       => string
 user_alias      => string
 ```
 
-### 5. Sync Leader Command
+### Sync Leader Command
 First you need to setup `.env` file and add this line.
 ```.env
 LEADER_API_KEY=<ask admin>
@@ -306,7 +306,7 @@ php artisan pkt:leader-sync
 ```
 This command will sync users from PKT Leader
 
-### 6. Make Database Table
+### Make Database Table
 This command will create new `migration` and `model` for your database table including transaction (tr), master (ms), or value list (vl)
 ```cmd
 php artisan pkt:make-table <ModelName>
@@ -334,7 +334,7 @@ database/migrations/...create_ms_employees_table.php
 database/factories/EmployeeFactory.php
 ```
 
-### 7. Make Database View Table
+### Make Database View Table
 
 This command will create new `migration` and `model` for your database view table
 ```cmd
@@ -388,6 +388,114 @@ return new class extends Migration
 Then migrate your database
 ```cmd
 php artisan migrate
+```
+
+### Make Database Migration
+
+Sometimes we need to manipulate existing table on database such as **adding new column, rename column, change column data type, and drop column**. Basically you can directly manipulate the table from database client such as DBeaver, SQL Server Management Studio (SSMS), HeidiSQL, etc. But for the best practice to manipulate database table is using migration so all database changes will be tracked and easily to audit. So there is additional command that help you automatically generate a migration with standard name convention by using this command.
+
+```cmd
+php artisan pkt:make-migration
+```
+
+After you run the command, it will ask you several question based on your case. Example we want to add a new column named birth with date data type to users table.
+
+```cmd
+php artisan pkt:make-migration
+
+<!-- Question -->
+Select migration type [add column]:
+  [0] add column
+  [1] drop column
+  [2] rename column
+  [3] change column data type
+  [4] manipulate multiple columns / custom schema
+> 0
+
+<!-- Question -->
+Select table name [active_users_view]:
+  ...
+  [3] users
+  ...
+> 3
+
+<!-- Question -->
+Enter new column name:
+> birth 
+
+<!-- Question -->
+Select data type [custom]:
+  [0 ] custom
+  [1 ] bigIncrements
+  [2 ] bigInteger
+  [3 ] binary
+  [4 ] boolean
+  [5 ] char
+  [6 ] date
+  [7 ] dateTime
+  [8 ] dateTimeTz
+  [9 ] decimal
+  [10] double
+  [11] enum
+  [12] float
+  [13] geometry
+  [14] geometryCollection
+  [15] increments
+  [16] integer
+  [17] ipAddress
+  [18] json
+  [19] jsonb
+  [20] lineString
+  [21] longText
+  [22] macAddress
+  [23] mediumIncrements
+  [24] mediumInteger
+  [25] mediumText
+  [26] morphs
+  [27] uuidMorphs
+  [28] multiLineString
+  [29] multiPoint
+  [30] multiPolygon
+  [31] nullableMorphs
+  [32] nullableUuidMorphs
+  [33] point
+  [34] polygon
+  [35] rememberToken
+  [36] set
+  [37] smallIncrements
+  [38] smallInteger
+  [39] softDeletes
+  [40] softDeletesTz
+  [41] string
+  [42] text
+  [43] time
+  [44] timeTz
+  [45] timestamp
+  [46] timestampTz
+  [47] timestamps
+  [48] timestampsTz
+  [49] tinyIncrements
+  [50] tinyInteger
+  [51] unsignedBigInteger
+  [52] unsignedDecimal
+  [53] unsignedInteger
+  [54] unsignedMediumInteger
+  [55] unsignedSmallInteger
+  [56] unsignedTinyInteger
+  [57] uuid
+  [58] year
+> 6
+
+<!-- Question -->
+Select additional options ──────────────────────────────────────┐
+ │ › ◻ nullable                                                 │
+ │   ◻ unique                                                   │
+ │   ◻ default                                                  │
+ └──────────────────────────────────────────────────────────────┘
+
+<!-- Output -->
+Migration file : 2024_06_15_220000_add_birth_to_users_table.php
+Migration file created successfully
 ```
 
 ## Helpers
