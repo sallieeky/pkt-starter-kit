@@ -32,6 +32,7 @@ class MakeDatabaseTableCommand extends Command implements PromptsForMissingInput
     public function handle()
     {
         $name = $this->argument('name');
+        $name = Str::singular(ucfirst($name));
         $singularName = Str::singular($name);
         $pluralName = Str::plural($name);
 
