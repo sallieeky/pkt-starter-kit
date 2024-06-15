@@ -1,0 +1,268 @@
+<?php
+
+namespace Pkt\StarterKit\Console\MakeMigrationCommand;
+
+use Illuminate\Console\Command;
+use Illuminate\Contracts\Console\PromptsForMissingInput;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Pkt\StarterKit\Utils\MigrationSchemaBuilder;
+
+use function Laravel\Prompts\multiselect;
+
+class MakeMigrationCommand extends Command implements PromptsForMissingInput
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'pkt:make-migration';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Create migration file for specific case';
+
+    /**
+     * Execute the console command.
+     *
+     * @return int|null
+     */
+    public function handle()
+    {
+        $type = $this->choice('Select migration type', [
+            'add column',
+            'drop column',
+            'rename column',
+            'change column data type',
+            'manipulate multiple columns / custom schema',
+        ], 0);
+
+        $existingTables = collect(DB::select('SHOW TABLES'))->map(function ($table) {
+            return collect($table)->values()->first();
+        });
+        $tableName = $this->choice('Select table name', $existingTables->toArray(), 0);
+
+        if ($type === 'add column') {
+            $this->addColumn($tableName);
+        } elseif ($type === 'drop column') {
+            $this->dropColumn($tableName);
+        } elseif ($type === 'rename column') {
+            $this->renameColumn($tableName);
+        } elseif ($type === 'change column data type') {
+            $this->changeColumnDataType($tableName);
+        } else if ($type === 'manipulate multiple columns / custom schema') {
+            $this->manipulateMultipleColumns($tableName);
+        } else {
+            $this->error('Invalid migration type');
+        }
+
+        return 0;
+    }
+
+    private function addColumn($tableName)
+    {
+        $newColumnName = $this->ask('Enter new column name');
+        $newColumnName = Str::snake($newColumnName);
+
+        $dataType = $this->choiceDataType();
+        $options = $this->choiceAdditionalOptions();
+
+        $migrationName = date('Y_m_d_His').'_add_'.$newColumnName.'_to_'.$tableName.'_table.php';
+        (new Filesystem)->ensureDirectoryExists(database_path('migrations'));
+        copy(__DIR__.'/../../../database-migration-stubs/migration.php', database_path('migrations/'.$migrationName));
+
+        $upMigrationSchema = MigrationSchemaBuilder::addColumn($newColumnName, $dataType, $options);
+        $downMigrationSchema = MigrationSchemaBuilder::dropColumn($newColumnName);
+
+        $this->replaceContent(database_path('migrations/'.$migrationName), [
+            'table_names' => $tableName,
+            'UpMigrationSchema' => $upMigrationSchema,
+            'DownMigrationSchema' => $downMigrationSchema,
+        ]);
+
+        $this->info('Migration file created successfully');
+    }
+
+    private function dropColumn($tableName)
+    {
+        $existingColumns = collect(DB::select('SHOW COLUMNS FROM '.$tableName))->pluck('Field');
+        $columnName = $this->choice('Select column name to drop', $existingColumns->toArray(), 0);
+
+        $dataType = collect(DB::select('SHOW COLUMNS FROM '.$tableName))->where('Field', $columnName)->pluck('Type')->first();
+
+        $migrationName = date('Y_m_d_His').'_drop_'.$columnName.'_from_'.$tableName.'_table.php';
+        (new Filesystem)->ensureDirectoryExists(database_path('migrations'));
+        copy(__DIR__.'/../../../database-migration-stubs/migration.php', database_path('migrations/'.$migrationName));
+
+        $upMigrationSchema = MigrationSchemaBuilder::dropColumn($columnName);
+        $downMigrationSchema = MigrationSchemaBuilder::addColumn($columnName, $dataType);
+
+        $this->replaceContent(database_path('migrations/'.$migrationName), [
+            'table_names' => $tableName,
+            'UpMigrationSchema' => $upMigrationSchema,
+            'DownMigrationSchema' => $downMigrationSchema,
+        ]);
+
+        $this->info('Migration file created successfully');
+    }
+
+    private function renameColumn($tableName)
+    {
+        $existingColumns = collect(DB::select('SHOW COLUMNS FROM '.$tableName))->pluck('Field');
+        $columnName = $this->choice('Select column name to rename', $existingColumns->toArray(), 0);
+
+        $newColumnName = $this->ask('Enter new column name');
+        $newColumnName = Str::snake($newColumnName);
+
+        $migrationName = date('Y_m_d_His').'_rename_'.$columnName.'_to_'.$newColumnName.'_in_'.$tableName.'_table.php';
+        (new Filesystem)->ensureDirectoryExists(database_path('migrations'));
+        copy(__DIR__.'/../../../database-migration-stubs/migration.php', database_path('migrations/'.$migrationName));
+
+        $upMigrationSchema = MigrationSchemaBuilder::renameColumn($columnName, $newColumnName);
+        $downMigrationSchema = MigrationSchemaBuilder::renameColumn($newColumnName, $columnName);
+
+        $this->replaceContent(database_path('migrations/'.$migrationName), [
+            'table_names' => $tableName,
+            'UpMigrationSchema' => $upMigrationSchema,
+            'DownMigrationSchema' => $downMigrationSchema,
+        ]);
+
+        $this->info('Migration file created successfully');
+    }
+
+    private function changeColumnDataType($tableName)
+    {
+        $existingColumns = collect(DB::select('SHOW COLUMNS FROM '.$tableName))->pluck('Field');
+        $columnName = $this->choice('Select column name to change data type', $existingColumns->toArray(), 0);
+
+        $existingDataType = collect(DB::select('SHOW COLUMNS FROM '.$tableName))->where('Field', $columnName)->pluck('Type')->first();
+        $newDataType = $this->choiceDataType();
+
+        $additionalOptions = $this->choiceAdditionalOptions();
+
+        $migrationName = date('Y_m_d_His').'_change_'.$columnName.'_data_type_in_'.$tableName.'_table.php';
+        (new Filesystem)->ensureDirectoryExists(database_path('migrations'));
+        copy(__DIR__.'/../../../database-migration-stubs/migration.php', database_path('migrations/'.$migrationName));
+
+        $upMigrationSchema = MigrationSchemaBuilder::changeColumnDataType($columnName, $newDataType, $additionalOptions);
+        $downMigrationSchema = MigrationSchemaBuilder::changeColumnDataType($columnName, $existingDataType);
+
+        $this->replaceContent(database_path('migrations/'.$migrationName), [
+            'table_names' => $tableName,
+            'UpMigrationSchema' => $upMigrationSchema,
+            'DownMigrationSchema' => $downMigrationSchema,
+        ]);
+
+        $this->info('Migration file created successfully');
+    }
+
+    private function manipulateMultipleColumns($tableName)
+    {
+        $migrationName = date('Y_m_d_His').'_update_columns_in_'.$tableName.'_table.php';
+        (new Filesystem)->ensureDirectoryExists(database_path('migrations'));
+
+        $upMigrationSchema = '// Add your up migration schema here';
+        $downMigrationSchema = '// Add your down migration schema here';
+
+        $this->replaceContent(database_path('migrations/'.$migrationName), [
+            'table_names' => $tableName,
+            'UpMigrationSchema' => $upMigrationSchema,
+            'DownMigrationSchema' => $downMigrationSchema,
+        ]);
+
+        $this->info('Migration file created successfully');
+    }
+
+    private function choiceDataType()
+    {
+        return $this->choice('Select data type', [
+            'custom',
+            'bigIncrements',
+            'bigInteger',
+            'binary',
+            'boolean',
+            'char',
+            'date',
+            'dateTime',
+            'dateTimeTz',
+            'decimal',
+            'double',
+            'enum',
+            'float',
+            'geometry',
+            'geometryCollection',
+            'increments',
+            'integer',
+            'ipAddress',
+            'json',
+            'jsonb',
+            'lineString',
+            'longText',
+            'macAddress',
+            'mediumIncrements',
+            'mediumInteger',
+            'mediumText',
+            'morphs',
+            'uuidMorphs',
+            'multiLineString',
+            'multiPoint',
+            'multiPolygon',
+            'nullableMorphs',
+            'nullableUuidMorphs',
+            'point',
+            'polygon',
+            'rememberToken',
+            'set',
+            'smallIncrements',
+            'smallInteger',
+            'softDeletes',
+            'softDeletesTz',
+            'string',
+            'text',
+            'time',
+            'timeTz',
+            'timestamp',
+            'timestampTz',
+            'timestamps',
+            'timestampsTz',
+            'tinyIncrements',
+            'tinyInteger',
+            'unsignedBigInteger',
+            'unsignedDecimal',
+            'unsignedInteger',
+            'unsignedMediumInteger',
+            'unsignedSmallInteger',
+            'unsignedTinyInteger',
+            'uuid',
+            'year',
+        ], 0);
+    }
+
+    private function choiceAdditionalOptions()
+    {
+        return multiselect('Select additional options', [
+            'nullable',
+            'unique',
+            'default',
+        ]);
+    }
+
+    /**
+     * Replace content in file
+     *
+     * @param string $file
+     * @param array $replacements
+     * @return void
+     */
+    protected function replaceContent($file, $replacements)
+    {
+        $content = file_get_contents($file);
+        $content = str_replace(array_keys($replacements), array_values($replacements), $content);
+        file_put_contents($file, $content);
+    }
+}
