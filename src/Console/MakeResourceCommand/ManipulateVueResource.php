@@ -125,7 +125,7 @@ trait ManipulateVueResource
         $routeBrowse = "route('{$groupName}.browse')";
         $routeCreatePage = "route('{$groupName}.create_page')";
         $routeCreate = "route('{$groupName}.create')";
-        $routeUpdatePage = "route('{$groupName}.update_page', form$modelName.$primaryKey)";
+        $routeUpdatePage = "route('{$groupName}.update_page', data$modelName.$primaryKey)";
         $routeUpdate = "route('{$groupName}.update', form$modelName.$primaryKey)";
         $routeDelete = "route('{$groupName}.delete', data$modelName.$primaryKey)";
         $routeDataProcessing = "route('{$groupName}.data_processing')";
