@@ -11,9 +11,9 @@ trait ManipulateVueResource
 {
     private Model $model;
     private string $nameArgument;
-    private ?string $multiPage;
+    private bool $multiPage;
 
-    protected function manipulateVueResource(Model $model, string $nameArgument, $multiPage = null)
+    protected function manipulateVueResource(Model $model, string $nameArgument, $multiPage = false)
     {
         $this->model = $model;
         $this->nameArgument = $nameArgument;
@@ -161,6 +161,8 @@ trait ManipulateVueResource
             'UpdatePermission' => $updatePermission,
             'DeletePermission' => $deletePermission,
             'ModalFormSlot' => $modalFormSlot,
+            'RouteCreatePage' => $routeCreatePage,
+            'RouteUpdatePage' => $routeUpdatePage,
             'RouteCreate' => $routeCreate,
             'RouteUpdate' => $routeUpdate,
             'RouteDelete' => $routeDelete,

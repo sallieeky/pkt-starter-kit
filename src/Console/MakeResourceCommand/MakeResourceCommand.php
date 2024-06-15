@@ -52,8 +52,8 @@ class MakeResourceCommand extends Command implements PromptsForMissingInput
 
         $multiPage = $this->option('multi-page');
 
-        $this->manipulateVueResource($model, $nameArgument);
-        $this->createTestCases($model, $nameArgument, $multiPage);
+        $this->manipulateVueResource($model, $nameArgument, $multiPage);
+        $this->createTestCases($model, $nameArgument);
         return 1;
     }
 
