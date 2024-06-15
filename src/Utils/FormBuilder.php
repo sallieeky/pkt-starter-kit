@@ -1,6 +1,6 @@
 <?php
 
-namespace Pkt\StarterKit\Helpers;
+namespace Pkt\StarterKit\Utils;
 
 use Doctrine\DBAL\Types\Types;
 

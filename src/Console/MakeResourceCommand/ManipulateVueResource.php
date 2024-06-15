@@ -5,7 +5,7 @@ namespace Pkt\StarterKit\Console\MakeResourceCommand;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
-use Pkt\StarterKit\Helpers\FormBuilder;
+use Pkt\StarterKit\Utils\FormBuilder;
 
 trait ManipulateVueResource
 {
