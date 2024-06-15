@@ -6,7 +6,7 @@
 
             FormSlot
 
-            <el-button type="primary" @click="submitForm">Submit</el-button>
+            <el-button type="primary" @click="submitForm">Update</el-button>
         </el-form>
     </MainLayout>
 </template>
@@ -17,12 +17,12 @@ import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { ElMessage } from 'element-plus';
 
 const data = usePage().props.modelName;
-const form = useForm({
+const formRef = ref();
+const formModelName = useForm({
     ...data,
 });
 
 const formErrors = ref([]);
-
 const getFormError = (field, errors = formErrors.value) => {
     if (!errors && !errors.length) {
         return false
@@ -32,25 +32,29 @@ const getFormError = (field, errors = formErrors.value) => {
     }
 }
 
-const submitForm = () => {
+const submitForm = async () => {
     formErrors.value = [];
-    form.post(RouteCreate, {
-        preserveScroll: true,
-        onSuccess: (response) => {
-            ElMessage({
-                message: response.props.flash.message,
-                type: 'success',
+    await formRef.value.validate(async (valid, _) => {
+        if (valid) {
+            formModelName.post(RouteCreate, {
+                preserveScroll: true,
+                onSuccess: (response) => {
+                    ElMessage({
+                        message: response.props.flash.message,
+                        type: 'success',
+                    });
+                    router.get(RouteBrowse);
+                },
+                onError: (errors) => {
+                    formErrors.value = errors;
+                    if('message' in errors){
+                        ElMessage({
+                            message: errors.message,
+                            type: 'error',
+                        });
+                    }
+                }
             });
-            router.get(RouteBrowse);
-        },
-        onError: (errors) => {
-            formErrors.value = errors;
-            if('message' in errors){
-                ElMessage({
-                    message: errors.message,
-                    type: 'error',
-                });
-            }
         }
     });
 }

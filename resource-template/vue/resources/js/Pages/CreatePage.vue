@@ -16,12 +16,12 @@ import MainLayout from '@/Layouts/MainLayout.vue';
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { ElMessage } from 'element-plus';
 
-const form = useForm({
+const formRef = ref();
+const formModelName = useForm({
     FormUseForm
 });
 
 const formErrors = ref([]);
-
 const getFormError = (field, errors = formErrors.value) => {
     if (!errors && !errors.length) {
         return false
@@ -31,25 +31,29 @@ const getFormError = (field, errors = formErrors.value) => {
     }
 }
 
-const submitForm = () => {
+const submitForm = async () => {
     formErrors.value = [];
-    form.post(RouteCreate, {
-        preserveScroll: true,
-        onSuccess: (response) => {
-            ElMessage({
-                message: response.props.flash.message,
-                type: 'success',
+    await formRef.value.validate(async (valid, _) => {
+        if (valid) {
+            formModelName.post(RouteCreate, {
+                preserveScroll: true,
+                onSuccess: (response) => {
+                    ElMessage({
+                        message: response.props.flash.message,
+                        type: 'success',
+                    });
+                    router.get(RouteBrowse);
+                },
+                onError: (errors) => {
+                    formErrors.value = errors;
+                    if('message' in errors){
+                        ElMessage({
+                            message: errors.message,
+                            type: 'error',
+                        });
+                    }
+                }
             });
-            router.get(RouteBrowse);
-        },
-        onError: (errors) => {
-            formErrors.value = errors;
-            if('message' in errors){
-                ElMessage({
-                    message: errors.message,
-                    type: 'error',
-                });
-            }
         }
     });
 }
