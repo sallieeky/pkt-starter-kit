@@ -42,7 +42,7 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
         }
 
         // get all employee from Leader API
-        $this->components->task('Syncing users data...', function () {
+        $this->components->task('Syncing users data', function () {
             DB::beginTransaction();
             try {
                 $employees = LeaderApi::getAllEmployee();

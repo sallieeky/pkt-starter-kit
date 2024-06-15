@@ -36,7 +36,7 @@ const submitForm = async () => {
     formErrors.value = [];
     await formRef.value.validate(async (valid, _) => {
         if (valid) {
-            formModelName.post(RouteUpdate, {
+            formModelName.put(RouteUpdate, {
                 preserveScroll: true,
                 onSuccess: (response) => {
                     ElMessage({

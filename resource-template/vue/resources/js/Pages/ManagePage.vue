@@ -116,7 +116,6 @@ function deleteModelNameAction(dataModelName) {
                         type: 'success',
                     });
                     refreshDatagrid();
-                    dialogFormVisible.value = false;
                 },
                 onError: (errors) => {
                     formModelNameErrors.value = errors;
