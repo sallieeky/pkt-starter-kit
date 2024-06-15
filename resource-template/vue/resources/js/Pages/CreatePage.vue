@@ -1,7 +1,7 @@
 <template>
     <Head title="ResourceTitle" />
     <MainLayout title="ResourceTitle">
-        <el-form ref="formRef" :model="form" label-width="200px" label-position="top"
+        <el-form ref="formRef" :model="formModelName" label-width="200px" label-position="top"
             require-asterisk-position="right" autocomplete="off">
 
             FormSlot
