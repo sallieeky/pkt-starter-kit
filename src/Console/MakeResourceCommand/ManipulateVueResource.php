@@ -11,11 +11,13 @@ trait ManipulateVueResource
 {
     private Model $model;
     private string $nameArgument;
+    private ?string $multiPage;
 
-    protected function manipulateVueResource(Model $model, string $nameArgument)
+    protected function manipulateVueResource(Model $model, string $nameArgument, $multiPage = null)
     {
         $this->model = $model;
         $this->nameArgument = $nameArgument;
+        $this->multiPage = $multiPage
 
         // check if the vue page already exists
         $exist = (new Filesystem)->exists(resource_path('js/Pages/' . $nameArgument ));
@@ -58,7 +60,13 @@ trait ManipulateVueResource
         $columns = $model->getConnection()->getSchemaBuilder()->getColumnListing($model->getTable());
 
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages/' . $nameArgument ));
-        copy(__DIR__.'/../../../resource-template/vue/resources/js/Pages/IndexPage.vue', resource_path('js/Pages/' . $nameArgument . '/' . $nameArgument . 'Manage.vue'));
+        if ($this->multiPage) {
+            copy(__DIR__.'/../../../resource-template/vue/resources/js/Pages/ManagePage.vue', resource_path('js/Pages/' . $nameArgument . '/' . $nameArgument . 'Manage.vue'));
+            copy(__DIR__.'/../../../resource-template/vue/resources/js/Pages/CreatePage.vue', resource_path('js/Pages/' . $nameArgument . '/' . $nameArgument . 'Create.vue'));
+            copy(__DIR__.'/../../../resource-template/vue/resources/js/Pages/UpdatePage.vue', resource_path('js/Pages/' . $nameArgument . '/' . $nameArgument . 'Update.vue'));
+        } else {
+            copy(__DIR__.'/../../../resource-template/vue/resources/js/Pages/IndexPage.vue', resource_path('js/Pages/' . $nameArgument . '/' . $nameArgument . 'Manage.vue'));
+        }
 
         // ResourceTitle
         $resourceTitle = Str::headline($nameArgument) . ' Management';
@@ -114,7 +122,10 @@ trait ManipulateVueResource
 
         // Route
         $groupName = Str::lower(Str::snake($nameArgument));
+        $routeBrowse = "route('{$groupName}.browse')";
+        $routeCreatePage = "route('{$groupName}.create_page')";
         $routeCreate = "route('{$groupName}.create')";
+        $routeUpdatePage = "route('{$groupName}.update_page', form$modelName.$primaryKey)";
         $routeUpdate = "route('{$groupName}.update', form$modelName.$primaryKey)";
         $routeDelete = "route('{$groupName}.delete', data$modelName.$primaryKey)";
         $routeDataProcessing = "route('{$groupName}.data_processing')";
@@ -159,7 +170,39 @@ trait ManipulateVueResource
             'FormEditAction' => $formEditAction,
         ]);
 
+        if ($this->multiPage) {
+            $this->replaceContent(resource_path('js/Pages/' . $nameArgument . '/' . $nameArgument . 'Create.vue'), [
+                'ResourceTitle' => Str::headline($nameArgument) . ' Create',
+                'ModelLabel' => $modelLabel,
+                'ModelName' => $modelName,
+                'modelName' => Str::camel($modelName),
+                'PrimaryKey' => $primaryKey,
+                'FormSlot' => $modalFormSlot,
+                'RouteCreate' => $routeCreate,
+                'RouteBrowse' => $routeBrowse,
+                'FormUseForm' => $formUseForm,
+                'FormAddAction' => $formAddAction,
+            ]);
+
+            $this->replaceContent(resource_path('js/Pages/' . $nameArgument . '/' . $nameArgument . 'Update.vue'), [
+                'ResourceTitle' => Str::headline($nameArgument) . ' Update',
+                'ModelLabel' => $modelLabel,
+                'ModelName' => $modelName,
+                'modelName' => Str::camel($modelName),
+                'PrimaryKey' => $primaryKey,
+                'FormSlot' => $modalFormSlot,
+                'RouteUpdate' => $routeUpdate,
+                'RouteBrowse' => $routeBrowse,
+                'FormUseForm' => $formUseForm,
+                'FormEditAction' => $formEditAction,
+            ]);
+        }
+
         $this->info('Vue page created in: resources/js/Pages/' . $nameArgument . '/' . $nameArgument . 'Manage.vue');
+        if ($this->multiPage) {
+            $this->info('Vue page created in: resources/js/Pages/' . $nameArgument . '/' . $nameArgument . 'Create.vue');
+            $this->info('Vue page created in: resources/js/Pages/' . $nameArgument . '/' . $nameArgument . 'Update.vue');
+        }
     }
 
     /**
@@ -174,7 +217,11 @@ trait ManipulateVueResource
         $modelLabel = Str::headline($nameArgument);
 
         (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
-        copy(__DIR__.'/../../../resource-template/vue/app/Http/Controllers/ResourceController.php', app_path('Http/Controllers/' . $nameArgument . 'Controller.php'));
+        if ($this->multiPage) {
+            copy(__DIR__.'/../../../resource-template/vue/app/Http/Controllers/ResourceController.php', app_path('Http/Controllers/' . $nameArgument . 'Controller.php'));
+        } else {
+            copy(__DIR__.'/../../../resource-template/vue/app/Http/Controllers/ResourceSimpleController.php', app_path('Http/Controllers/' . $nameArgument . 'Controller.php'));
+        }
 
         $this->replaceContent(app_path('Http/Controllers/' . $nameArgument . 'Controller.php'), [
             'ModelLabel' => $modelLabel,
@@ -254,6 +301,21 @@ trait ManipulateVueResource
 
         $primaryKey = $this->model->getKeyName();
 
+        if ($this->multiPage) {
+            $route = "
+Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])
+    ->prefix('$route')
+    ->name('$groupName.')
+    ->controller(App\Http\Controllers\\{$modelName}Controller::class)->group(function () {
+        Route::get('/', 'managePage')->name('browse')->can('$groupName.browse');
+        Route::get('/data-processing', 'dataProcessing')->name('data_processing')->can('$groupName.browse');
+        Route::get('/create', 'createPage')->name('create_page')->can('$groupName.create');
+        Route::post('/create', 'create')->name('create')->can('$groupName.create');
+        Route::get('/update/{{$modelNameCamel}:$primaryKey}', 'updatePage')->name('update_page')->can('$groupName.update');
+        Route::put('/update/{{$modelNameCamel}:$primaryKey}', 'update')->name('update')->can('$groupName.update');
+        Route::delete('/delete/{{$modelNameCamel}:$primaryKey}', 'delete')->name('delete')->can('$groupName.delete');
+    });";
+        } else {
         $route = "
 Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])
     ->prefix('$route')
@@ -265,6 +327,8 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])
         Route::put('/update/{{$modelNameCamel}:$primaryKey}', 'update')->name('update')->can('$groupName.update');
         Route::delete('/delete/{{$modelNameCamel}:$primaryKey}', 'delete')->name('delete')->can('$groupName.delete');
     });";
+        }
+        
 
         file_put_contents(base_path('routes/web.php'), $route, FILE_APPEND);
 

@@ -38,6 +38,14 @@ trait HasCreatedUpdatedBy
         if (! isset($this->casts['updated_by'])) {
             $this->casts['updated_by'] = 'integer';
         }
+
+        if (! in_array('created_by', $this->guarded)) {
+            $this->guarded[] = 'created_by';
+        }
+
+        if (! in_array('updated_by', $this->guarded)) {
+            $this->guarded[] = 'updated_by';
+        }
     }
 
     /**
