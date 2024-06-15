@@ -42,11 +42,12 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
         }
 
         // get all employee from Leader API
-        $this->components->task('Syncing users data', function () {
+        $numberOfUsers = 0;
+        $this->components->task('Syncing users data...', function () use (&$numberOfUsers) {
             DB::beginTransaction();
             try {
                 $employees = LeaderApi::getAllEmployee();
-                $employees->each(function ($employee) {
+                $employees->each(function ($employee) use (&$numberOfUsers) {
                     $user = app('App\\Models\\User')::query()->where('npk', $employee->USERS_NPK)->first();
                     $dataUser = [
                         'name' => $employee->USERS_NAME,
@@ -69,6 +70,8 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
                         $user = app('App\\Models\\User')::create($dataUser);
                         $user->assignRole('Viewer');
                     }
+
+                    $numberOfUsers++;
                 });
             } catch (\Exception $e) {
                 DB::rollBack();
@@ -76,10 +79,10 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
                 return 0;
             }
             DB::commit();
-            $this->info('Synced ' . $employees->count() . ' users from PKT Leader.');
         });
 
         $this->line('');
+        $this->info('Synced ' . $numberOfUsers . ' users from PKT Leader.');
         $this->info('PKT Leader sync successfully.');
         return 1;
     }

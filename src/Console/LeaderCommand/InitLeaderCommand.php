@@ -59,11 +59,12 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
         $this->call('migrate');
 
         // get all employee from Leader API
-        $this->components->task('Syncing users data...', function () {
+        $numberOfUsers = 0;
+        $this->components->task('Syncing users data...', function () use (&$numberOfUsers) {
             DB::beginTransaction();
             try {
                 $employees = LeaderApi::getAllEmployee();
-                $employees->each(function ($employee) {
+                $employees->each(function ($employee) use (&$numberOfUsers) {
                     $user = app('App\\Models\\User')::updateOrCreate([
                         'npk' => $employee->USERS_NPK
                     ], [
@@ -81,6 +82,8 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
                         'password' => '$2y$12$K7iSlaMTjZpgfiLEFMHbM.3O3LADzHvQYWkYaXJMQYWAIjgAF3.hy', // Bontang123@2024
                     ]);
                     $user->assignRole('Viewer');
+
+                    $numberOfUsers++;
                 });
             } catch (\Exception $e) {
                 DB::rollBack();
@@ -88,7 +91,6 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
                 return 0;
             }
             DB::commit();
-            $this->info('Synced ' . $employees->count() . ' users from PKT Leader.');
         });
 
         if ($this->option('add-dx-column')) {
@@ -111,6 +113,8 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
         }
 
         $this->line('');
+
+        $this->info('Synced ' . $numberOfUsers . ' users from PKT Leader.');
         $this->info('PKT Leader init and sync successfully.');
         return 1;
     }
