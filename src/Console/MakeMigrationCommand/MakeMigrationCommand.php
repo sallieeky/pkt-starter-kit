@@ -64,6 +64,12 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
         return 0;
     }
 
+    /**
+     * Add column to table
+     *
+     * @param string $tableName
+     * @return void
+     */
     private function addColumn($tableName)
     {
         $newColumnName = $this->ask('Enter new column name');
@@ -85,9 +91,16 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
             'DownMigrationSchema' => $downMigrationSchema,
         ]);
 
+        $this->info('Migration file : database/migrations/'.$migrationName);
         $this->info('Migration file created successfully');
     }
 
+    /**
+     * Drop column from table
+     *
+     * @param string $tableName
+     * @return void
+     */
     private function dropColumn($tableName)
     {
         $existingColumns = collect(DB::select('SHOW COLUMNS FROM '.$tableName))->pluck('Field');
@@ -108,9 +121,16 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
             'DownMigrationSchema' => $downMigrationSchema,
         ]);
 
+        $this->info('Migration file : database/migrations/'.$migrationName);
         $this->info('Migration file created successfully');
     }
 
+    /**
+     * Rename column in table
+     *
+     * @param string $tableName
+     * @return void
+     */
     private function renameColumn($tableName)
     {
         $existingColumns = collect(DB::select('SHOW COLUMNS FROM '.$tableName))->pluck('Field');
@@ -132,17 +152,23 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
             'DownMigrationSchema' => $downMigrationSchema,
         ]);
 
+        $this->info('Migration file : database/migrations/'.$migrationName);
         $this->info('Migration file created successfully');
     }
 
+    /**
+     * Change column data type in table
+     *
+     * @param string $tableName
+     * @return void
+     */
     private function changeColumnDataType($tableName)
     {
         $existingColumns = collect(DB::select('SHOW COLUMNS FROM '.$tableName))->pluck('Field');
         $columnName = $this->choice('Select column name to change data type', $existingColumns->toArray(), 0);
-
         $existingDataType = collect(DB::select('SHOW COLUMNS FROM '.$tableName))->where('Field', $columnName)->pluck('Type')->first();
+        
         $newDataType = $this->choiceDataType();
-
         $additionalOptions = $this->choiceAdditionalOptions();
 
         $migrationName = date('Y_m_d_His').'_change_'.$columnName.'_data_type_in_'.$tableName.'_table.php';
@@ -150,7 +176,7 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
         copy(__DIR__.'/../../../database-migration-stubs/migration.php', database_path('migrations/'.$migrationName));
 
         $upMigrationSchema = MigrationSchemaBuilder::changeColumnDataType($columnName, $newDataType, $additionalOptions);
-        $downMigrationSchema = MigrationSchemaBuilder::changeColumnDataType($columnName, $existingDataType);
+        $downMigrationSchema = MigrationSchemaBuilder::changeColumnDataType($columnName, $newDataType);
 
         $this->replaceContent(database_path('migrations/'.$migrationName), [
             'table_names' => $tableName,
@@ -158,13 +184,21 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
             'DownMigrationSchema' => $downMigrationSchema,
         ]);
 
+        $this->info('Migration file : database/migrations/'.$migrationName);
         $this->info('Migration file created successfully');
     }
 
+    /**
+     * Manipulate multiple columns / custom schema
+     *
+     * @param string $tableName
+     * @return void
+     */
     private function manipulateMultipleColumns($tableName)
     {
         $migrationName = date('Y_m_d_His').'_update_columns_in_'.$tableName.'_table.php';
         (new Filesystem)->ensureDirectoryExists(database_path('migrations'));
+        copy(__DIR__.'/../../../database-migration-stubs/migration.php', database_path('migrations/'.$migrationName));
 
         $upMigrationSchema = '// Add your up migration schema here';
         $downMigrationSchema = '// Add your down migration schema here';
@@ -175,9 +209,15 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
             'DownMigrationSchema' => $downMigrationSchema,
         ]);
 
+        $this->info('Migration file : database/migrations/'.$migrationName);
         $this->info('Migration file created successfully');
     }
 
+    /**
+     * Choice data type
+     *
+     * @return string
+     */
     private function choiceDataType()
     {
         return $this->choice('Select data type', [
@@ -243,6 +283,11 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
         ], 0);
     }
 
+    /**
+     * Choice additional options
+     *
+     * @return array
+     */
     private function choiceAdditionalOptions()
     {
         return multiselect('Select additional options', [
