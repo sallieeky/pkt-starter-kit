@@ -30,10 +30,6 @@ class ModelNameController extends Controller
             'totalCount' => $data->total(),
         ], 200);
     }
-    public function createPage(Request $request)
-    {
-        return Inertia::render('ModelName/ModelNameCreate');
-    }
     public function create(CreateModelNameRequest $request)
     {
         DB::beginTransaction();
@@ -49,12 +45,6 @@ class ModelNameController extends Controller
                 'message'=>'Failed to create ModelLabel'
             ]);
         }
-    }
-    public function updatePage(ModelName $modelName, Request $request)
-    {
-        return Inertia::render('ModelName/ModelNameUpdate', [
-            'modelName' => $modelName
-        ]);
     }
     public function update(ModelName $modelName, UpdateModelNameRequest $request)
     {

@@ -55,17 +55,16 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
         }
 
         // copy migration and run migrate
-        $this->components->task('Updating users table and migrate...', function () {
-            copy(__DIR__.'/../../../leader-stubs/database/migrations/2024_04_04_000000_add_leader_to_users_table.php', database_path('migrations/2024_04_04_000000_add_leader_to_users_table.php'));
-            $this->call('migrate');
-        });
+        copy(__DIR__.'/../../../leader-stubs/database/migrations/2024_04_04_000000_add_leader_to_users_table.php', database_path('migrations/2024_04_04_000000_add_leader_to_users_table.php'));
+        $this->call('migrate');
 
         // get all employee from Leader API
-        $this->components->task('Syncing users data...', function () {
+        $numberOfUsers = 0;
+        $this->components->task('Syncing users data...', function () use (&$numberOfUsers) {
             DB::beginTransaction();
             try {
                 $employees = LeaderApi::getAllEmployee();
-                $employees->each(function ($employee) {
+                $employees->each(function ($employee) use (&$numberOfUsers) {
                     $user = app('App\\Models\\User')::updateOrCreate([
                         'npk' => $employee->USERS_NPK
                     ], [
@@ -83,6 +82,8 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
                         'password' => '$2y$12$K7iSlaMTjZpgfiLEFMHbM.3O3LADzHvQYWkYaXJMQYWAIjgAF3.hy', // Bontang123@2024
                     ]);
                     $user->assignRole('Viewer');
+
+                    $numberOfUsers++;
                 });
             } catch (\Exception $e) {
                 DB::rollBack();
@@ -90,10 +91,8 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
                 return 0;
             }
             DB::commit();
-            $this->info('Synced ' . $employees->count() . ' users from PKT Leader.');
         });
 
-        // manipulate user manage when adding flag --add-dx-column
         if ($this->option('add-dx-column')) {
             $this->components->task('Manipulating user manage...', function () {
                 $content = file_get_contents(resource_path('js/Pages/User/UserManage.vue'));
@@ -114,6 +113,8 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
         }
 
         $this->line('');
+
+        $this->info('Synced ' . $numberOfUsers . ' users from PKT Leader.');
         $this->info('PKT Leader init and sync successfully.');
         return 1;
     }

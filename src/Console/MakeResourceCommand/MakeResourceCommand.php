@@ -19,7 +19,7 @@ class MakeResourceCommand extends Command implements PromptsForMissingInput
     protected $signature = 'pkt:make-resource {name : The name of the resource}
             {--force : Overwrite existing files}
             {--test : Create test cases}
-            {--generate : Generate the resource with default values}';
+            {--multi-page : Create multi page resource}';
 
     /**
      * The console command description.
@@ -50,7 +50,9 @@ class MakeResourceCommand extends Command implements PromptsForMissingInput
             return 0;
         }
 
-        $this->manipulateVueResource($model, $nameArgument);
+        $multiPage = $this->option('multi-page');
+
+        $this->manipulateVueResource($model, $nameArgument, $multiPage);
         $this->createTestCases($model, $nameArgument);
         return 1;
     }
