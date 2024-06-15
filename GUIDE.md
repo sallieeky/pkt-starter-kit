@@ -219,9 +219,9 @@ php artisan pkt:make-resource ModelName <additional-flag>
 ```
 
 Additional flag you can use <br>
-- `--force` if you want to force create the resource. <br> <strong>(CAREFULLY)</strong> This will replace all the existing related file.
+- `--multi-page` if you want to make create and update in a new page. By default resource only using 1 page with create and update using modal.
 - `--test` if you want to automatic create test case for your resource including CRUD test.
-
+- `--force` if you want to force create the resource. <br> <strong>(CAREFULLY)</strong> This will replace all the existing related file.
 
 This command will help you to create and optimize some file such as
 ```
