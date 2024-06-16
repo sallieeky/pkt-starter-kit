@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Str;
-
 return [
 
     /*
@@ -28,16 +26,16 @@ return [
     |
     */
 
-    'key' => env('APP_KEY', 'base64:'.base64_encode(Str::random(32))),
+    'key' => env('APP_KEY', 1234567890123456),
 
     /*
     |--------------------------------------------------------------------------
     | Default encryption iv
     |--------------------------------------------------------------------------
     |
-    | This option defines the default encryption iv that gets used when encrypting
-    | and decrypting strings. The iv specified in this option should match
-    | the iv used by the application using pkt-starter-kit crypt helper.
+    | This option defines the default encryption iv that gets used when encrypting and
+    | decrypting strings. The iv specified should have 16 characters and match the
+    | iv used by the application using pkt-starter-kit crypt helper.
     |
     */
 

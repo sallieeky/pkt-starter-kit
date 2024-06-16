@@ -42,9 +42,7 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
             'manipulate multiple columns / custom schema',
         ], 0);
 
-        $existingTables = collect(DB::select('SHOW TABLES'))->map(function ($table) {
-            return collect($table)->values()->first();
-        });
+        $existingTables = collect(DB::connection()->getDoctrineSchemaManager()->listTableNames());
         $tableName = $this->choice('Select table name', $existingTables->toArray(), 0);
 
         if ($type === 'add column') {
@@ -103,10 +101,12 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
      */
     private function dropColumn($tableName)
     {
-        $existingColumns = collect(DB::select('SHOW COLUMNS FROM '.$tableName))->pluck('Field');
+        $existingColumns = collect(DB::connection()->getDoctrineSchemaManager()->listTableColumns($tableName))->map(function ($column) {
+            return $column->getName();
+        })->values();
         $columnName = $this->choice('Select column name to drop', $existingColumns->toArray(), 0);
 
-        $dataType = collect(DB::select('SHOW COLUMNS FROM '.$tableName))->where('Field', $columnName)->pluck('Type')->first();
+        $dataType = collect(DB::connection()->getDoctrineSchemaManager()->listTableColumns($tableName))->get($columnName)->getType()->getName();
 
         $migrationName = date('Y_m_d_His').'_drop_'.$columnName.'_from_'.$tableName.'_table.php';
         (new Filesystem)->ensureDirectoryExists(database_path('migrations'));
@@ -133,7 +133,9 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
      */
     private function renameColumn($tableName)
     {
-        $existingColumns = collect(DB::select('SHOW COLUMNS FROM '.$tableName))->pluck('Field');
+        $existingColumns = collect(DB::connection()->getDoctrineSchemaManager()->listTableColumns($tableName))->map(function ($column) {
+            return $column->getName();
+        })->values();
         $columnName = $this->choice('Select column name to rename', $existingColumns->toArray(), 0);
 
         $newColumnName = $this->ask('Enter new column name');
@@ -164,9 +166,11 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
      */
     private function changeColumnDataType($tableName)
     {
-        $existingColumns = collect(DB::select('SHOW COLUMNS FROM '.$tableName))->pluck('Field');
+        $existingColumns = collect(DB::connection()->getDoctrineSchemaManager()->listTableColumns($tableName))->map(function ($column) {
+            return $column->getName();
+        })->values();
         $columnName = $this->choice('Select column name to change data type', $existingColumns->toArray(), 0);
-        $existingDataType = collect(DB::select('SHOW COLUMNS FROM '.$tableName))->where('Field', $columnName)->pluck('Type')->first();
+        $existingDataType = collect(DB::connection()->getDoctrineSchemaManager()->listTableColumns($tableName))->get($columnName)->getType()->getName();
         
         $newDataType = $this->choiceDataType();
         $additionalOptions = $this->choiceAdditionalOptions();
@@ -176,7 +180,7 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
         copy(__DIR__.'/../../../database-migration-stubs/migration.php', database_path('migrations/'.$migrationName));
 
         $upMigrationSchema = MigrationSchemaBuilder::changeColumnDataType($columnName, $newDataType, $additionalOptions);
-        $downMigrationSchema = MigrationSchemaBuilder::changeColumnDataType($columnName, $newDataType);
+        $downMigrationSchema = MigrationSchemaBuilder::changeColumnDataType($columnName, $existingDataType);
 
         $this->replaceContent(database_path('migrations/'.$migrationName), [
             'table_names' => $tableName,
