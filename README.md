@@ -21,16 +21,19 @@ Welcome to the Pupuk Kaltim Laravel Starter Kit – your gateway to streamlined 
 
 ## Installation
 
-For stable package install using <strong>(RECOMMENDED)</strong>
+For stable package install using this command to get the latest version. **(RECOMMENDED)**
 ```bash
 composer require pkt/starter-kit --dev 
 ```
 
-For development this package install using
+For earlier package install using this command to get the specific version.
 ```bash
-composer require pkt/starter-kit:dev-dev --dev 
-```
+composer require pkt/starter-kit:version --dev 
 
+# Example
+
+composer require pkt/starter-kit:v2.5.1 --dev 
+```
 
 ## How To Use
 
@@ -66,7 +69,7 @@ composer require pkt/starter-kit --dev
 ```bash
 php artisan pkt:install vue
 
-#or
+# or
 
 php artisan pkt:install react
 ```
@@ -86,7 +89,7 @@ php artisan migrate:fresh --seed
 # Frontend
 npm run dev
 
-#backend
+# Backend
 php artisan serve
 ```
 
@@ -205,6 +208,30 @@ php artisan test
 or for specific file only
 ```cmd
 ./vendor/bin/pest tests/Feature/ExampleTest.php
+```
+
+## Developing This Package
+
+For developing this package install using.
+```bash
+composer require pkt/starter-kit:dev-dev --dev 
+```
+
+If you wanna fix or adding something on specific version, you need to make a branch from the existing version using standard branch name. For the better version development, you need to make 2 branch from existing version such as `version-main` and `version-dev`. Make `version-main` branch from existing version, then make `version-dev` from `version-main`.
+```bash
+git checkout -b version-main version
+git checkout -b version-dev
+
+# Example
+
+git checkout -b v2.4.1-main v2.4.1
+git checkout -b v2.4.1-dev
+```
+
+Then you can develop a new feature or fixing bug from the `version-dev` branch then you can merge to `version-main` then you can make a new tag from `version-main` branch. In that example, the new version should be `v2.4.1.1` to indicate that `v2.4.1` have a new update, so the application that installed with version `v2.4.1` can update a new version safely by using command.
+
+```bash
+composer update pkt/starter-kit:v2.4.1.1
 ```
 
 ## Included Library
