@@ -42,7 +42,22 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
             'manipulate multiple columns / custom schema',
         ], 0);
 
-        $existingTables = collect(DB::connection()->getDoctrineSchemaManager()->listTableNames());
+        $existingTables = collect(DB::connection()->getDoctrineSchemaManager()->listTableNames())->filter(function ($table) {
+            return !in_array($table, [
+                'failed_jobs',
+                'mediables',
+                'migrations',
+                'model_has_permissions',
+                'model_has_roles',
+                'notifications',
+                'password_reset_tokens',
+                'permissions',
+                'personal_access_tokens',
+                'role_has_permissions',
+                'roles',
+                'sso_sessions'
+            ]);
+        })->values();
         $tableName = $this->choice('Select table name', $existingTables->toArray(), 0);
 
         if ($type === 'add column') {
@@ -236,6 +251,7 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
             'dateTimeTz',
             'decimal',
             'double',
+            'encrypted',
             'enum',
             'float',
             'geometry',
@@ -295,9 +311,14 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
     private function choiceAdditionalOptions()
     {
         return multiselect('Select additional options', [
+            'after',
+            'autoIncrement',
+            'charset',
+            'comment',
+            'default',
+            'first',
             'nullable',
             'unique',
-            'default',
         ]);
     }
 
