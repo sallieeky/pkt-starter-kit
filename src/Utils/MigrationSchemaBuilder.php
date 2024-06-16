@@ -76,14 +76,29 @@ class MigrationSchemaBuilder
     private static function parseOptions(array $options = []): string
     {
         $schema = '';
+        if (in_array('after', $options)) {
+            $schema .= '->after(\'column_name\')';
+        }
+        if (in_array('autoIncrement', $options)) {
+            $schema .= '->autoIncrement()';
+        }
+        if (in_array('charset', $options)) {
+            $schema .= '->charset(\'utf8\')';
+        }
+        if (in_array('comment', $options)) {
+            $schema .= '->comment(\'comment\')';
+        }
+        if (in_array('default', $options)) {
+            $schema .= '->default(\'value\')';
+        }
+        if (in_array('first', $options)) {
+            $schema .= '->first()';
+        }
         if (in_array('nullable', $options)) {
             $schema .= '->nullable()';
         } 
         if (in_array('unique', $options)) {
             $schema .= '->unique()';
-        }
-        if (in_array('default', $options)) {
-            $schema .= '->default(null)';
         }
 
         return $schema;
