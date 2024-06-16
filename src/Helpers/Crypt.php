@@ -16,10 +16,10 @@ class Crypt
      */
     public static function encrypt($string, string $method = null, string $iv = null, string $key = null): string
     {
-        $method = $method ?? "AES-256-CBC";
-        $options = 0;
-        $iv = $iv ?? substr(explode(':', config('app.key'))[1], 0, 16);
-        $key = $key ?? config('app.key');
+        $method = $method ?? config('crypt.cipher');
+        $options = config('crypt.options') ?? 0;
+        $iv = $iv ?? config('crypt.iv');
+        $key = $key ?? config('crypt.key');
 
         $string = is_array($string) || is_object($string) ? json_encode($string) : $string;
         $encryptedData = openssl_encrypt($string, $method, $key, $options, $iv);
@@ -38,10 +38,10 @@ class Crypt
      */
     public static function decrypt($string, string $method = null, string $iv = null, string $key = null): string
     {
-        $method = $method ?? "AES-256-CBC";
-        $options = 0;
-        $iv = $iv ?? substr(explode(':', config('app.key'))[1], 0, 16);
-        $key = $key ?? config('app.key');
+        $method = $method ?? config('crypt.cipher');
+        $options = config('crypt.options') ?? 0;
+        $iv = $iv ?? config('crypt.iv');
+        $key = $key ?? config('crypt.key');
 
         $decryptedData = openssl_decrypt($string, $method, $key, $options, $iv);
         return $decryptedData;

@@ -605,6 +605,8 @@ $transaction->updatedBy;
 
 This helper is to encrypt and decrypt data. By default, the encrypting method using `AES-256-CBC` algorithm and it's associated with `APP_KEY`, so it's **IMPORTANT** to keep your `APP_KEY` **secure**. Or if you have encrypted data with different key, you can replace the key from params.
 
+You also can configure your own crypt method, key, option, and iv from `config/crypt.php` .
+
 ```php
 use Pkt\StarterKit\Helpers\Crypt;
 

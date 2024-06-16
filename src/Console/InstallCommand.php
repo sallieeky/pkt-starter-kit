@@ -171,6 +171,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/config/permissions.php', config_path('permissions.php'));
             copy(__DIR__.'/../../stubs/default/config/leader.php', config_path('leader.php'));
             copy(__DIR__.'/../../stubs/default/config/reverb.php', config_path('reverb.php'));
+            copy(__DIR__.'/../../stubs/default/config/crypt.php', config_path('crypt.php'));
             // End Config
 
             // Factories
