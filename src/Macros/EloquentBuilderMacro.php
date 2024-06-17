@@ -3,23 +3,9 @@
 namespace Pkt\StarterKit\Macros;
 
 use Illuminate\Database\Eloquent\Builder;
+use Pkt\StarterKit\Casts\Encrypted;
 use Pkt\StarterKit\Helpers\Crypt;
 
-/**
- * Class EloquentBuilderMacro for adding custom macros to the Eloquent Builder class.
- * 
- * @package Pkt\StarterKit\Macros
- * @method \Illuminate\Database\Eloquent\Builder whereEncrypted(string $column, $operator = null, $value = null, string $boolean = 'and')
- * @method \Illuminate\Database\Eloquent\Builder orWhereEncrypted(string $column, $operator = null, $value = null)
- * @method \Illuminate\Database\Eloquent\Builder whereEncryptedIn(string $column, array $values)
- * @method \Illuminate\Database\Eloquent\Builder orWhereEncryptedIn(string $column, array $values)
- * @method \Illuminate\Database\Eloquent\Builder whereEncryptedNotIn(string $column, array $values)
- * @method \Illuminate\Database\Eloquent\Builder orWhereEncryptedNotIn(string $column, array $values)
- * @method \Illuminate\Database\Eloquent\Builder whereEncryptedRelation($relation, $column, $operator = null, $value = null)
- * @method \Illuminate\Database\Eloquent\Builder withMedia(...$collectionName)
- * 
- * @mixin \Illuminate\Database\Eloquent\Builder
- */
 class EloquentBuilderMacro
 {
     /**
@@ -148,6 +134,29 @@ class EloquentBuilderMacro
         return function (string $relation, string $column, $operator = null, $value = null): Builder {
             $value = Crypt::encrypt($value);
             return $this->whereRelation($relation, $column, $operator, $value);
+        };
+    }
+
+    /**
+     * where search clause query to support search columns
+     *
+     * @param  array  $columns
+     * @param  mixed  $value
+     * 
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function search(): callable
+    {
+        return function (array $columns, $value): Builder {
+            return $this->where(function ($query) use ($columns, $value) {
+                foreach ($columns as $column) {
+                    if (optional($this->getModel()->getCasts())[$column] === Encrypted::class) {
+                        $query->orWhereEncrypted($column, $value);
+                    } else {
+                        $query->orWhere($column, 'like', "%$value%");
+                    }
+                }
+            });
         };
     }
 

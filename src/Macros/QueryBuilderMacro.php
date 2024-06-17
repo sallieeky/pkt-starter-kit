@@ -3,22 +3,9 @@
 namespace Pkt\StarterKit\Macros;
 
 use Illuminate\Database\Query\Builder;
+use Pkt\StarterKit\Casts\Encrypted;
 use Pkt\StarterKit\Helpers\Crypt;
 
-/**
- * Class QueryBuilderMacro for adding custom macros to the Query Builder class.
- * 
- * @package Pkt\StarterKit\Macros
- * @method \Illuminate\Database\Query\Builder whereEncrypted(string $column, $operator = null, $value = null, string $boolean = 'and')
- * @method \Illuminate\Database\Query\Builder orWhereEncrypted(string $column, $operator = null, $value = null)
- * @method \Illuminate\Database\Query\Builder whereEncryptedIn(string $column, array $values)
- * @method \Illuminate\Database\Query\Builder orWhereEncryptedIn(string $column, array $values)
- * @method \Illuminate\Database\Query\Builder whereEncryptedNotIn(string $column, array $values)
- * @method \Illuminate\Database\Query\Builder orWhereEncryptedNotIn(string $column, array $values)
- * @method \Illuminate\Database\Query\Builder whereEncryptedRelation($relation, $column, $operator = null, $value = null)
- * 
- * @mixin \Illuminate\Database\Query\Builder
- */
 class QueryBuilderMacro
 {
     /**
@@ -150,4 +137,29 @@ class QueryBuilderMacro
             return $this->whereRelation($relation, $column, $operator, $value);
         };
     }
+
+    // search
+    /**
+     * where search clause query to support search columns
+     *
+     * @param  array  $columns
+     * @param  mixed  $value
+     * 
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function search(): callable
+    {
+        return function (array $columns, $value): Builder {
+            return $this->where(function ($query) use ($columns, $value) {
+                foreach ($columns as $column) {
+                    if (optional($this->getModel()->getCasts())[$column] === Encrypted::class) {
+                        $query->orWhereEncrypted($column, $value);
+                    } else {
+                        $query->orWhere($column, 'like', "%$value%");
+                    }
+                }
+            });
+        };
+    }
+
 }
