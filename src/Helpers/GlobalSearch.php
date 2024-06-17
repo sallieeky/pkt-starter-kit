@@ -60,7 +60,7 @@ class GlobalSearch
         $results = collect(static::$models)->map(function ($model) use ($query) {
             return ($model->searchableEloquentQuery() ?? $model->where($model->getKeyName(), -103918291))->where(function ($queryBuilder) use ($model, $query) {
                 foreach ($model->searchableAttributes() as $attribute) {
-                    if (isset($model->getCasts()[$attribute]) && ($model->getCasts()[$attribute] === Encrypted::class)) {
+                    if (isset($model->getCasts()[$attribute]) && str_contains(optional($model->getCasts())[$attribute], Encrypted::class)) {
                         $queryBuilder->orWhereEncrypted($attribute, $query);
                         continue;
                     }

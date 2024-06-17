@@ -132,8 +132,34 @@ class EloquentBuilderMacro
     public function whereEncryptedRelation(): callable
     {
         return function (string $relation, string $column, $operator = null, $value = null): Builder {
+            if (!in_array($operator, ['!=', '=']) || func_num_args() === 3) {
+                $value = $operator;
+                $operator = '=';
+            }
             $value = Crypt::encrypt($value);
             return $this->whereRelation($relation, $column, $operator, $value);
+        };
+    }
+
+    /**
+     * or where encrypted relation clause query to support encrypted columns
+     *
+     * @param  string  $relation
+     * @param  string  $column
+     * @param  mixed  $operator = null
+     * @param  mixed  $value = null
+     * 
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function orWhereEncryptedRelation(): callable
+    {
+        return function (string $relation, string $column, $operator = null, $value = null): Builder {
+            if (!in_array($operator, ['!=', '=']) || func_num_args() === 3) {
+                $value = $operator;
+                $operator = '=';
+            }
+            $value = Crypt::encrypt($value);
+            return $this->orWhereRelation($relation, $column, $operator, $value);
         };
     }
 
@@ -150,10 +176,20 @@ class EloquentBuilderMacro
         return function (array $columns, $value): Builder {
             return $this->where(function ($query) use ($columns, $value) {
                 foreach ($columns as $column) {
-                    if (optional($this->getModel()->getCasts())[$column] === Encrypted::class) {
-                        $query->orWhereEncrypted($column, $value);
+                    if (str_contains($column, '.')) {
+                        $relation = explode('.', $column)[0];
+                        $column = explode('.', $column)[1];
+                        if (str_contains(optional($this->getModel()->$relation()?->getRelated()?->getCasts())[$column], Encrypted::class)) {
+                            $query->orWhereEncryptedRelation($relation, $column, $value);
+                        } else {
+                            $query->orWhereRelation($relation, $column, 'like', "%$value%");
+                        }
                     } else {
-                        $query->orWhere($column, 'like', "%$value%");
+                        if (str_contains(optional($this->getModel()->getCasts())[$column], Encrypted::class)) {
+                            $query->orWhereEncrypted($column, $value);
+                        } else {
+                            $query->orWhere($column, 'like', "%$value%");
+                        }
                     }
                 }
             });

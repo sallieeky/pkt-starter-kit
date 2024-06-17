@@ -72,4 +72,19 @@ class Crypt
         $decrypted = self::decrypt($value);
         return $decrypted === "";
     }
+
+    /**
+     * Check if the given value is same as the encrypted value.
+     *
+     * @param string $value
+     * @param string $encryptedValue
+     * 
+     * @return bool
+     */
+    public static function check($value, $encryptedValue): bool
+    {
+        $decrypted = self::decrypt($encryptedValue);
+        return $decrypted === $value;
+    }
+
 }
