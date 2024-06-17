@@ -3,6 +3,7 @@
 namespace Pkt\StarterKit\Macros;
 
 use Illuminate\Database\Eloquent\Builder;
+use Pkt\StarterKit\Casts\Encrypted;
 use Pkt\StarterKit\Helpers\Crypt;
 
 class EloquentBuilderMacro
@@ -147,10 +148,13 @@ class EloquentBuilderMacro
     public function search(): callable
     {
         return function (array $columns, $value): Builder {
-            $value = "%$value%";
             return $this->where(function ($query) use ($columns, $value) {
                 foreach ($columns as $column) {
-                    $query->orWhere($column, 'like', $value);
+                    if (optional($this->getModel()->getCasts())[$column] === Encrypted::class) {
+                        $query->orWhereEncrypted($column, $value);
+                    } else {
+                        $query->orWhere($column, 'like', "%$value%");
+                    }
                 }
             });
         };
