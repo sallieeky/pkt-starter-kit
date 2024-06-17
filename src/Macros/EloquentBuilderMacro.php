@@ -179,14 +179,13 @@ class EloquentBuilderMacro
                     if (str_contains($column, '.')) {
                         $relation = explode('.', $column)[0];
                         $column = explode('.', $column)[1];
-
-                        if (optional($this->getModel()->getCasts())[$column] === Encrypted::class) {
+                        if (str_contains($this->getModel()->$relation()->getRelated()->getCasts()[$column], Encrypted::class)) {
                             $query->orWhereEncryptedRelation($relation, $column, $value);
                         } else {
                             $query->orWhereRelation($relation, $column, 'like', "%$value%");
                         }
                     } else {
-                        if (optional($this->getModel()->getCasts())[$column] === Encrypted::class) {
+                        if (str_contains($this->getModel()->getCasts()[$column], Encrypted::class)) {
                             $query->orWhereEncrypted($column, $value);
                         } else {
                             $query->orWhere($column, 'like', "%$value%");

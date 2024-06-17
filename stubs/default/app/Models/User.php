@@ -141,7 +141,9 @@ class User extends Authenticatable
      */
     public function searchableEloquentQuery(): ?object
     {
-        return $this->query()
-            ->where('is_active', 1);
+        if (auth()->user()?->hasRole('Superadmin')) {
+            return $this->query()->where('is_active', true);
+        }
+        return null;
     }
 }
