@@ -652,6 +652,15 @@ $isValid = Crypt::isValid(string $encrypted);
  */
 $isInvalid = Crypt::isInvalid(string $encrypted);
 
+/**
+ * Check if the given value is same as the encrypted value.
+ *
+ * @param string $value
+ * @param string $encryptedValue
+ * 
+ * @return bool
+ */
+$check = Crypt::check($value, $encryptedValue);
 ```
 
 **Example**
@@ -807,6 +816,15 @@ $employees = Employee::query()
 ```php
 $employees = Employee::query()
        ->search(['name', 'username'] 'John Doe')
+       ->get();
+
+// You can also search column from BelongsTo to relation using (.) delimiter
+$employees = Employee::query()
+       ->search([
+            'user.npk',
+            'user.username',
+            'nik'
+       ])
        ->get();
 ```
 
