@@ -650,7 +650,7 @@ $isValid = Crypt::isValid(string $encrypted);
  * 
  * @return bool
  */
-$isInvalid = Crypt::isValid(string $encrypted);
+$isInvalid = Crypt::isInvalid(string $encrypted);
 
 ```
 
