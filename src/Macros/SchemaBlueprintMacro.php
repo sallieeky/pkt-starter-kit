@@ -4,16 +4,6 @@ namespace Pkt\StarterKit\Macros;
 
 use Illuminate\Database\Schema\Blueprint;
 
-/**
- * Class SchemaBlueprintMacro for adding custom macros to the Blueprint class.
- * 
- * @package Pkt\StarterKit\Macros
- * @method void createdUpdatedBy()
- * @method void dropCreatedUpdatedBy()
- * @method Blueprint encrypted(string $column)
- * 
- * @mixin Blueprint
- */
 class SchemaBlueprintMacro
 {
     /**
