@@ -46,4 +46,30 @@ class Crypt
         $decryptedData = openssl_decrypt($string, $method, $key, $options, $iv);
         return $decryptedData;
     }
+
+    /**
+     * Check if the given value is valid.
+     *
+     * @param string $value
+     * 
+     * @return bool
+     */
+    public static function isValid($value): bool
+    {
+        $decrypted = self::decrypt($value);
+        return $decrypted !== "";
+    }
+
+    /**
+     * Check if the given value is invalid.
+     *
+     * @param string $value
+     * 
+     * @return bool
+     */
+    public static function isInvalid($value): bool
+    {
+        $decrypted = self::decrypt($value);
+        return $decrypted === "";
+    }
 }

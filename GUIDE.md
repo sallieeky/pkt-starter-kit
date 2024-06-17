@@ -632,6 +632,26 @@ $encrypt = Crypt::encrypt(string|integer $string, string $method = null, string 
  */
 $decrypt = Crypt::decrypt(string|integer $string, string $method = null, string $iv = null, string $key = null);
 
+
+/**
+ * Check if the encrypted value is valid
+ * 
+ * @param string $encrypted
+ * 
+ * @return bool
+ */
+$isValid = Crypt::isValid(string $encrypted);
+
+
+/**
+ * Check if the encrypted value is invalid
+ * 
+ * @param string $encrypted
+ * 
+ * @return bool
+ */
+$isInvalid = Crypt::isValid(string $encrypted);
+
 ```
 
 **Example**
@@ -783,6 +803,12 @@ $employees = Employee::query()
        ->whereEncryptedRelation('user', 'userame', 'John Doe')
        ->get();
 ```
+8. `search(columns, value)`
+```php
+$employees = Employee::query()
+       ->search(['name', 'username'] 'John Doe')
+       ->get();
+```
 
 ### Media Library
 
@@ -820,6 +846,9 @@ $issue = Issue::query()->with(['mediaEvidences', 'mediaReport'])->get();
 
 $issue->media()->get();
 $issue->media()->first();
+
+$name = $issues->mediaEvidences()->first()->original_name;
+$file = $issues->mediaEvidences()->first()->url;
 
 ... (etc)
 ```
