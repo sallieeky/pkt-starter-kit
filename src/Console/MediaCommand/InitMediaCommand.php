@@ -54,7 +54,7 @@ class InitMediaCommand extends Command implements PromptsForMissingInput
                 copy(__DIR__.'/../../../media-stubs/database/migrations/2024_06_11_000000_create_media_table.php', database_path('migrations/2024_06_11_000000_create_media_table.php'));
             }
             if (!file_exists(database_path('migrations/2024_06_11_000000_create_mediables_table.php'))) {
-                copy(__DIR__.'/../../../media-stubs/database/migrations/2024_06_11_000000_create_mediables_table.php', database_path('migrations/2024_06_11_00000_create_mediables_table.php'));
+                copy(__DIR__.'/../../../media-stubs/database/migrations/2024_06_11_000000_create_mediables_table.php', database_path('migrations/2024_06_11_000000_create_mediables_table.php'));
             }
         });
 
