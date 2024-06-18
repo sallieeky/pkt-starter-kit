@@ -15,7 +15,7 @@ class MakeDatabaseTableCommand extends Command implements PromptsForMissingInput
      * @var string
      */
     protected $signature = 'pkt:make-table 
-                    {name : table name (singular) e.g. user}';
+                    {name : table name (plural) e.g. users / model name (singular) e.g. User}';
 
     /**
      * The console command description.
