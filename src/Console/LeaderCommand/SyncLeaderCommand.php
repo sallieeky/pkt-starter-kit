@@ -83,7 +83,7 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
 
         $this->line('');
         $this->info('Synced ' . $numberOfUsers . ' users from PKT Leader.');
-        $this->info('PKT Leader sync successfully.');
+        $this->components->info('PKT Leader sync successfully.');
         return 1;
     }
 }

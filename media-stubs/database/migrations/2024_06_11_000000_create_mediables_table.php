@@ -16,6 +16,7 @@ return new class extends Migration
             $table->bigInteger('media_id');
             $table->morphs('mediable');
             $table->string('collection_name');
+            $table->json('custom_properties')->nullable();
             $table->timestamps();
         });
     }

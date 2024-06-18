@@ -11,6 +11,7 @@ namespace Illuminate\Database\Eloquent {
      * @method \Illuminate\Database\Eloquent\Builder whereEncryptedNotIn(string $column, array $values)
      * @method \Illuminate\Database\Eloquent\Builder orWhereEncryptedNotIn(string $column, array $values)
      * @method \Illuminate\Database\Eloquent\Builder whereEncryptedRelation($relation, $column, $operator = null, $value = null)
+     * @method \Illuminate\Database\Eloquent\Builder orWhereEncryptedRelation($relation, $column, $operator = null, $value = null)
      * @method \Illuminate\Database\Eloquent\Builder search(array $columns, mixed $value)
      * @method \Illuminate\Database\Eloquent\Builder withMedia(...$collectionName)
      * 
@@ -30,6 +31,7 @@ namespace Illuminate\Database\Query {
      * @method \Illuminate\Database\Query\Builder whereEncryptedNotIn(string $column, array $values)
      * @method \Illuminate\Database\Query\Builder orWhereEncryptedNotIn(string $column, array $values)
      * @method \Illuminate\Database\Query\Builder whereEncryptedRelation($relation, $column, $operator = null, $value = null)
+     * @method \Illuminate\Database\Query\Builder orWhereEncryptedRelation($relation, $column, $operator = null, $value = null)
      * @method \Illuminate\Database\Query\Builder search(array $columns, mixed $value)
      * 
      * @see \Pkt\StarterKit\Macros\QueryBuilderMacro
