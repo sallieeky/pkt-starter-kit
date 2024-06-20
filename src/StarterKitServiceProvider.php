@@ -39,6 +39,8 @@ class StarterKitServiceProvider extends ServiceProvider implements DeferrablePro
             Console\MakeComponentCommand\MakeComponentCommand::class,
             Console\MediaCommand\InitMediaCommand::class,
             Console\MakeMigrationCommand\MakeMigrationCommand::class,
+            Console\MailCommand\InitMailCommand::class,
+            Console\MailCommand\MakeMailCommand::class,
         ]);
     }
 
@@ -60,6 +62,8 @@ class StarterKitServiceProvider extends ServiceProvider implements DeferrablePro
             Console\MakeComponentCommand\MakeComponentCommand::class,
             Console\MediaCommand\InitMediaCommand::class,
             Console\MakeMigrationCommand\MakeMigrationCommand::class,
+            Console\MailCommand\InitMailCommand::class,
+            Console\MailCommand\MakeMailCommand::class,
         ];
     }
 }
