@@ -41,6 +41,7 @@ class StarterKitServiceProvider extends ServiceProvider implements DeferrablePro
             Console\MakeMigrationCommand\MakeMigrationCommand::class,
             Console\MailCommand\InitMailCommand::class,
             Console\MailCommand\MakeMailCommand::class,
+            Console\StarterEnvironmentDecryptCommand::class,
         ]);
     }
 
@@ -64,6 +65,7 @@ class StarterKitServiceProvider extends ServiceProvider implements DeferrablePro
             Console\MakeMigrationCommand\MakeMigrationCommand::class,
             Console\MailCommand\InitMailCommand::class,
             Console\MailCommand\MakeMailCommand::class,
+            Console\StarterEnvironmentDecryptCommand::class,
         ];
     }
 }
