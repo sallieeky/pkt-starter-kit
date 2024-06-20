@@ -1,12 +1,12 @@
 <div style="text-align: center; color: #6E7580;">
     <div style="margin-top: 12px; margin-bottom: 12px">
-        <p style="font-size: .70em">You have received this email because you are an active user of this site.</p>
+        <p style="font-size: .70em; text-align:center">You have received this email because you are an active user of this site.</p>
     </div>
 
     <hr style="border-top: 1px solid #A1D1F7">
 
     <div style="margin-top: 12px; margin-bottom: 12px">
-        <p style="font-size: .70em">Departemen Mitra Bisnis & Layanan Teknologi Informasi</p>
+        <p style="font-size: .70em; text-align:center">Departemen Mitra Bisnis & Layanan Teknologi Informasi</p>
     </div>
 
     <div style="margin-top: 12px; margin-bottom: 12px">
