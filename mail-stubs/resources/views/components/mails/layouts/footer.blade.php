@@ -13,7 +13,9 @@
         <img src="https://itleaps.com/images/logo-bumn.png" alt="{{ config('app.name') }}" style="width: 20%; height:50px; object-fit: contain; margin:0 4px">
         <img src="https://itleaps.com/images/logo-pi.png" alt="{{ config('app.name') }}" style="width: 20%; height:50px; object-fit: contain; margin:0 4px">
         <img src="https://itleaps.com/images/logo-long.png" alt="{{ config('app.name') }}" style="width: 20%; height:50px; object-fit: contain; margin:0 4px">
+        {{-- Your Application Logo --}}
         <img src="https://itleaps.com/images/logo-long.png" alt="{{ config('app.name') }}" style="width: 20%; height:50px; object-fit: contain; margin:0 4px">
+        {{-- End Your Application Logo --}}
     </div>
 </div>
 
