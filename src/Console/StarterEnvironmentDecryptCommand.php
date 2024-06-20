@@ -42,8 +42,6 @@ class StarterEnvironmentDecryptCommand extends Command implements PromptsForMiss
         ]);
         unlink('.env.starter.encrypted');
 
-        $this->components->info('The encrypted starter environment file has been decrypted successfully.');
-
         return 1;
     }
 }
