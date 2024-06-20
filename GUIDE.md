@@ -498,6 +498,158 @@ Migration file : 2024_06_15_220000_add_birth_to_users_table.php
 Migration file created successfully
 ```
 
+### Init and Make Mail
+
+If you need to use mail on your application then you want to easily configure the template of your email, you can run command to init mail using.
+
+```cmd
+php artisan pkt:mail-init
+```
+
+This command will automatically creating some components you need on `resources/views/components/mails`. You can change these files if you need to optimize the style of your email.
+
+Additionally, if you want to generate a mail class that automatically integrated with the mail component, you can make using this command.
+```cmd
+php artisan pkt:make-mail <MailName>
+```
+
+This command will generate `app/Mail/MailName.php` and `resource/views/mails/mail-name.blade.php`.
+
+#### How to send mail
+
+There are two option if you want to send email, you can direct send the email and queue the email first then run the queue which is the recommended way to send an email. 
+
+When you wanna using queue to send email, first you need to change the `QUEUE_CONNECTION` to `database` and run command `php artisan queue:table` and migrate `php artisan migrate`, if you wanna run the queue you can run command `php artisan queue:work`.
+```env
+...
+QUEUE_CONNECTION=database
+...
+```
+
+**Example**
+
+We want to send Need Approval mail to the AVP to notify the AVP that there is issue that need to be approve.
+
+```cmd
+php artisan pkt:make-mail NeedApprovalMail
+```
+
+Then we need to costumize the `app/Mail/NeedApproval.php`.
+
+```php
+<?php
+
+namespace App\Mail;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Queue\SerializesModels;
+
+class NeedApprovalMail extends Mailable
+{
+    use Queueable, SerializesModels;
+
+    /**
+     * Create a new message instance.
+     */
+    public function __construct(
+        public $issue
+    ){}
+
+    /**
+     * Get the message envelope.
+     */
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Approval Issue ' . $this->issue->issue_number,
+        );
+    }
+
+    /**
+     * Get the message content definition.
+     */
+    public function content(): Content
+    {
+        return new Content(
+            view: 'mails.need-approval-mail',
+        );
+    }
+
+    /**
+     * Get the attachments for the message.
+     *
+     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     */
+    public function attachments(): array
+    {
+        return [
+            // ...
+        ];
+    }
+
+    /**
+     * Triggered when the queued mail is failed.
+     * 
+     * @param  \Throwable  $exception
+     * 
+     * @return void
+     */
+    public function failed(\Throwable $exception): void
+    {
+        // ...
+    }
+
+}
+```
+
+Then we need to costumize the `resources/views/mails/need-approval-mail.blade.php`.
+
+```html
+<x-mails.layouts.app>
+    <x-mails.text.title>
+        Approval Issue {{ $issue->issue_number }}
+    </x-mails.text.title>
+    <x-mails.text.subtitle>
+        This issue need to bee approve immediately
+    </x-mails.text.subtitle>
+
+    <p>
+        Issue Number : {{ $issue->issue_number }} <br>
+        Issue Title : {{ $issue->issue_title }} <br>
+        Issue Description : {{ $issue->issue_description }} <br>
+    </p>
+
+    <x-mails.text.button url="{{ route('issue.detail', $issue->issue_uuid) }}">
+        View Issue
+    </x-mails.text.button>
+</x-mails.layouts.app>
+```
+
+Then on your controller or action.
+
+```php
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NeedApprovalMail;
+
+// If you direct send
+
+Mail::to(['avp@pupukkaltim.com'])
+    ->cc(['vp@pupukkaltim.com'])
+    ->bcc(['superadmin@pupukkaltim.com'])
+    ->send(new NeedApprovalMail($issue));
+
+// If you use queue
+
+Mail::to(['avp@pupukkaltim.com'])
+    ->cc(['vp@pupukkaltim.com'])
+    ->bcc(['superadmin@pupukkaltim.com'])
+    ->queue(new NeedApprovalMail($issue));
+```
+
 ## Helpers
 
 ### Leader API Integration
