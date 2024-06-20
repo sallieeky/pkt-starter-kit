@@ -32,9 +32,14 @@ class StarterEnvironmentDecryptCommand extends Command implements PromptsForMiss
      */
     public function handle()
     {
+        $key = $this->option('key');
+        if (!$key) {
+            $key = $this->ask('Enter the encryption key');
+        }
+
         copy(__DIR__ . '/../../stubs/default/.env.starter.encrypted', '.env.starter.encrypted');
         $this->call('env:decrypt', [
-            '--key' => $this->option('key'),
+            '--key' => $key,
             '--cipher' => $this->option('cipher'),
             '--env' => 'starter',
             '--force' => $this->option('force'),
