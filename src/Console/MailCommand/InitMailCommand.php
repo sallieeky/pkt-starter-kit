@@ -35,7 +35,7 @@ class InitMailCommand extends Command implements PromptsForMissingInput
         }
 
         (new Filesystem)->ensureDirectoryExists(resource_path('views/components/mails'));
-        (new Filesystem)->copyDirectory(__DIR__ . '/../../mail-stubs/resources/views/components/mails', resource_path('views/components/mails'));
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../../mail-stubs/resources/views/components/mails', resource_path('views/components/mails'));
 
         $this->components->info('Mail initialized successfully.');
         return 1;
