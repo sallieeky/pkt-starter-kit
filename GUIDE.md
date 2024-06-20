@@ -650,6 +650,10 @@ Mail::to(['avp@pupukkaltim.com'])
     ->queue(new NeedApprovalMail($issue));
 ```
 
+**Result**
+
+<img src="/art/MailDesktop.png" alt="Mail">
+
 ## Helpers
 
 ### Leader API Integration
