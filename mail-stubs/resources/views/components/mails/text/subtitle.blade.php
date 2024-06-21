@@ -1,5 +1,5 @@
 <div>
-    <h3 style="font-size: 1em; margin-bottom: 8px">
+    <h3 style="font-size: 1em">
         {{ $slot }}
     </h3>
 </div>

@@ -14,6 +14,7 @@
             padding: 0;
             box-sizing: border-box;
             color: #373B40;
+            line-height: 1.75;
         }
 
         body {
