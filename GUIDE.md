@@ -1101,30 +1101,74 @@ $media = Media::query()->whereIn('id', [1,2,3])->get();
 $issue->syncMedia($media, 'evidences');
 ```
 
-9. `getAllMedia()`, this will get all media related from data.
+9. `syncMediaFromElementRequest($media, $collectionName)`, this will syncing media data on your data from Element Plus request.
+```php
+/**
+ * ================================================
+ * Element request should look like this:
+ * ================================================
+ * 
+ * array:2 [
+ * 0 => array:17 [
+ *   "id" => "82"
+ *   "uuid" => "9c569747-0a0c-460d-8242-e9cc1adb3096"
+ *   "original_name" => "filename.png"
+ *   "type" => "file"
+ *   "size" => "33940"
+ *   "extension" => null
+ *   "mime_type" => "image/png"
+ *   "created_at" => "2024-06-21T08:06:31.000000Z"
+ *   "updated_at" => "2024-06-21T08:06:31.000000Z"
+ *   "deleted_at" => null
+ *   "created_by" => "1"
+ *   "updated_by" => "1"
+ *   "name" => "filename.png"
+ *   "url" => "http://127.0.0.1:8000/get-media/9c569747-0a0c-460d-8242-e9cc1adb3096"
+ *   "pivot" => array:4 [▶]
+ *   "uid" => "1718957545494"
+ *   "status" => "success"
+ * ],
+ * 1 => array:6 [
+ *   "name" => "filename.pdf"
+ *   "percentage" => "0"
+ *   "status" => "ready"
+ *   "size" => "45018"
+ *   "uid" => "1718114776003"
+ *   "raw" => UploadedFile {
+ *       ...
+ *   }
+ * ],
+ *]
+ */
+$validated = $request->validated();
+$issue = Issue::find(1);
+$issue->syncMediaFromElementRequest($validated['media_evidences'], 'evidences');
+```
+
+10.  `getAllMedia()`, this will get all media related from data.
 ```php
 $issue = Issue::find(1);
 $issue->getAllMedia();
 ```
 
-10. `getMediaFromCollection($collectionName)`, this will get all media from specific collection related from data.
+11.  `getMediaFromCollection($collectionName)`, this will get all media from specific collection related from data.
 ```php
 $issue = Issue::find(1);
 $issue->getMediaFromCollection('evidences');
 ```
 
-11. `getFirstMediaFromCollection($collectionName)`, this will get first media from specific collection related from data.
+12.  `getFirstMediaFromCollection($collectionName)`, this will get first media from specific collection related from data.
 ```php
 $issue = Issue::find(1);
 $issue->getFirstMediaFromCollection('report');
 ```
 
-12. `getAcceptedMediaCollections()`, this will display accepted media that can be assign from model.
+13.  `getAcceptedMediaCollections()`, this will display accepted media that can be assign from model.
 ```php
 $issue = Issue::getAcceptedMediaCollections();
 ```
 
-13. `getAvailableMediaCollections()`, this will display available media collection on your model.
+14.  `getAvailableMediaCollections()`, this will display available media collection on your model.
 ```php
 $issue = Issue::getAvailableMediaCollections();
 ```
