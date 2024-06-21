@@ -37,9 +37,19 @@ class Media extends Model
      * @var array<string, string>
      */
     protected $appends = [
+        'name',
         'url',
-        'base64'
     ];
+
+    /**
+     * Get the name attribute.
+     *
+     * @return string
+     */
+    public function getNameAttribute(): string
+    {
+        return $this->original_name;
+    }
 
     /**
      * Get the url attribute.
@@ -50,16 +60,6 @@ class Media extends Model
     {
         // return route('get-media', ['media' => $this->uuid]);
         return null;
-    }
-
-    /**
-     * Get the base64 attribute.
-     *
-     * @return string
-     */
-    public function getBase64Attribute(): string
-    {
-        return base64_encode(Storage::disk('public')->get($this->path));
     }
 
     /**

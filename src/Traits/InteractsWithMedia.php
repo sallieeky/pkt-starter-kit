@@ -429,9 +429,66 @@ trait InteractsWithMedia
                 throw new \Exception('Invalid type');
             }
 
-            $this->media()->syncWithPivotValues($media, ['collection_name' => $collectionName]);
+            $this->media()
+                ->wherePivot('collection_name', $collectionName)
+                ->syncWithPivotValues($media, ['collection_name' => $collectionName]);
         } catch (\Throwable $e) {
             DB::rollBack();
+            throw new \Exception($e->getMessage());
+        }
+        DB::commit();
+
+        return $this;
+    }
+
+    /**
+     * Sync media to the model instance from an Element Plus request
+     *
+     * @param array $media
+     * @param string|null $collectionName
+     *
+     * @return self
+     */
+    public function syncMediaFromElementRequest(array $media, ?string $collectionName = null): self
+    {
+        $collectionName = $collectionName ?? self::$collectionName;
+        DB::beginTransaction();
+        try {
+            $storedMedia = [];
+
+            if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
+                throw new \Exception('Collection ' . $collectionName . ' not accepted');
+            }
+
+            $media = collect($media)->map(function ($item) use ($collectionName, &$storedMedia) {
+                if (isset($item['raw'])){
+                    $item = $item['raw'];
+                    $storageName = $item->hashName();
+                    $path = $item->storeAs($collectionName, $storageName, 'public');
+                    $storedMedia[] = $path;
+                    $item = Media::create([
+                        'original_name' => $item->getClientOriginalName(),
+                        'storage_name' => $storageName,
+                        'path' => $path,
+                        'type' => $item->getType(),
+                        'size' => $item->getSize(),
+                        'extension' => $item->getExtension(),
+                        'mime_type' => $item->getMimeType(),
+                    ]);
+                    return (int) $item->id;
+                } else {
+                    return (int) $item['id'];
+                }
+            });
+
+            $this->media()
+                ->wherePivot('collection_name', $collectionName)
+                ->syncWithPivotValues($media, ['collection_name' => $collectionName]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            foreach ($storedMedia as $path) {
+                Storage::disk('public')->delete($path);
+            }
             throw new \Exception($e->getMessage());
         }
         DB::commit();
