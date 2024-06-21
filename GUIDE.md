@@ -586,9 +586,15 @@ class NeedApprovalMail extends Mailable
      */
     public function attachments(): array
     {
-        return [
-            // ...
-        ];
+        $attachments = [];
+        foreach ($this->issue?->mediaEvidences()->get()->makeVisible(['path']) as $media) {
+            $attachments[] = Attachment::fromStorage('public/'.$media->path);
+        }
+        foreach ($this->issue?->mediaReport()->get()->makeVisible(['path']) as $media) {
+            $attachments[] = Attachment::fromStorage('public/'.$media->path);
+        }
+        
+        return $attachments;
     }
 
     /**
