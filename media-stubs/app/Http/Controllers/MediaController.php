@@ -14,4 +14,15 @@ class MediaController extends Controller
     {
         return response()->file(storage_path('app/public/' . $media->path));
     }
+
+    /**
+     * Upload media file.
+     */
+    public function uploadMedia($collection, Request $request)
+    {
+        $media = Media::createFromUploadedFile($request->file('file'), $collection);
+        return response()->json([
+            'media' => $media,
+        ]);
+    }
 }

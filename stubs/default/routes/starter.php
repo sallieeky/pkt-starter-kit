@@ -36,4 +36,5 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->
 
     Route::get('/global-search', GlobalSearchController::class)->name('global.search');
     // Route::get('/get-media/{media:uuid}', [MediaController::class, 'getMedia'])->name('get-media');
+    // Route::get('/upload-media/{collection}', [MediaController::class, 'uploadMedia'])->name('upload-media');
 });
