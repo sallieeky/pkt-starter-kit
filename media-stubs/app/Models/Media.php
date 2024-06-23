@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use Pkt\StarterKit\Traits\HasCreatedUpdatedBy;
 use Pkt\StarterKit\Traits\MediaDefaultMethod;
 
 class Media extends Model
 {
-    use HasFactory, HasCreatedUpdatedBy, HasUuids, MediaDefaultMethod;
+    use HasFactory, HasCreatedUpdatedBy, HasUuids, MediaDefaultMethod, SoftDeletes;
 
     /**
      * The attributes that are protected from mass assignment.

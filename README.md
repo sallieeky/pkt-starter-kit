@@ -193,6 +193,20 @@ Or if you want to stop supervisor service
 service supervisor stop
 ```
 
+### Scheduling using cron job
+
+By default there isn't job that register, you need to register it manually for your specific job. (**RECOMMENDED**) you can register a job from laravel scheduller.
+
+```cmd
+crontab -e
+* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1
+```
+
+To see if it's already registered or see all registered cron job, you can use this command
+```cmd
+crontab -l
+``` 
+
 ## Testing
 You can find test case in `tests` folder on your base project directory. This starter kit already setup for testing using [Pest](https://pestphp.com/).
 
