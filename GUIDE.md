@@ -9,6 +9,44 @@ php artisan pkt:install vue
 php artisan pkt:install react
 ```
 
+## Class/File Naming Standard
+
+For better development proccees we need to standard the naming so it will help us to easily search and understand the class or file purpose. The naming also important on this package for example for the database interaction that the database name should be plural and the model should be singular.
+
+- **Database Table**, the naming for database table should be `plural` with `snake_case` and `lower case`, it also recommended to use english for the table name. The naming should define the type of the table using `ms`, `tr`, or `vl` on the front of the name.
+```php
+# Example for table incoming transaction
+Schema::create('tr_incoming_transactions', function (Blueprint $table) {...}
+
+# Example for table PI transaction
+Schema::create('tr_pi_transactions', function (Blueprint $table) {...}
+
+# Example for table material
+Schema::create('ms_materials', function (Blueprint $table) {...}
+```
+
+- **Model**, the naming for model should be `singular` with `PascalCase`. And if there's abbreviation like PKT, PI, SPK, etc, just the first letter that using the capital.
+```php
+# Example for table incoming_transactions
+class IncomingTransaction
+{
+    // ...
+}
+
+# Example for table pi_transactions
+class PiTransaction
+{
+    // ...
+}
+```
+
+- **Table attribute**, the naming for attribute/column on your table should using `snake_case` and all with `lower case`, it also recommended to use english for the attribute name.
+```php
+$table->string('name');
+$table->foreignIdFor(\App\Models\User::class, 'user_id');
+$table->foreignIdFor(\App\Models\User::class, 'created_by');
+```
+
 ## User
 By default existing user for superadmin you can adjust in `database/seeders/UserSeeder.php`. <strong>It's highly recommended to change the credential</strong> 
 ```
@@ -1255,4 +1293,23 @@ public function create(CreateIssueRequest $request)
     return redirect()->back()->with('message', 'Success to create issue');
 }
 ...
+```
+
+Additional, you can register the scheduller to remove unused media to prevent the files from becoming trash in the storage. On your `app/Console/Kernel.php` add to schedule method.
+
+```php
+use Pkt\StarterKit\Actions\DeleteUnusedMedia;
+
+/**
+ * Define the application's command schedule.
+ */
+protected function schedule(Schedule $schedule): void
+{
+    ...
+
+    $schedule->call(new DeleteUnusedMedia)
+        ->monthlyOn(1, '00:00');
+    
+    ...
+}
 ```
