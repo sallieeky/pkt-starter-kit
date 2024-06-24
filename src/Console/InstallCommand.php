@@ -423,8 +423,8 @@ class InstallCommand extends Command implements PromptsForMissingInput
             'VITE_REVERB_HOST' => 'VITE_REVERB_HOST="${REVERB_HOST}"',
             'VITE_REVERB_PORT' => 'VITE_REVERB_PORT="${REVERB_PORT}"',
             'VITE_REVERB_SCHEME' => 'VITE_REVERB_SCHEME="${REVERB_SCHEME}"',
-            'REVERB_NEW_LINE' => null,
-            'CRYPT_CHIPER' => "CRYPT_CHIPER={$cryptChiper}",
+            'CRYPT_NEW_LINE' => null,
+            'CRYPT_CHIPER' => "CRYPT_CHIPER=\"{$cryptChiper}\"",
             'CRYPT_KEY' => "CRYPT_KEY={$cryptKey}",
             'CRYPT_IV' => "CRYPT_IV={$cryptIv}",
         ], function ($value, $key) use ($contents) {

@@ -64,7 +64,7 @@ class Crypt
     }
 
     /**
-     * Check if the given value is valid.
+     * Check if the given value is valid encrypted value.
      *
      * @param string $value
      * 
@@ -77,7 +77,7 @@ class Crypt
     }
 
     /**
-     * Check if the given value is invalid.
+     * Check if the given value is invalid encrypted value.
      *
      * @param string $value
      * 

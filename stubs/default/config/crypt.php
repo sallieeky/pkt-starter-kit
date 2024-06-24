@@ -26,9 +26,9 @@ return [
     |
     */
 
-    'key' => env('CRYPT_KEY', env('APP_KEY')),
+    'key' => env('CRYPT_KEY', null),
 
-    'previous_key' => env('CRYPT_PREVIOUS_KEY', env('CRYPT_KEY', env('APP_KEY'))),
+    'previous_key' => env('CRYPT_PREVIOUS_KEY', env('CRYPT_KEY', null)),
 
     /*
     |--------------------------------------------------------------------------
@@ -41,9 +41,9 @@ return [
     |
     */
 
-    'iv' => env('CRYPT_IV', substr(explode(':', env('APP_KEY'))[1], 0, 16)),
+    'iv' => env('CRYPT_IV', null),
 
-    'previous_iv' => env('CRYPT_PREVIOUS_IV', env('CRYPT_IV', substr(explode(':', env('APP_KEY'))[1], 0, 16))),
+    'previous_iv' => env('CRYPT_PREVIOUS_IV', env('CRYPT_IV', null)),
     
     /*
     |--------------------------------------------------------------------------
