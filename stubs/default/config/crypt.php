@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'cipher' => 'AES-256-CBC',
+    'cipher' => env('CRYPT_CHIPER', 'AES-256-CBC'),
 
     /*
     |--------------------------------------------------------------------------
@@ -26,7 +26,9 @@ return [
     |
     */
 
-    'key' => env('APP_KEY', 1234567890123456),
+    'key' => env('CRYPT_KEY', env('APP_KEY')),
+
+    'previous_key' => env('CRYPT_PREVIOUS_KEY', env('CRYPT_KEY', env('APP_KEY'))),
 
     /*
     |--------------------------------------------------------------------------
@@ -39,7 +41,9 @@ return [
     |
     */
 
-    'iv' => substr(explode(':', env('APP_KEY'))[1], 0, 16),
+    'iv' => env('CRYPT_IV', substr(explode(':', env('APP_KEY'))[1], 0, 16)),
+
+    'previous_iv' => env('CRYPT_PREVIOUS_IV', env('CRYPT_IV', substr(explode(':', env('APP_KEY'))[1], 0, 16))),
     
     /*
     |--------------------------------------------------------------------------
