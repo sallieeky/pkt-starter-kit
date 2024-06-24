@@ -103,7 +103,25 @@
 
         <div class="content-container">
             <div class="content-wrapper">
+                @if (isset($title))
+                    <x-mails.text.title>
+                        {{ $title }}
+                    </x-mails.text.title>
+                @endif
+
+                @if (isset($subtitle))
+                    <x-mails.text.subtitle>
+                        {{ $subtitle }}
+                    </x-mails.text.subtitle>
+                @endif
+
                 {{ $slot }}
+
+                @if (isset($button))
+                    <x-mails.text.button url="{{ optional($button->attributes)['url'] }}">
+                        {{ $button }}
+                    </x-mails.text.button>
+                @endif
             </div>
 
             <hr class="content-devider">

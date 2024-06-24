@@ -655,12 +655,8 @@ Then we need to costumize the `resources/views/mails/need-approval-mail.blade.ph
 
 ```html
 <x-mails.layouts.app>
-    <x-mails.text.title>
-        Approval Issue {{ $issue->issue_number }}
-    </x-mails.text.title>
-    <x-mails.text.subtitle>
-        This issue need to bee approve immediately
-    </x-mails.text.subtitle>
+    <x-slot:title>Approval Issue {{ $issue->issue_number }}</x-slot:title>
+    <x-slot:subtitle>This issue need to bee approve immediately</x-slot:subtitle>
 
     <p>
         Issue Number : {{ $issue->issue_number }} <br>
@@ -668,9 +664,9 @@ Then we need to costumize the `resources/views/mails/need-approval-mail.blade.ph
         Issue Description : {{ $issue->issue_description }} <br>
     </p>
 
-    <x-mails.text.button url="{{ route('issue.detail', $issue->issue_uuid) }}">
+    <x-slot:button url="{{ route('issue.detail', $issue->issue_uuid) }}">
         View Issue
-    </x-mails.text.button>
+    </x-slot:button>
 </x-mails.layouts.app>
 ```
 
