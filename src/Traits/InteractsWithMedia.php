@@ -11,6 +11,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+/**
+ * InteractsWithMedia Trait
+ * 
+ * @method static \Illuminate\Database\Eloquent\Builder|self query()
+ * 
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ * @mixin \Illuminate\Database\Query\Builder
+ */
 trait InteractsWithMedia
 {
     /**
