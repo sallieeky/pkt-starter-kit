@@ -62,5 +62,5 @@ class MakeVueBlankPageCommand extends Command implements PromptsForMissingInput
         $content = file_get_contents($file);
         $content = str_replace(array_keys($replacements), array_values($replacements), $content);
         file_put_contents($file, $content);
-     }
+    }
 }
