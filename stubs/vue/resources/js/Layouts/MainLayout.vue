@@ -49,7 +49,8 @@ var userId = ref(usePage().props.auth.user.user_id);
 if (import.meta.env.VITE_BROADCAST_DRIVER !== 'log') {
     Echo.private("App.Models.User."+userId.value)
         .notification((notification) => {
-            router.reload({only: ['notifications']});
+            // router.reload({only: ['notifications']});
+            ElNotification.closeAll();
             ElNotification({
                 title: notification.title,
                 message: notification.message,
