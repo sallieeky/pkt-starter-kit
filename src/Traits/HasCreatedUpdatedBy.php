@@ -5,6 +5,17 @@ namespace Pkt\StarterKit\Traits;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Trait HasCreatedUpdatedBy
+ *
+ * @package Pkt\StarterKit\Traits
+ *
+ * @property int $created_by
+ * @property int $updated_by
+ *
+ * @mixin \Eloquent
+ * @mixin \Illuminate\Database\Eloquent\Model
+ */
 trait HasCreatedUpdatedBy
 {
     /**
