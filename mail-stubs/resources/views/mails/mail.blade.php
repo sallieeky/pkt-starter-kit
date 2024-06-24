@@ -1,14 +1,12 @@
 <x-mails.layouts.app>
-    <x-mails.text.title>
-        {{-- Title Optional --}}
-    </x-mails.text.title>
-    <x-mails.text.subtitle>
-        {{-- Subtitle Optional --}}
-    </x-mails.text.subtitle>
+    {{-- Optional Title --}}
+    <x-slot:title>{{-- Text --}}</x-slot:title>
+    
+    {{-- Optional Subtitle --}}
+    <x-slot:subtitle>{{-- Text --}}</x-slot:subtitle>
 
     {{-- Content --}}
 
-    <x-mails.text.button url="#">
-        {{-- Button Text --}}
-    </x-mails.text.button>
+    {{-- Optional Button --}}
+    <x-slot:button url="#">{{-- Text --}}</x-slot:button>
 </x-mails.layouts.app>
