@@ -17,7 +17,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default encryption key
+    | Encryption key
     |--------------------------------------------------------------------------
     |
     | This option defines the default encryption key that gets used when encrypting
@@ -32,7 +32,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default encryption iv
+    | Encryption iv
     |--------------------------------------------------------------------------
     |
     | This option defines the default encryption iv that gets used when encrypting and
@@ -44,6 +44,19 @@ return [
     'iv' => env('CRYPT_IV', null),
 
     'previous_iv' => env('CRYPT_PREVIOUS_IV', env('CRYPT_IV', null)),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable regenerating encryption key and iv
+    |--------------------------------------------------------------------------
+    |
+    | This option defines whether the encryption key and iv can be regenerated
+    | or not. If set to true, the encryption key and iv can be regenerated.
+    | If set to false, the encryption key and iv cannot be regenerated.
+    |
+    */
+
+    'regenerate' => env('CRYPT_REGENERATE', false),
     
     /*
     |--------------------------------------------------------------------------
