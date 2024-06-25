@@ -23,6 +23,7 @@ class RegenerateEncryptData
             '--iv' => $iv,
             '--previous-key' => $previousKey,
             '--previous-iv' => $previousIv,
+            '--yes' => true,
         ]);
     }
 }

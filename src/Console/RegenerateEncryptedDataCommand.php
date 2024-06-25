@@ -22,7 +22,8 @@ class RegenerateEncryptedDataCommand extends Command implements PromptsForMissin
                     {--key= : The encryption key}
                     {--iv= : The encryption iv}
                     {--previous-key= : The previous encryption key}
-                    {--previous-iv= : The previous encryption iv}';
+                    {--previous-iv= : The previous encryption iv}
+                    {--yes : Skip confirmation}';
 
     /**
      * The console command description.
@@ -89,7 +90,7 @@ class RegenerateEncryptedDataCommand extends Command implements PromptsForMissin
             }
         }
 
-        $confirmation = $this->confirm('Are you sure you want to regenerate the encrypted data in the database?');
+        $confirmation = $this->option('yes') || $this->confirm('Are you sure you want to regenerate the encrypted data in the database?');
         if (!$confirmation) {
             $this->info('The encrypted data in the database was not regenerated.');
             return 0;
