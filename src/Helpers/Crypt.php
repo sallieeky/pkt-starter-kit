@@ -16,14 +16,22 @@ class Crypt
      */
     public static function encrypt($string, string $method = null, string $iv = null, string $key = null): string
     {
-        $method = $method ?? config('crypt.cipher');
-        $options = config('crypt.options') ?? 0;
-        $iv = $iv ?? config('crypt.iv');
-        $key = $key ?? config('crypt.key');
+        try {
+            $method = $method ?? config('crypt.cipher');
+            $options = config('crypt.options') ?? 0;
+            $iv = $iv ?? config('crypt.iv');
+            $key = $key ?? config('crypt.key');
 
-        $string = is_array($string) || is_object($string) ? json_encode($string) : $string;
-        $encryptedData = openssl_encrypt($string, $method, $key, $options, $iv);
-        return $encryptedData;
+            if (is_null($key) || is_null($iv)) {
+                throw new \Exception("Key and IV must be set.");
+            }
+    
+            $string = is_array($string) || is_object($string) ? json_encode($string) : $string;
+            $encryptedData = openssl_encrypt($string, $method, $key, $options, $iv);
+            return $encryptedData;
+        }  catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     /**
@@ -38,17 +46,25 @@ class Crypt
      */
     public static function decrypt($string, string $method = null, string $iv = null, string $key = null): string
     {
-        $method = $method ?? config('crypt.cipher');
-        $options = config('crypt.options') ?? 0;
-        $iv = $iv ?? config('crypt.iv');
-        $key = $key ?? config('crypt.key');
+        try {
+            $method = $method ?? config('crypt.cipher');
+            $options = config('crypt.options') ?? 0;
+            $iv = $iv ?? config('crypt.iv');
+            $key = $key ?? config('crypt.key');
 
-        $decryptedData = openssl_decrypt($string, $method, $key, $options, $iv);
-        return $decryptedData;
+            if (is_null($key) || is_null($iv)) {
+                throw new \Exception("Key and IV must be set.");
+            }
+    
+            $decryptedData = openssl_decrypt($string, $method, $key, $options, $iv);
+            return $decryptedData;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     /**
-     * Check if the given value is valid.
+     * Check if the given value is valid encrypted value.
      *
      * @param string $value
      * 
@@ -61,7 +77,7 @@ class Crypt
     }
 
     /**
-     * Check if the given value is invalid.
+     * Check if the given value is invalid encrypted value.
      *
      * @param string $value
      * 

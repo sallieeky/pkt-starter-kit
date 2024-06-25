@@ -13,11 +13,11 @@ return [
     |
     */
 
-    'cipher' => 'AES-256-CBC',
+    'cipher' => env('CRYPT_CHIPER', 'AES-256-CBC'),
 
     /*
     |--------------------------------------------------------------------------
-    | Default encryption key
+    | Encryption key
     |--------------------------------------------------------------------------
     |
     | This option defines the default encryption key that gets used when encrypting
@@ -26,11 +26,13 @@ return [
     |
     */
 
-    'key' => env('APP_KEY', 1234567890123456),
+    'key' => env('CRYPT_KEY', null),
+
+    'previous_key' => env('CRYPT_PREVIOUS_KEY', null),
 
     /*
     |--------------------------------------------------------------------------
-    | Default encryption iv
+    | Encryption iv
     |--------------------------------------------------------------------------
     |
     | This option defines the default encryption iv that gets used when encrypting and
@@ -39,7 +41,22 @@ return [
     |
     */
 
-    'iv' => substr(explode(':', env('APP_KEY'))[1], 0, 16),
+    'iv' => env('CRYPT_IV', null),
+
+    'previous_iv' => env('CRYPT_PREVIOUS_IV', null),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable regenerating encryption key and iv
+    |--------------------------------------------------------------------------
+    |
+    | This option defines whether the encryption key and iv can be regenerated
+    | or not. If set to true, the encryption key and iv can be regenerated.
+    | If set to false, the encryption key and iv cannot be regenerated.
+    |
+    */
+
+    'regenerate' => env('CRYPT_REGENERATE', false),
     
     /*
     |--------------------------------------------------------------------------
