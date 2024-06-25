@@ -800,7 +800,7 @@ $transaction->updatedBy;
 
 ### Custom Encrypt Helper
 
-This helper is to encrypt and decrypt data. By default, the encrypting method using `AES-256-CBC` algorithm and it's associated with `APP_KEY`, so it's **IMPORTANT** to keep your `APP_KEY` **secure**. Or if you have encrypted data with different key, you can replace the key from params. You also can configure your own crypt method, key, option, and iv from `config/crypt.php`.
+This helper is to encrypt and decrypt data. By default, the encrypting method using `AES-256-CBC` algorithm. You can also configure your own crypt method, key, option, and iv from `.env` file. The key that you can use to setup the key, iv, and method are `CRYPT_CHIPER`, `CRYPT_KEY`, and `CRYPT_IV`.
 
 ```php
 use Pkt\StarterKit\Helpers\Crypt;
@@ -1024,6 +1024,29 @@ $employees = Employee::query()
        ])
        ->get();
 ```
+
+### Re-encrypting Encrypted Data In Database Table
+
+**Carefully this command can make your data broken if you not setup correctly!**
+
+First, you need to add `CRYPT_REGENERATE` to `.env` file with value `true`.
+```.env
+...
+CRYPT_REGENERATE=true
+...
+```
+
+Sometimes for better secure, you need to always change the encryption `key` and `iv`, but the problem when you change the encryption key is the data will can't be decrypted because the key was change, so you can use this command to re-encrypt the encrypted data that casting with `Encrypted::class` cast.
+
+```cmd
+php artisan pkt:regenerate-encrypted-data
+```
+Before runing this command, make sure you already add `CRYPT_PREVIOUS_KEY` and `CRYPT_PREVIOUS_IV` to your `.env` file with the value is the existing `CRYPT_KEY` and `CRYPT_IV`. After that replace the `CRYPT_KEY` and `CRYPT_IV` with your new key and iv. To verify the value.
+
+```cmd
+php artisan pkt:regenerate-encrypted-data --generate
+```
+Before runing this command, make sure you didn't change the `CRYPT_KEY` and `CRYPT_IV`. When you add the `--generate` flag it will automatic generate the new `CRYPT_KEY` and `CRYPT_IV` and make the existing key and iv to `CRYPT_PREVIOUS_KEY` and `CRYPT_PREVIOUS_IV` on `.env` file.
 
 ### Media Library
 
