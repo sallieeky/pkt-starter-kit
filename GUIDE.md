@@ -1048,24 +1048,6 @@ php artisan pkt:regenerate-encrypted-data --generate
 ```
 Before runing this command, make sure you didn't change the `CRYPT_KEY` and `CRYPT_IV`. When you add the `--generate` flag it will automatic generate the new `CRYPT_KEY` and `CRYPT_IV` and make the existing key and iv to `CRYPT_PREVIOUS_KEY` and `CRYPT_PREVIOUS_IV` on `.env` file.
 
-Additionally, you can register the re-encrypt to the scheduler to periodically change the crypt key and iv, you can register the action to `schedule` method on `app\Console\Kernel.php`.
-
-```php
-use Pkt\StarterKit\Actions\RegenerateEncryptData;
-
-/**
- * Define the application's command schedule.
- */
-protected function schedule(Schedule $schedule): void
-{
-    ...
-    // called every year at 00:00 on the 1st of January
-    $schedule->call(new RegenerateEncryptData)
-        ->yearlyOn(1, 1, '00:00');
-    ...
-}
-```
-
 ### Media Library
 
 In this package, we provide a helper to easily manage your media file such as image, video, or document. The media can be attach to assigned Model so you need to configure your Model before you can use media functional.
