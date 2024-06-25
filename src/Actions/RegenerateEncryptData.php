@@ -8,7 +8,7 @@ use Pkt\StarterKit\Casts\Encrypted;
 use Illuminate\Support\Str;
 use Pkt\StarterKit\Helpers\Crypt;
 
-class ReEncryptData
+class RegenerateEncryptData
 {
     /**
      * The new crypt key.
@@ -111,11 +111,13 @@ class ReEncryptData
             $model::query()->lockForUpdate()->chunk(100, function ($models) use ($encryptedColumns) {
                 foreach ($models as $model) {
                     foreach ($encryptedColumns as $column) {
-                        $columnData = $model->{$column};
                         $model->withCasts([$column => 'string']);
+                        if ($model->{$column} === null) {
+                            continue;
+                        }
+                        $columnData = Crypt::decrypt($model->{$column}, config('crypt.cipher'), config('crypt.iv'), config('crypt.key'));
                         $model->{$column} = Crypt::encrypt($columnData, config('crypt.cipher'), $this->newCryptIv, $this->newCryptKey);
                     }
-
                     $model->updateQuietly();
                 }
             });
