@@ -18,7 +18,11 @@ class RegenerateEncryptedDataCommand extends Command implements PromptsForMissin
      * @var string
      */
     protected $signature = 'pkt:regenerate-encrypted-data
-                    {--generate : Automatically regenerate the encryption key and iv}';
+                    {--generate : Automatically regenerate the encryption key and iv}
+                    {--key= : The encryption key}
+                    {--iv= : The encryption iv}
+                    {--previous-key= : The previous encryption key}
+                    {--previous-iv= : The previous encryption iv}';
 
     /**
      * The console command description.
@@ -60,25 +64,25 @@ class RegenerateEncryptedDataCommand extends Command implements PromptsForMissin
         }
 
         if ($this->option('generate')) {
-            $envKey = $this->ask('What is the encryption key?');
+            $envKey = $this->option('key') ?? $this->ask('What is the encryption key?');
             if ($envKey !== config('crypt.key')) {
                 $this->error('The encryption key is not the same as the one in your .env file.');
                 return 0;
             }
     
-            $envIv = $this->ask('What is the encryption iv?');
+            $envIv = $this->option('iv') ?? $this->ask('What is the encryption iv?');
             if ($envIv !== config('crypt.iv')) {
                 $this->error('The encryption iv is not the same as the one in your .env file.');
                 return 0;
             }
         } else {
-            $envKey = $this->ask('What is the previous encryption key?');
+            $envKey = $this->option('previous-key') ?? $this->ask('What is the previous encryption key?');
             if ($envKey !== config('crypt.previous_key')) {
                 $this->error('The previous encryption key is not the same as the one in your .env file.');
                 return 0;
             }
     
-            $envIv = $this->ask('What is the previous encryption iv?');
+            $envIv = $this->option('previous-iv') ?? $this->ask('What is the previous encryption iv?');
             if ($envIv !== config('crypt.previous_iv')) {
                 $this->error('The previous encryption iv is not the same as the one in your .env file.');
                 return 0;
