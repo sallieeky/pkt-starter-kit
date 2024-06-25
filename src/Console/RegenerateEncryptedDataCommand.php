@@ -59,10 +59,30 @@ class RegenerateEncryptedDataCommand extends Command implements PromptsForMissin
             return 0;
         }
 
-        $envKey = $this->ask('What is the encryption key in your .env file?');
-        if ($envKey !== config('crypt.key')) {
-            $this->error('The encryption key is not the same as the one in your .env file.');
-            return 0;
+        if ($this->option('generate')) {
+            $envKey = $this->ask('What is the encryption key?');
+            if ($envKey !== config('crypt.key')) {
+                $this->error('The encryption key is not the same as the one in your .env file.');
+                return 0;
+            }
+    
+            $envIv = $this->ask('What is the encryption iv?');
+            if ($envIv !== config('crypt.iv')) {
+                $this->error('The encryption iv is not the same as the one in your .env file.');
+                return 0;
+            }
+        } else {
+            $envKey = $this->ask('What is the previous encryption key?');
+            if ($envKey !== config('crypt.previous_key')) {
+                $this->error('The previous encryption key is not the same as the one in your .env file.');
+                return 0;
+            }
+    
+            $envIv = $this->ask('What is the previous encryption iv?');
+            if ($envIv !== config('crypt.previous_iv')) {
+                $this->error('The previous encryption iv is not the same as the one in your .env file.');
+                return 0;
+            }
         }
 
         $confirmation = $this->confirm('Are you sure you want to regenerate the encrypted data in the database?');
@@ -74,33 +94,50 @@ class RegenerateEncryptedDataCommand extends Command implements PromptsForMissin
         $this->newCryptKey = Str::random(32);
         $this->newCryptIv = Str::random(16);
 
-        DB::beginTransaction();
-        try {
-            $files = File::allFiles(app_path('Models'));
-            foreach ($files as $file) {
-                $model = 'App\\Models\\' . str_replace('/', '\\', str_replace('.php', '', $file->getRelativePathname()));
-                $model = new $model;
-
-                $casts = $model->getCasts();
-                $encryptedColumns = [];
-
-                foreach ($casts as $key => $value) {
-                    if (str_contains($value, Encrypted::class)) {
-                        $encryptedColumns[] = $key;
+        $models = [];
+        $this->components->task('Re-encrypt data in the database...', function () use (&$models) {
+            DB::beginTransaction();
+            try {
+                $files = File::allFiles(app_path('Models'));
+                foreach ($files as $file) {
+                    $model = 'App\\Models\\' . str_replace('/', '\\', str_replace('.php', '', $file->getRelativePathname()));
+                    $model = new $model;
+    
+                    $casts = $model->getCasts();
+                    $encryptedColumns = [];
+    
+                    foreach ($casts as $key => $value) {
+                        if (str_contains($value, Encrypted::class)) {
+                            $encryptedColumns[] = $key;
+                        }
+                    }
+                    if (count($encryptedColumns) > 0) {
+                        $models[$model->getTable()] = $encryptedColumns;
+                        $this->reEncryptData($model, $encryptedColumns);
                     }
                 }
-                if (count($encryptedColumns) > 0) {
-                    $this->reEncryptData($model, $encryptedColumns);
-                }
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
             }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-        DB::commit();
+            DB::commit();
+        });
+
         if ($this->option('generate')) {
-            $this->replaceCryptKeyAndIv();
+            $this->components->task('Replace the old crypt key and iv with the new crypt key and iv...', function () {
+                $this->replaceCryptKeyAndIv();
+            });
         }
+
+        $this->table(
+            ['Table Name', 'Encrypted Columns'],
+            collect($models)->map(function ($columns, $model) {
+                return [$model, implode(', ', $columns)];
+            })
+        );
+
+        $this->components->info('The encrypted data in the database has been regenerated.');
+
         return 1;
     }
 
@@ -123,7 +160,6 @@ class RegenerateEncryptedDataCommand extends Command implements PromptsForMissin
 
         $envContent = file_get_contents($envFile);
         if (str_contains($envContent, 'CRYPT_PREVIOUS_KEY')) {
-
             $envContent = str_replace($oldCryptKey, $newCryptKey, $envContent);
             $envContent = str_replace($oldCryptIv, $newCryptIv, $envContent);
             $envContent = preg_replace('/CRYPT_PREVIOUS_KEY=(.*)/', 'CRYPT_PREVIOUS_KEY=' . $oldCryptKey, $envContent);
