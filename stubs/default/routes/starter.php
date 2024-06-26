@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\AccountController;
-use App\Http\Controllers\GlobalSearchController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\UserLogController;
+use App\Http\Controllers\Starter\AccountController;
+use App\Http\Controllers\Starter\GlobalSearchController;
+use App\Http\Controllers\Starter\NotificationController;
+use App\Http\Controllers\Starter\UserLogController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -35,7 +35,7 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->
 
     Route::get('/global-search', GlobalSearchController::class)->name('global.search');
 
-    // Route::controller(\App\Http\Controllers\MediaController::class)->group(function(){
+    // Route::controller(\App\Http\Controllers\Starter\MediaController::class)->group(function(){
     //     Route::get('/get-media/{media:uuid}', 'getMedia')->name('get-media');
     //     Route::get('/upload-media/{collection}', 'uploadMedia')->name('upload-media');
     // });
