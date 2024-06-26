@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Route;
 use Pkt\StarterKit\Traits\HasCreatedUpdatedBy;
 use Pkt\StarterKit\Traits\MediaDefaultMethod;
 
@@ -59,7 +59,9 @@ class Media extends Model
      */
     public function getUrlAttribute(): ?string
     {
-        // return route('get-media', ['media' => $this->uuid]);
+        if (Route::has('get-media')) {
+            return route('get-media', ['media' => $this->uuid]);
+        }
         return null;
     }
 

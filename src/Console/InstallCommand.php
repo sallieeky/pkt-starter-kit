@@ -122,14 +122,15 @@ class InstallCommand extends Command implements PromptsForMissingInput
 
             // Controllers
             (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers'));
+            (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers/Starter'));
             (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers/Api'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/AuthenticationController.php', app_path('Http/Controllers/AuthenticationController.php'));
-            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/AccountController.php', app_path('Http/Controllers/AccountController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/RoleAndPermissionController.php', app_path('Http/Controllers/RoleAndPermissionController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/UserController.php', app_path('Http/Controllers/UserController.php'));
-            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/UserLogController.php', app_path('Http/Controllers/UserLogController.php'));
-            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/NotificationController.php', app_path('Http/Controllers/NotificationController.php'));
-            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/GlobalSearchController.php', app_path('Http/Controllers/GlobalSearchController.php'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/Starter/AccountController.php', app_path('Http/Controllers/Starter/AccountController.php'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/Starter/UserLogController.php', app_path('Http/Controllers/Starter/UserLogController.php'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/Starter/NotificationController.php', app_path('Http/Controllers/Starter/NotificationController.php'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Controllers/Starter/GlobalSearchController.php', app_path('Http/Controllers/Starter/GlobalSearchController.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Controllers/Api/SsoSessionController.php', app_path('Http/Controllers/Api/SsoSessionController.php'));
 
             // End Controllers
