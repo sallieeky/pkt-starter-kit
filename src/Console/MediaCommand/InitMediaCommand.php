@@ -29,15 +29,15 @@ class InitMediaCommand extends Command implements PromptsForMissingInput
     public function handle()
     {
         // check if media already initialized
-        if (file_exists(app_path('Http/Controllers/MediaController.php')) || file_exists(app_path('Models/Media.php')) || file_exists(database_path('migrations/2024_06_11_000000_create_media_table.php')) || file_exists(database_path('migrations/2024_06_11_00000_create_mediables_table.php'))){
+        if (file_exists(app_path('Http/Controllers/Starter/MediaController.php')) || file_exists(app_path('Models/Media.php')) || file_exists(database_path('migrations/2024_06_11_000000_create_media_table.php')) || file_exists(database_path('migrations/2024_06_11_00000_create_mediables_table.php'))){
             $this->error('Media already initialized.');
             return 0;
         }
 
         // copy media controller
         $this->components->task('Copying media controller...', function () {
-            if (!file_exists(app_path('Http/Controllers/MediaController.php'))) {
-                copy(__DIR__.'/../../../media-stubs/app/Http/Controllers/MediaController.php', app_path('Http/Controllers/MediaController.php'));
+            if (!file_exists(app_path('Http/Controllers/Starter/MediaController.php'))) {
+                copy(__DIR__.'/../../../media-stubs/app/Http/Controllers/Starter/MediaController.php', app_path('Http/Controllers/Starter/MediaController.php'));
             }
         });
 

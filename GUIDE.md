@@ -120,11 +120,19 @@ auth()->user()->canAny(['role.assign_permission', 'user_log.browse']);
 
 To check the permission with JS example
 ```js
-import { can } from '@/Core/Helpers/permission-check';
+import { can, canAny, canAll } from '@/Core/Helpers/permission-check';
 
-can('user.browse')
-can('role.assign_permission|user_log.browse')
-can(['role.assign_permission', 'user_log.browse'])
+can('user.browse'); // should have the permission provide
+can('role.assign_permission|user_log.browse'); // should have any of the permission provide
+canAny(['role.assign_permission', 'user_log.browse']); // should have any the permission provide
+canAll(['role.assign_permission', 'user_log.browse']); // should have all the permission provide
+
+import { hasRole, hasAnyRole, hasAllRole } from '@/Core/Helpers/role-check';
+
+hasRole('admin'); // should have the role provide
+hasRole('admin|user'); // should have any role provide
+hasAnyRole(['admin','user']); // should have any role provide
+hasAllRole(['admin','user']); // should have all role provide
 ```
 
 ## Manage Page
