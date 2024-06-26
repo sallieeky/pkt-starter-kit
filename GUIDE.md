@@ -1025,7 +1025,7 @@ $employees = Employee::query()
        ->get();
 ```
 
-### Re-encrypting Encrypted Data In Database Table
+<!-- ### Re-encrypting Encrypted Data In Database Table
 
 **Carefully this command can make your data broken if you not setup correctly!**
 
@@ -1046,7 +1046,7 @@ Before runing this command, make sure you already add `CRYPT_PREVIOUS_KEY` and `
 ```cmd
 php artisan pkt:regenerate-encrypted-data --generate
 ```
-Before runing this command, make sure you didn't change the `CRYPT_KEY` and `CRYPT_IV`. When you add the `--generate` flag it will automatic generate the new `CRYPT_KEY` and `CRYPT_IV` and make the existing key and iv to `CRYPT_PREVIOUS_KEY` and `CRYPT_PREVIOUS_IV` on `.env` file.
+Before runing this command, make sure you didn't change the `CRYPT_KEY` and `CRYPT_IV`. When you add the `--generate` flag it will automatic generate the new `CRYPT_KEY` and `CRYPT_IV` and make the existing key and iv to `CRYPT_PREVIOUS_KEY` and `CRYPT_PREVIOUS_IV` on `.env` file. -->
 
 ### Media Library
 
