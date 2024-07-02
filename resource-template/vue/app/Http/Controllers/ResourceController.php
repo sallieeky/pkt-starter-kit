@@ -39,7 +39,7 @@ class ModelNameController extends Controller
         DB::beginTransaction();
         try {
             $validated = $request->validated();
-            ModelName::create($validated);
+            $modelName = ModelName::query()->create($validated);
 
             DB::commit();
             return redirect()->back()->with('message','Success to create ModelLabel');
