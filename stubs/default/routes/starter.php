@@ -35,8 +35,10 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])->
 
     Route::get('/global-search', GlobalSearchController::class)->name('global.search');
 
-    // Route::controller(\App\Http\Controllers\Starter\MediaController::class)->group(function(){
-    //     Route::get('/get-media/{media:uuid}', 'getMedia')->name('get-media');
-    //     Route::get('/upload-media/{collection}', 'uploadMedia')->name('upload-media');
-    // });
+    if (class_exists(\App\Models\Media::class) && class_exists(\App\Http\Controllers\Starter\MediaController::class)) {
+        Route::controller(\App\Http\Controllers\Starter\MediaController::class)->group(function(){
+            Route::get('/get-media/{media:uuid}', 'getMedia')->name('get-media');
+            Route::get('/upload-media/{collection}', 'uploadMedia')->name('upload-media');
+        });
+    }
 });
