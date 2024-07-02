@@ -36,12 +36,11 @@ class AuthenticationController extends Controller
 
     public function logout(Request $request)
     {
+        $sessionId = Session::get('SESSION_ID');
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
         if (config('sso-session.ENABLE_SSO')) {
-            $sessionId = Session::get('SESSION_ID');
             $ssoSession = SsoSession::where('SESSION_ID', $sessionId)->first();
             if ($ssoSession) {
                 return redirect(config('sso-session.PORTAL_URL_LOGOUT'));
@@ -50,7 +49,6 @@ class AuthenticationController extends Controller
         } else {
             return redirect()->route('home');
         }
-
         return redirect('/login');
     }
 

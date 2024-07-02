@@ -881,7 +881,7 @@ $decrypt = Crypt::decrypt('l6123hgs/o0adlRkCtf/36+dW19dTkQ==', iv:'custom_iv_123
 
 When you wanna store the **personal** or **restricted** informations on your database, it's **IMPORTANT** to encrypt its data before you store in to the database.
 
-So there's additional helper for you to easily protect the restricted data on the database and querying its data. The encrypting method associated with `APP_KEY`, so it's **IMPORTANT** to keep your `APP_KEY` **secure**.
+So there's additional helper for you to easily protect the restricted data on the database and querying its data.  By default, the encrypting method using `AES-256-CBC` algorithm. You can also configure your own crypt method, key, option, and iv from `.env` file. The key that you can use to setup the key, iv, and method are `CRYPT_CHIPER`, `CRYPT_KEY`, and `CRYPT_IV`.
 
 
 **Example**
@@ -1067,16 +1067,10 @@ php artisan migrate
 ```
 This will create
 ```
-app/Http/Controllers/MediaController.php
+app/Http/Controllers/Starter/MediaController.php
 app/Models/Media.php
 database/migrations/2024_06_11_000000_create_media_table.php
 database/migrations/2024_06_11_000000_create_mediables_table.php
-```
-Additional **RECOMMENDED** action, you can add this code to `routes/starter.php` or `routes/web.php`
-```php
-use App\Http\Controllers\MediaController;
-
-Route::get('/get-media/{media:uuid}', [MediaController::class, 'getMedia'])->name('get-media');
 ```
 
 #### How to use
