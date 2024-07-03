@@ -51,3 +51,27 @@ namespace Illuminate\Database\Schema {
      */
     class Blueprint {}
 }
+
+namespace Illuminate\Routing {
+    /**
+     * Additions to the Router class from the RouterMacro class.
+     *
+     * @method self authenticated()
+     * @method self roles()
+     *
+     * @see \Pkt\StarterKit\Macros\RouterMacro
+     */
+    class Router {}
+}
+
+namespace Illuminate\Routing {
+    /**
+     * Additions to the Route class from the RouterMacro class.
+     *
+     * @method self authenticated()
+     * @method self roles(String|array $roles)
+     *
+     * @see \Pkt\StarterKit\Macros\RouterMacro
+     */
+    class Route {}
+}
