@@ -32,7 +32,8 @@
         "illuminate/database": "^10.0",
         "illuminate/bus": "*",
         "illuminate/notifications": "*",
-        "doctrine/dbal": "*"
+        "doctrine/dbal": "*",
+        "illuminate/routing": "^10.0"
     },
     "extra": {
         "branch-alias": {

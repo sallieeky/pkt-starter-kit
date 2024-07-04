@@ -145,8 +145,10 @@ class InstallCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../stubs/default/app/Http/Middleware/HandleInertiaRequests.php', app_path('Http/Middleware/HandleInertiaRequests.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Middleware/UserActivityLog.php', app_path('Http/Middleware/UserActivityLog.php'));
             copy(__DIR__.'/../../stubs/default/app/Http/Middleware/SsoPortal.php', app_path('Http/Middleware/SsoPortal.php'));
+            copy(__DIR__.'/../../stubs/default/app/Http/Middleware/EnsureUserHasRole.php', app_path('Http/Middleware/EnsureUserHasRole.php'));
             $this->installMiddlewareAfter('\Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class', '\App\Http\Middleware\UserActivityLog::class');
             $this->installMiddlewareAliases("'SsoPortal' => \App\Http\Middleware\SsoPortal::class,");
+            $this->installMiddlewareAliases("'role' => \App\Http\Middleware\EnsureUserHasRole::class,");
             // End Middleware
 
             // Requests
