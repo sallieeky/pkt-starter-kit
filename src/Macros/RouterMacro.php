@@ -12,9 +12,7 @@ class RouterMacro
     public function authenticated(): callable
     {
         return function () {
-            $this->middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth']);
-
-            return $this;
+            return $this->middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth']);
         };
     }
 
