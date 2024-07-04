@@ -746,6 +746,23 @@ Then run command in your terminal
 php artisan reverb:start
 ```
 
+### Additional Route Function
+
+To minimalize the middleware route for authentication and authorize user request by roles, there are 2 additional function you can use if needed `->authenticated()` and `->roles(['role'])`.
+
+`authenticated` simplify the middleware that rather the authentication method using default, ldap, or sso. So the route will look cleaner and easier to understand. `roles` used to define the authorization of the route by user role.
+
+**Example**
+```php
+# routes/web.php
+
+Route::get('/test', TestController::class)->authenticated()->roles(["user", 'viewer']);
+
+Route::authenticated()->group(function() {
+    Route::get('/issues', [IssueController::class, 'index'])->can('issue.manage')->roles(["Employee"])
+});
+```
+
 ### Has Created and Updated By
 
 It's recommended for you to implement created and updated by to audit your data history on your database table. So we provide trait to easily add `created_by` and `updated_by` column on your database table.
