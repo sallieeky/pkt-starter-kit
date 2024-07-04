@@ -57,7 +57,7 @@ namespace Illuminate\Routing {
      * Additions to the Router class from the RouterMacro class.
      *
      * @method self authenticated()
-     * @method self roles()
+     * @method self roles(String|array $roles)
      *
      * @see \Pkt\StarterKit\Macros\RouterMacro
      */

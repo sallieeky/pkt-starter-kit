@@ -305,7 +305,7 @@ trait ManipulateVueResource
 
         if ($this->multiPage) {
             $route = "
-Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])
+Route::authenticated()
     ->prefix('$route')
     ->name('$groupName.')
     ->controller(App\Http\Controllers\\{$modelName}Controller::class)->group(function () {
@@ -319,7 +319,7 @@ Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])
     });";
         } else {
         $route = "
-Route::middleware(config('sso-session.ENABLE_SSO') ? ['SsoPortal'] : ['auth'])
+Route::authenticated()
     ->prefix('$route')
     ->name('$groupName.')
     ->controller(App\Http\Controllers\\{$modelName}Controller::class)->group(function () {
