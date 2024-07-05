@@ -22,9 +22,9 @@ const props = defineProps({
     dataSource: {
         type: Array,
         // Only for dummy data, you can remove this
-        default: () => {
+        default: () => { 
             let data = [];
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 7; i++) {
                 data.push({
                     product: `Product ${i + 1}`,
                     quantity: Math.floor(Math.random() * 100),
@@ -41,30 +41,33 @@ onMounted(() => {
     am4core.useTheme(am4themes_animated);
     am4core.useTheme(am4themes_pkt_themes);
 
-    // Create chart instance for bar chart
-    var chart = am4core.create(chartdiv.value, am4charts.XYChart);
+    // Create chart instance for pie chart
+    var chart = am4core.create(chartdiv.value, am4charts.PieChart);
 
     // Add data
     chart.data = props.dataSource;
 
-    // Create axes
-    var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-    categoryAxis.dataFields.category = "product";
-    categoryAxis.renderer.grid.template.location = 0;
-
-    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    valueAxis.min = 0;
-
     // Create series
-    var series = chart.series.push(new am4charts.ColumnSeries());
-    series.dataFields.valueY = "quantity";
-    series.dataFields.categoryX = "product";
-    series.columns.template.strokeWidth = 0;
+    var pieSeries = chart.series.push(new am4charts.PieSeries());
+    pieSeries.dataFields.value = "quantity";
+    pieSeries.dataFields.category = "product";
+    pieSeries.dataFields.hidden = "hidden";
 
-    // Add cursor
-    chart.cursor = new am4charts.XYCursor();
-    chart.cursor.lineX.disabled = false;
-    chart.cursor.lineY.disabled = false;
+    // Set inner radius
+    chart.innerRadius = am4core.percent(40);
+    pieSeries.labels.template.disabled = true;
+    pieSeries.ticks.template.disabled = true;
+    pieSeries.slices.template.tooltipText = "";
+
+    // Add legend
+    chart.legend = new am4charts.Legend();
+    chart.legend.position = "bottom";
+    chart.legend.fontSize = 10;
+
+    // Customize legend marker
+    var markerTemplate = chart.legend.markers.template;
+    markerTemplate.width = 15;
+    markerTemplate.height = 15;
 
     // Add export menu
     chart.exporting.menu = new am4core.ExportMenu();

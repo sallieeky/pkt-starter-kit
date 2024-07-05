@@ -325,10 +325,12 @@ php artisan pkt:make-widget Dashboard/MonthlyProductionChart
 <!-- Question -->
 Select type of Widget [Blank Widget]:
   [0] Blank Widget
-  [1] Bar/Column Chart Widget
-  [2] Line Chart Widget
-  [3] Pie Chart Widget
- > 1
+  [1] Table Widget
+  [2] Bar/Column Chart Widget
+  [3] Line Chart Widget
+  [4] Pie Chart Widget
+  [5] Donut Chart Widget
+ > 4
 ```
 
 this command will generate file `resources/js/Widgets/Dashboard/MonthlyProductionChart.vue`.
