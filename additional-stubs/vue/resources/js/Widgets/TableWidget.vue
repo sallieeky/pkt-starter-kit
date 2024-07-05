@@ -18,6 +18,7 @@
             <DxPaging :page-size="10" />
             <DxPager :visible="true" :allowed-page-sizes="[10, 20, 50]" :show-page-size-selector="true" />
 
+            <!-- End your column here -->
             <DxColumn data-field="product" caption="Product" />
             <DxColumn data-field="quantity" caption="Quantity" :dataType="'number'">
                 <DxFormat type="fixedPoint" :precision="0" />
@@ -25,6 +26,7 @@
             <DxColumn data-field="target" caption="Target" :dataType="'number'">
                 <DxFormat type="fixedPoint" :precision="0" />
             </DxColumn>
+            <!-- End your column here -->
 
             <DxToolbar>
                 <DxItem location="before" template="buttonTemplate" />
@@ -52,11 +54,13 @@
 <script setup>
 import { defineProps, ref, computed } from 'vue';
 import BsButton from '@/Components/BsButton.vue';
+import BsIconButton from '@/Components/BsIconButton.vue';
 import {
     DxColumn,
     DxColumnChooser,
     DxDataGrid,
     DxExport,
+    DxFormat,
     DxHeaderFilter,
     DxFilterRow,
     DxItem,
