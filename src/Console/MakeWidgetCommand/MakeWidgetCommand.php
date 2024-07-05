@@ -4,10 +4,8 @@ namespace Pkt\StarterKit\Console\MakeWidgetCommand;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
-use Pkt\StarterKit\Utils\FormBuilder;
 
 class MakeWidgetCommand extends Command implements PromptsForMissingInput
 {
