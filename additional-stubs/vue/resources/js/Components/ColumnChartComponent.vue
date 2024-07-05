@@ -2,8 +2,8 @@
     <div class="p-4 rounded-xl border border-gray-400 flex-1">
         <div class="flex flex-row justify-between mb-4">
             <div>
-                <div class="font-bold">Monthly Production</div>
-                <div class="font-thin text-gray-700 text-sm">Agustus 2023</div>
+                <div class="font-bold">ComponentName</div>
+                <div class="font-thin text-gray-700 text-sm">Subtitle for your chart</div>
             </div>
         </div>
         <div ref="chartdiv" class="h-80 w-full"></div>
