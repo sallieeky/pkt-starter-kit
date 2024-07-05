@@ -2,7 +2,7 @@
     <div class="p-4 rounded-xl border border-gray-400 flex-1">
         <div class="flex flex-row justify-between mb-4">
             <div>
-                <div class="font-bold">ComponentName</div>
+                <div class="font-bold">WidgetName</div>
                 <div class="font-thin text-gray-700 text-sm">Subtitle for your chart</div>
             </div>
         </div>
@@ -25,7 +25,7 @@ const props = defineProps({
         // Only for dummy data, you can remove this
         default: () => {
             let data = [];
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 10; i++) {
                 data.push({
                     product: `Product ${i + 1}`,
                     quantity: Math.floor(Math.random() * 100),

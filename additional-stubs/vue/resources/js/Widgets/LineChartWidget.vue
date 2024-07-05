@@ -2,7 +2,7 @@
     <div class="p-4 rounded-xl border border-gray-400 flex-1">
         <div class="flex flex-row justify-between mb-4">
             <div>
-                <div class="font-bold">ComponentName</div>
+                <div class="font-bold">WidgetName</div>
                 <div class="font-thin text-gray-700 text-sm">Subtitle for your chart</div>
             </div>
         </div>
@@ -23,11 +23,11 @@ const props = defineProps({
         type: Array,
         required: true,
         // Only for dummy data, you can remove this
-        default: () => { 
+        default: () => {
             let data = [];
             for (let i = 0; i < 50; i++) {
                 data.push({
-                    product: `Product ${i + 1}`,
+                    date: new Date(2023, 0, i + 1).toISOString().split('T')[0],
                     quantity: Math.floor(Math.random() * 100),
                 });
             }
@@ -42,33 +42,31 @@ onMounted(() => {
     am4core.useTheme(am4themes_animated);
     am4core.useTheme(am4themes_pkt_themes);
 
-    // Create chart instance for pie chart
-    var chart = am4core.create(chartdiv.value, am4charts.PieChart);
+    // Create chart instance for line chart
+    var chart = am4core.create(chartdiv.value, am4charts.XYChart);
 
     // Add data
     chart.data = props.dataSource;
 
+    // Create axes
+    var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.dataFields.category = "date";
+    categoryAxis.renderer.grid.template.location = 0;
+
+    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.min = 0;
+
     // Create series
-    var pieSeries = chart.series.push(new am4charts.PieSeries());
-    pieSeries.dataFields.value = "quantity";
-    pieSeries.dataFields.category = "product";
-    pieSeries.dataFields.hidden = "hidden";
+    var series = chart.series.push(new am4charts.LineSeries());
+    series.dataFields.valueY = "quantity";
+    series.dataFields.categoryX = "date";
+    series.strokeWidth = 2;
+    series.tensionX = 0.77;
 
-    // Set inner radius
-    chart.innerRadius = am4core.percent(40);
-    pieSeries.labels.template.disabled = true;
-    pieSeries.ticks.template.disabled = true;
-    pieSeries.slices.template.tooltipText = "";
-
-    // Add legend
-    chart.legend = new am4charts.Legend();
-    chart.legend.position = "bottom";
-    chart.legend.fontSize = 10;
-
-    // Customize legend marker
-    var markerTemplate = chart.legend.markers.template;
-    markerTemplate.width = 15;
-    markerTemplate.height = 15;
+    // Add cursor
+    chart.cursor = new am4charts.XYCursor();
+    chart.cursor.lineX.disabled = false;
+    chart.cursor.lineY.disabled = false;
 
     // Add export menu
     chart.exporting.menu = new am4core.ExportMenu();
@@ -90,6 +88,16 @@ onMounted(() => {
             "label": "PDF"
         }]
     }];
+
+    // Add title
+    var title = chart.titles.create();
+    title.text = "Monthly Production";
+    title.fontSize = 20;
+    title.marginBottom = 20;
+    title.marginTop = 20;
+    title.fontWeight = "bold";
+    title.fill = am4core.color("#333333");
+    title.align = "center";
 });
 
 </script>
