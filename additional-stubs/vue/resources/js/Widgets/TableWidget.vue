@@ -52,11 +52,13 @@
 <script setup>
 import { defineProps, ref, computed } from 'vue';
 import BsButton from '@/Components/BsButton.vue';
+import BsIconButton from '@/Components/BsIconButton.vue';
 import {
     DxColumn,
     DxColumnChooser,
     DxDataGrid,
     DxExport,
+    DxFormat,
     DxHeaderFilter,
     DxFilterRow,
     DxItem,
