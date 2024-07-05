@@ -47,23 +47,7 @@ class MakeComponentCommand extends Command implements PromptsForMissingInput
             return 0;
         }
 
-        $type = $this->choice('Select type of component', [
-            'Blank Component', 
-            'Bar/Column Chart Component',
-            'Line Chart Component',
-            'Pie Chart Component',
-        ], 0);
-
-        if($type == 'Blank Component'){
-            copy(__DIR__.'/../../../additional-stubs/vue/resources/js/Components/BlankComponent.vue', resource_path('js/Components/' . $nameArgument . '.vue'));
-        }else if($type == 'Bar/Column Chart Component'){
-            copy(__DIR__.'/../../../additional-stubs/vue/resources/js/Components/ColumnChartComponent.vue', resource_path('js/Components/' . $nameArgument . '.vue'));
-        }else if($type == 'Line Chart Component'){
-            copy(__DIR__.'/../../../additional-stubs/vue/resources/js/Components/LineChartComponent.vue', resource_path('js/Components/' . $nameArgument . '.vue'));
-        }else if($type == 'Pie Chart Component'){
-            copy(__DIR__.'/../../../additional-stubs/vue/resources/js/Components/PieChartComponent.vue', resource_path('js/Components/' . $nameArgument . '.vue'));
-        }
-
+        copy(__DIR__.'/../../../additional-stubs/vue/resources/js/Components/BlankComponent.vue', resource_path('js/Components/' . $nameArgument . '.vue'));
         $this->replaceContent(resource_path('js/Components/' . $nameArgument . '.vue'), [
             'ComponentName' => Str::headline($fileName),
         ]);
