@@ -326,10 +326,11 @@ php artisan pkt:make-widget Dashboard/MonthlyProductionChart
 Select type of Widget [Blank Widget]:
   [0] Blank Widget
   [1] Table Widget
-  [2] Bar/Column Chart Widget
-  [3] Line Chart Widget
-  [4] Pie Chart Widget
-  [5] Donut Chart Widget
+  [2] Form Widget
+  [3] Bar/Column Chart Widget
+  [4] Line Chart Widget
+  [5] Pie Chart Widget
+  [6] Donut Chart Widget
  > 4
 ```
 
