@@ -91,10 +91,8 @@ onMounted(() => {
 
     // Add title
     var title = chart.titles.create();
-    title.text = "Monthly Production";
+    title.text = "WidgetName";
     title.fontSize = 20;
-    title.marginBottom = 20;
-    title.marginTop = 20;
     title.fontWeight = "bold";
     title.fill = am4core.color("#333333");
     title.align = "center";

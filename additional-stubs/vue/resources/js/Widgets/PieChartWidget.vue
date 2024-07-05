@@ -90,6 +90,14 @@ onMounted(() => {
             "label": "PDF"
         }]
     }];
+
+    // Add title
+    var title = chart.titles.create();
+    title.text = "WidgetName";
+    title.fontSize = 20;
+    title.fontWeight = "bold";
+    title.fill = am4core.color("#333333");
+    title.align = "center";
 });
 
 </script>
