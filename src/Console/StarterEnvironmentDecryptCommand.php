@@ -5,6 +5,8 @@ namespace Pkt\StarterKit\Console;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 
+use function Laravel\Prompts\textarea;
+
 class StarterEnvironmentDecryptCommand extends Command implements PromptsForMissingInput
 {
     /**
@@ -12,7 +14,8 @@ class StarterEnvironmentDecryptCommand extends Command implements PromptsForMiss
      *
      * @var string
      */
-    protected $signature = 'pkt:env-decrypt 
+    protected $signature = 'pkt:env-decrypt
+                    {--encrypted= : The encrypted env value}
                     {--key= : The encryption key}
                     {--cipher= : The encryption cipher}
                     {--force : Force the operation to replace the existing file}';
@@ -32,12 +35,21 @@ class StarterEnvironmentDecryptCommand extends Command implements PromptsForMiss
      */
     public function handle()
     {
+        $encrypted = $this->option('encrypted');
         $key = $this->option('key');
-        if (!$key) {
-            $key = $this->ask('Enter the encryption key');
+
+        if (!$encrypted) {
+            $encrypted = textarea(
+                label: 'Enter the encrypted env value',
+                hint: 'Ask your team for the encrypted value if you do not have it.',
+            );
         }
 
-        copy(__DIR__ . '/../../stubs/default/.env.starter.encrypted', '.env.starter.encrypted');
+        if (!$key) {
+            $key = $this->secret('Enter the encryption key');
+        }
+
+        file_put_contents('.env.starter.encrypted', $encrypted);
         $this->call('env:decrypt', [
             '--key' => $key,
             '--cipher' => $this->option('cipher'),

@@ -299,7 +299,7 @@ php artisan pkt:make-page MasterData/Equipment
 
 this command will generate file `resources/js/Pages/MasterData/Equipment.vue`
 
-### Make Blank Component Command
+### Make Component Command
 This command will generate blank component file for your frontend
 ```cmd
 php artisan pkt:make-component <Filepath/Filename>
@@ -311,6 +311,27 @@ php artisan pkt:make-component Dashboard/AdminTab
 ```
 
 this command will generate file `resources/js/Components/Dashboard/AdminTab.vue`
+
+### Make Widget Command
+Widget is almost the same with component, but it's commonly used only once and for specific page for example chart, table, form, etc, but you can still reuse it on other page if needed.
+```cmd
+php artisan pkt:make-widget <Filepath/Filename>
+```
+
+#### Example
+```cmd
+php artisan pkt:make-widget Dashboard/MonthlyProductionChart
+
+<!-- Question -->
+Select type of Widget [Blank Widget]:
+  [0] Blank Widget
+  [1] Bar/Column Chart Widget
+  [2] Line Chart Widget
+  [3] Pie Chart Widget
+ > 1
+```
+
+this command will generate file `resources/js/Widgets/Dashboard/MonthlyProductionChart.vue`.
 
 ### Init Leader Command
 First you need to setup `.env` file and add this line.
