@@ -3,7 +3,7 @@
         <div class="flex flex-row justify-between mb-4">
             <div>
                 <div class="font-bold">WidgetName</div>
-                <div class="font-thin text-gray-700 text-sm">Subtitle for your chart</div>
+                <div class="font-thin text-gray-700 text-sm">Subtitle for your widget</div>
             </div>
         </div>
         <div ref="chartdiv" class="h-80 w-full"></div>
@@ -21,7 +21,6 @@ import am4themes_pkt_themes from "@/Core/Config/am4themes_pkt_themes";
 const props = defineProps({
     dataSource: {
         type: Array,
-        required: true,
         // Only for dummy data, you can remove this
         default: () => { 
             let data = [];
@@ -53,12 +52,6 @@ onMounted(() => {
     pieSeries.dataFields.value = "quantity";
     pieSeries.dataFields.category = "product";
     pieSeries.dataFields.hidden = "hidden";
-
-    // Set inner radius
-    chart.innerRadius = am4core.percent(40);
-    pieSeries.labels.template.disabled = true;
-    pieSeries.ticks.template.disabled = true;
-    pieSeries.slices.template.tooltipText = "";
 
     // Add legend
     chart.legend = new am4charts.Legend();
@@ -96,6 +89,7 @@ onMounted(() => {
     title.text = "WidgetName";
     title.fontSize = 20;
     title.fontWeight = "bold";
+    title.marginBottom = 8;
     title.fill = am4core.color("#333333");
     title.align = "center";
 });
