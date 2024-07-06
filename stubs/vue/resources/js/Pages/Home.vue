@@ -6,7 +6,11 @@
             <RevenueStat />
             <ProductionStat />
         </div>
-        <ProductionGraph :dataSource="dataSource" />
+        <div class="grid grid-cols-3 gap-3 mb-3">
+            <ProductionGraph class="col-span-full md:col-span-2" :dataSource="dataSource" />
+            <ProductionSummary class="col-span-full md:col-auto" :dataSource="dataSource" />
+        </div>
+        <ReportNewProduction :product="dataSource" />
     </MainLayout>
 </template>
 <script setup>
@@ -17,6 +21,8 @@ import RevenueStat from '@/Widgets/Home/RevenueStat.vue';
 import ProductionStat from '@/Widgets/Home/ProductionStat.vue';
 import Welcome from '@/Widgets/Home/Welcome.vue';
 import ProductionGraph from '@/Widgets/Home/ProductionGraph.vue';
+import ProductionSummary from '@/Widgets/Home/ProductionSummary.vue';
+import ReportNewProduction from '@/Widgets/Home/ReportNewProduction.vue';
 
 const dataSource = [{
     "product_id": 1,

@@ -4,8 +4,8 @@
             <div class="flex items-center gap-3 flex-wrap justify-center">
                 <BsProfilePicture :npk="npk" class="rounded-full w-12 h-12" />
                 <div class="text-center sm:text-left">
-                    <h1 class="font-semibold">Welcome, {{ name }}</h1>
-                    <p class="text-gray-500">{{ roles }}</p>
+                    <h1 class="font-bold">Welcome,</h1>
+                    <p class="font-light">{{ name }}</p>
                 </div>
             </div>
 
@@ -28,7 +28,6 @@ const props = defineProps({
 
 const npk = usePage().props.auth.user.npk;
 const name = usePage().props.auth.user.name;
-const roles = usePage().props.auth.user?.roles?.map(role => role.name).join(', ');
 
 const logout = () => {
     router.post(route('logout'));
