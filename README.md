@@ -19,6 +19,8 @@
 
 Welcome to the Pupuk Kaltim Laravel Starter Kit – your gateway to streamlined Laravel development imbued with the distinctive essence of Pupuk Kaltim's expertise. Crafted meticulously to align with the industry-leading practices and standards, this plugin/library serves as your companion in building robust Laravel applications infused with the hallmark quality of Pupuk Kaltim.
 
+<img src="/art/Home.png" alt="Home">
+
 ## Installation
 
 For stable package install using this command to get the latest version. **(RECOMMENDED)**
