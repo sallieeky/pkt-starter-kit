@@ -14,6 +14,13 @@
                     <el-form-item :error="getFormError('name')" prop="name" label="Name" :required="true">
                         <el-input v-model="form.name" autocomplete="one-time-code" autocorrect="off" spellcheck="false" class="!w-full" />
                     </el-form-item>
+                    <el-form-item :error="getFormError('position')" prop="position" label="Position" :required="true">
+                        <el-select v-model="form.position" placeholder="Select" class="!w-full">
+                            <el-option label="Option 1" value="1" />
+                            <el-option label="Option 2" value="2" />
+                            <el-option label="Option 3" value="3" />
+                        </el-select>
+                    </el-form-item>
                     <!-- End your form here -->
 
                 <el-button type="primary" @click="submitForm">Submit</el-button>
@@ -21,7 +28,6 @@
         </div>
     </div>
 </template>
-
 
 <script setup>
 import { defineProps, ref } from 'vue';
@@ -31,15 +37,16 @@ import { ElMessage } from 'element-plus';
 const props = defineProps({
     form: {
         type: Object,
+        // Only for dummy data, you can remove this
+        default: () => useForm({
+            id: null,
+            name: 'Your Name',
+            position: '1',
+        })
     },
 });
 
 const formRef = ref();
-const form = useForm({
-    id: '',
-    name: '',
-});
-
 const formErrors = ref([]);
 const getFormError = (field, errors = formErrors.value) => {
     if (!errors && !errors.length) {
