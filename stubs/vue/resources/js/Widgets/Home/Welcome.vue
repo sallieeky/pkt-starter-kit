@@ -9,7 +9,7 @@
                 </div>
             </div>
 
-            <BsButton class="w-full sm:w-fit" type="primary-outline" icon="arrow-left-on-rectangle">
+            <BsButton @click="logout" class="w-full sm:w-fit" type="primary-outline" icon="arrow-left-on-rectangle">
                 Logout
             </BsButton>
         </div>
@@ -19,7 +19,7 @@
 <script setup>
 import BsButton from '@/Components/BsButton.vue';
 import BsProfilePicture from '@/Components/BsProfilePicture.vue';
-import { usePage } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
 
 const props = defineProps({
@@ -29,5 +29,9 @@ const props = defineProps({
 const npk = usePage().props.auth.user.npk;
 const name = usePage().props.auth.user.name;
 const roles = usePage().props.auth.user?.roles?.map(role => role.name).join(', ');
+
+const logout = () => {
+    router.post(route('logout'));
+};
 
 </script>
