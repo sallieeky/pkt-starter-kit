@@ -1,7 +1,7 @@
 <template>
     <Head title="ResourceTitle" />
     <MainLayout title="ResourceTitle">
-        
+        <!-- Your Code Here -->
     </MainLayout>
 </template>
 <script setup>
