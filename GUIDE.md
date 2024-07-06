@@ -327,14 +327,40 @@ Select type of Widget [Blank Widget]:
   [0] Blank Widget
   [1] Table Widget
   [2] Form Widget
-  [3] Bar/Column Chart Widget
-  [4] Line Chart Widget
-  [5] Pie Chart Widget
-  [6] Donut Chart Widget
+  [3] Statistic Widget
+  [4] Bar/Column Chart Widget
+  [5] Line Chart Widget
+  [6] Pie Chart Widget
+  [7] Donut Chart Widget
  > 4
 ```
 
 this command will generate file `resources/js/Widgets/Dashboard/MonthlyProductionChart.vue`.
+
+#### Blank Widget
+<img src="/art/Widgets/BlankWidget.png" alt="Blank Widget">
+
+#### Table Widget
+<img src="/art/Widgets/TableWidget.png" alt="Table Widget">
+
+#### Form Widget
+<img src="/art/Widgets/FormWidget.png" alt="Form Widget">
+
+#### Statistic Widget
+<img src="/art/Widgets/StatisticWidget.png" alt="Statistic Widget">
+
+#### Bar/Column Chart Widget
+<img src="/art/Widgets/BarChartWidget.png" alt="Bar/Column Chart Widget">
+
+#### Line Chart Widget
+<img src="/art/Widgets/LineChartWidget.png" alt="Line Chart Widget">
+
+#### Pie Chart Widget
+<img src="/art/Widgets/PieChartWidget.png" alt="Pie Chart Widget">
+
+#### Donut Chart Widget
+<img src="/art/Widgets/DonutChartWidget.png" alt="Donut Chart Widget">
+
 
 ### Init Leader Command
 First you need to setup `.env` file and add this line.
