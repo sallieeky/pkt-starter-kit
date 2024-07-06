@@ -51,6 +51,7 @@ class MakeWidgetCommand extends Command implements PromptsForMissingInput
             'Blank Widget',
             'Table Widget',
             'Form Widget',
+            'Statistic Widget',
             'Bar/Column Chart Widget',
             'Line Chart Widget',
             'Pie Chart Widget',
@@ -65,6 +66,8 @@ class MakeWidgetCommand extends Command implements PromptsForMissingInput
             copy(__DIR__.'/../../../additional-stubs/vue/resources/js/Widgets/ColumnChartWidget.vue', resource_path('js/Widgets/' . $nameArgument . '.vue'));
         }else if($type == 'Form Widget'){
             copy(__DIR__.'/../../../additional-stubs/vue/resources/js/Widgets/FormWidget.vue', resource_path('js/Widgets/' . $nameArgument . '.vue'));
+        }else if($type == 'Statistic Widget'){
+            copy(__DIR__.'/../../../additional-stubs/vue/resources/js/Widgets/StatisticWidget.vue', resource_path('js/Widgets/' . $nameArgument . '.vue'));
         }else if($type == 'Line Chart Widget'){
             copy(__DIR__.'/../../../additional-stubs/vue/resources/js/Widgets/LineChartWidget.vue', resource_path('js/Widgets/' . $nameArgument . '.vue'));
         }else if($type == 'Pie Chart Widget'){

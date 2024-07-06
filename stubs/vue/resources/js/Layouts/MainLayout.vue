@@ -12,7 +12,7 @@
                 <div class="flex-1">
                     <div class="px-6 pb-6 w-full">
                         <Transition name="page" mode="out-in" appear>
-                            <main :key="$page.url" class="bg-white rounded-xl p-8">
+                            <main :key="$page.url" class="bg-white rounded-xl p-6 px-4 sm:p-8">
                                 <p class="text-xl font-bold mb-5">{{ title }}</p>
                                 <slot />
                             </main>
