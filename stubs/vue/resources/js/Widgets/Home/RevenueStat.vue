@@ -13,7 +13,7 @@
             </div>
             <BsIcon icon="chart-pie" :size="32" class="text-primary" />
         </div>
-        <div ref="chartdiv" class="h-1/4 absolute bottom-0 -left-4 -right-4"></div>
+        <div ref="chartdiv" class="h-1/4 absolute bottom-0 -left-96 -right-96"></div>
     </div>
 </template>
 
@@ -32,7 +32,7 @@ const props = defineProps({
         // Only for dummy data, you can remove this
         default: () => {
             let data = [];
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 12; i++) {
                 data.push({
                     date: new Date(2023, 0, i + 1).toISOString().split('T')[0],
                     quantity: Math.floor(Math.random() * 100),
@@ -59,6 +59,8 @@ onMounted(() => {
 
     // Create chart instance for line chart
     var chart = am4core.create(chartdiv.value, am4charts.XYChart);
+    chart.padding(0, 0, 0, 0);
+    chart.margin(0, 0, 0, 0);
 
     // Add data
     chart.data = props.dataSource;
@@ -91,16 +93,6 @@ onMounted(() => {
     // clear background and grid
     categoryAxis.renderer.grid.template.disabled = true;
     valueAxis.renderer.grid.template.disabled = true;
-
-    // clear margin and padding
-    chart.paddingTop = 0;
-    chart.paddingRight = 0;
-    chart.paddingBottom = 0;
-    chart.paddingLeft = 0;
-    chart.marginTop = 0;
-    chart.marginRight = 0;
-    chart.marginBottom = 0;
-    chart.marginLeft = 0;
 });
 
 </script>
