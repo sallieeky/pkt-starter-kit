@@ -72,10 +72,12 @@ trait InstallVueStack
             (new Filesystem)->ensureDirectoryExists(resource_path('js/Layouts'));
             (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages'));
             (new Filesystem)->ensureDirectoryExists(resource_path('js/Stores'));
+            (new Filesystem)->ensureDirectoryExists(resource_path('js/Widgets'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/resources/js/Components', resource_path('js/Components'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/resources/js/Layouts', resource_path('js/Layouts'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/resources/js/Pages', resource_path('js/Pages'));
             (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/resources/js/Stores', resource_path('js/Stores'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/vue/resources/js/Widgets', resource_path('js/Widgets'));
             copy(__DIR__.'/../../stubs/vue/resources/js/app.js', resource_path('js/app.js'));
             copy(__DIR__.'/../../stubs/vue/resources/js/bootstrap.js', resource_path('js/bootstrap.js'));
         });
