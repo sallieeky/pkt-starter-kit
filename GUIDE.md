@@ -809,7 +809,7 @@ To minimalize the middleware route for authentication and authorize user request
 Route::get('/test', TestController::class)->authenticated()->roles(["user", 'viewer']);
 
 Route::authenticated()->group(function() {
-    Route::get('/issues', [IssueController::class, 'index'])->can('issue.manage')->roles(["Employee"])
+    Route::get('/issues', [IssueController::class, 'index'])->can('issue.manage')->roles(["Employee"]);
 });
 ```
 
@@ -1365,12 +1365,12 @@ public function create(CreateIssueRequest $request)
     DB::beginTransaction();
     try {
         $validated = $request->validated();
-        $media = Media::query()->whereIn('id', $validated['relatedEvidence'])->get();
-        $issue = Issue::create($validated);
-        
-        $issue->attachMediaFromElementRequest($validated['evidence'], 'evidences');
+        $media = Media::query()->whereIn('id', $validated['related_evidences'])->get();
+        $issue = Issue::query()->create($validated);
+
+        $issue->attachMediaFromElementRequest($validated['media_evidences'], 'evidences');
         $issue->attachMediaFromExisting($media, 'evidences');
-        $issue->attachMediaFromElementRequest($validated['report'], 'report');
+        $issue->attachMediaFromElementRequest($validated['media_report'], 'report');
     } catch (\Throwable $e) {
         DB::rollBack();
         return redirect()->back()->withErrors([
@@ -1379,6 +1379,31 @@ public function create(CreateIssueRequest $request)
     }
     DB::commit();
     return redirect()->back()->with('message', 'Success to create issue');
+}
+...
+```
+
+- On your update controller
+```php
+<?php
+
+...
+public function update(Issue $issue, UpdateIssueRequest $request)
+{
+    DB::beginTransaction();
+    try {
+        $validated = $request->validated();
+        $issue->update($validated);
+        $issue->syncMediaFromElementRequest($request['media_evidences'], 'evidences');
+        $issue->syncMediaFromElementRequest($request['media_report'], 'report');
+    } catch (\Throwable $e) {
+        DB::rollBack();
+        return redirect()->back()->withErrors([
+            'message' => 'Failed to update issue'
+        ]);
+    }
+    DB::commit();
+    return redirect()->back()->with('message', 'Success to update issue');
 }
 ...
 ```
