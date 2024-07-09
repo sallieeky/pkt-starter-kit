@@ -12,9 +12,10 @@ class FileHelper
      * Create an UploadedFile object from base64 file
      *
      * @param string $base64File
+     * @param string|null $filename
      * @return UploadedFile
      */
-    public static function fromBase64(string $base64File): UploadedFile
+    public static function fromBase64(string $base64File, ?string $filename = null): UploadedFile
     {
         // Get file data base64 string
         $fileData = base64_decode(Arr::last(explode(',', $base64File)));
@@ -29,7 +30,7 @@ class FileHelper
         $tempFileObject = new File($tempFilePath);
         $file = new UploadedFile(
             $tempFileObject->getPathname(),
-            $tempFileObject->getFilename(),
+            $filename ?? $tempFileObject->getFilename(),
             $tempFileObject->getMimeType(),
             0,
             true // Mark it as test, since the file isn't from real HTTP POST.

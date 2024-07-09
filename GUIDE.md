@@ -1160,6 +1160,20 @@ $file = $issues->mediaEvidences()->first()->url;
 ... (etc)
 ```
 
+There's a additional helper you can use to make uploaded format from base64 format.
+
+```php
+use Pkt\StarterKit\Helpers\FileHelper;
+
+/**
+ * @param string $base64
+ * @param string|null $filename
+ * 
+ * @return UploadedFile
+ */
+$file = FileHelper::fromBase64(string $base64, ?string $filename = null);
+```
+
 Available additional method you can use to interact with media from your model.
 1. `setMediaCollection($collectionName)`, 
 this will set media collection you want to interact.
@@ -1170,7 +1184,7 @@ $issue
     ->attachMediaFromElementRequest($validated['evidences']);
 ```
 
-2.  `attachMediaFromElementRequest($media, $collectionName)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from [Elemen Plus](https://element-plus.org/en-US/component/upload.html#file-list-control) upload file request.
+1.  `attachMediaFromElementRequest($media, $collectionName)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from [Elemen Plus](https://element-plus.org/en-US/component/upload.html#file-list-control) upload file request.
 ```php
 /**
  * ================================================
