@@ -1160,6 +1160,20 @@ $file = $issues->mediaEvidences()->first()->url;
 ... (etc)
 ```
 
+There's a additional helper you can use to make uploaded format from base64 format.
+
+```php
+use Pkt\StarterKit\Helpers\FileHelper;
+
+/**
+ * @param string $base64
+ * @param string|null $filename
+ * 
+ * @return UploadedFile
+ */
+$file = FileHelper::fromBase64(string $base64, ?string $filename = null);
+```
+
 Available additional method you can use to interact with media from your model.
 1. `setMediaCollection($collectionName)`, 
 this will set media collection you want to interact.
@@ -1209,32 +1223,39 @@ $file = $request->file('report');
 $issue->attachMediaFromUploadedFile($file, 'report');
 ```
 
-5. `detachMedia($media)`, this will detaching media from your data.
+5. `attachMediaFromBase64($base64, $collectionName)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from base64 file format.
+```php
+$issue = Issue::create($validated);
+$base64 = $validated['base64_sign'];
+$issue->attachMediaFromBase64($base64, 'sign');
+```
+
+6. `detachMedia($media)`, this will detaching media from your data.
 ```php
 $issue = Issue::find(1);
 $issue->detachMedia([1,2,3]);
 ```
 
-6. `detachMediaFromCollection($collectionName)`, this will detaching all media on specific collection from your data.
+7. `detachMediaFromCollection($collectionName)`, this will detaching all media on specific collection from your data.
 ```php
 $issue = Issue::find(1);
 $issue->detachMediaFromCollection('evidences');
 ```
 
-7. `detachAllMedia()`, this will detaching all media from your data.
+8. `detachAllMedia()`, this will detaching all media from your data.
 ```php
 $issue = Issue::find(1);
 $issue->detachAllMedia();
 ```
 
-8. `syncMedia($media, $collectionName)`, this will syncing media data on your data.
+9. `syncMedia($media, $collectionName)`, this will syncing media data on your data.
 ```php
 $issue = Issue::find(1);
 $media = Media::query()->whereIn('id', [1,2,3])->get();
 $issue->syncMedia($media, 'evidences');
 ```
 
-9. `syncMediaFromElementRequest($media, $collectionName)`, this will syncing media data on your data from Element Plus request.
+10. `syncMediaFromElementRequest($media, $collectionName)`, this will syncing media data on your data from Element Plus request.
 ```php
 /**
  * ================================================
@@ -1278,30 +1299,44 @@ $issue = Issue::find(1);
 $issue->syncMediaFromElementRequest($validated['media_evidences'], 'evidences');
 ```
 
-10.  `getAllMedia()`, this will get all media related from data.
+11. `syncMediaFromUploadedFile($media, $collectionName)`, this will syncing media data from uploaded file format.
+```php
+$issue = Issue::find(1);
+$media = $request->file('media_report')
+$issue->syncMediaFromUploadedFile($media, 'report');
+```
+
+12. `syncMediaFromBase64($base64, $collectionName)`, this will syncing media data from base64 file format.
+```php
+$issue = Issue::find(1);
+$base64 = $validated['base64_sign']
+$issue->syncMediaFromBase64($base64, 'sign');
+```
+
+13.  `getAllMedia()`, this will get all media related from data.
 ```php
 $issue = Issue::find(1);
 $issue->getAllMedia();
 ```
 
-11.  `getMediaFromCollection($collectionName)`, this will get all media from specific collection related from data.
+14.  `getMediaFromCollection($collectionName)`, this will get all media from specific collection related from data.
 ```php
 $issue = Issue::find(1);
 $issue->getMediaFromCollection('evidences');
 ```
 
-12.  `getFirstMediaFromCollection($collectionName)`, this will get first media from specific collection related from data.
+15.  `getFirstMediaFromCollection($collectionName)`, this will get first media from specific collection related from data.
 ```php
 $issue = Issue::find(1);
 $issue->getFirstMediaFromCollection('report');
 ```
 
-13.  `getAcceptedMediaCollections()`, this will display accepted media that can be assign from model.
+16.  `getAcceptedMediaCollections()`, this will display accepted media that can be assign from model.
 ```php
 $issue = Issue::getAcceptedMediaCollections();
 ```
 
-14.  `getAvailableMediaCollections()`, this will display available media collection on your model.
+17.  `getAvailableMediaCollections()`, this will display available media collection on your model.
 ```php
 $issue = Issue::getAvailableMediaCollections();
 ```
@@ -1322,6 +1357,12 @@ $media = Media::createFromElementRequest($elementRequest, 'evidences');
 ```php
 $file = $request->file('report');
 $media = Media::createFromUploadedFile($file, 'report');
+```
+
+4. `createFromBase64($base64, $collectionName)`, this will store your file from base64 file format to `storage/app/public/[collectionName]` and automatically add the media to database.
+```php
+$file = $validated['base64_sign'];
+$media = Media::createFromBase64($file, 'sign');
 ```
 
 **FOR EXAMPLE**
