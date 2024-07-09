@@ -10,6 +10,7 @@ use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Pkt\StarterKit\Helpers\FileHelper;
 
 /**
  * InteractsWithMedia Trait
@@ -328,6 +329,75 @@ trait InteractsWithMedia
     }
 
     /**
+     * Attach media from a base64 file to the model instance
+     * The media will be stored in the public disk
+     * The media will be stored in the collection name folder
+     * The media will be attached to the model instance
+     * 
+     * @param string|array $base64
+     * @param string|null $collectionName
+     * 
+     * @return self
+     */
+    public function attachMediaFromBase64(string|array $base64, ?string $collectionName = null): self
+    {
+        $collectionName = $collectionName ?? self::$collectionName;
+        DB::beginTransaction();
+        try {
+            $storedMedia = [];
+
+            if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
+                throw new \Exception('Collection ' . $collectionName . ' not accepted');
+            }
+
+            if (is_array($base64)) {
+                foreach ($base64 as $item) {
+                    $file = FileHelper::fromBase64($item);
+                    $storageName = $file->hashName();
+                    $path = $file->storeAs($collectionName, $storageName, 'public');
+                    $storedMedia[] = $path;
+                    $media = Media::create([
+                        'original_name' => $file->getClientOriginalName(),
+                        'storage_name' => $storageName,
+                        'path' => $path,
+                        'type' => $file->getType(),
+                        'size' => $file->getSize(),
+                        'extension' => $file->getExtension(),
+                        'mime_type' => $file->getMimeType(),
+                    ]);
+                    $this->media()->attach($media->id, ['collection_name' => $collectionName]);
+                }
+            } else if (is_string($base64)) {
+                $file = FileHelper::fromBase64($base64);
+                $storageName = $file->hashName();
+                $path = $file->storeAs($collectionName, $storageName, 'public');
+                $storedMedia = $path;
+                $media = Media::create([
+                    'original_name' => $file->getClientOriginalName(),
+                    'storage_name' => $storageName,
+                    'path' => $path,
+                    'type' => $file->getType(),
+                    'size' => $file->getSize(),
+                    'extension' => $file->getExtension(),
+                    'mime_type' => $file->getMimeType(),
+                ]);
+                $this->media()->attach($media->id, ['collection_name' => $collectionName]);
+            } else {
+                throw new \Exception('Invalid type');
+            }
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            foreach ($storedMedia as $path) {
+                Storage::disk('public')->delete($path);
+            }
+            throw new \Exception($e->getMessage());
+        }
+        DB::commit();
+
+        return $this;
+    }
+
+    /**
      * Detach media from the model instance
      * 
      * @param Media|Collection|array|int $media
@@ -492,6 +562,152 @@ trait InteractsWithMedia
             $this->media()
                 ->wherePivot('collection_name', $collectionName)
                 ->syncWithPivotValues($media, ['collection_name' => $collectionName]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            foreach ($storedMedia as $path) {
+                Storage::disk('public')->delete($path);
+            }
+            throw new \Exception($e->getMessage());
+        }
+        DB::commit();
+
+        return $this;
+    }
+
+    /**
+     * Sync media to the model instance from an uploaded file
+     *
+     * @param UploadedFile|array $file
+     * @param string|null $collectionName
+     *
+     * @return self
+     */
+    public function syncMediaFromUploadedFile(UploadedFile|array $file, ?string $collectionName = null): self
+    {
+        $collectionName = $collectionName ?? self::$collectionName;
+        DB::beginTransaction();
+        try {
+            $storedMedia = [];
+
+            if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
+                throw new \Exception('Collection ' . $collectionName . ' not accepted');
+            }
+
+            if ($file instanceof UploadedFile) {
+                $storageName = $file->hashName();
+                $path = $file->storeAs($collectionName, $storageName, 'public');
+                $storedMedia[] = $path;
+                $media = Media::create([
+                    'original_name' => $file->getClientOriginalName(),
+                    'storage_name' => $storageName,
+                    'path' => $path,
+                    'type' => $file->getType(),
+                    'size' => $file->getSize(),
+                    'extension' => $file->getExtension(),
+                    'mime_type' => $file->getMimeType(),
+                ]);
+                $this->media()
+                    ->wherePivot('collection_name', $collectionName)
+                    ->syncWithPivotValues([$media->id], ['collection_name' => $collectionName]);
+            } else if (is_array($file)) {
+                $media = collect($file)->map(function ($item) use ($collectionName, &$storedMedia) {
+                    if ($item instanceof UploadedFile) {
+                        $storageName = $item->hashName();
+                        $path = $item->storeAs($collectionName, $storageName, 'public');
+                        $storedMedia[] = $path;
+                        $item = Media::create([
+                            'original_name' => $item->getClientOriginalName(),
+                            'storage_name' => $storageName,
+                            'path' => $path,
+                            'type' => $item->getType(),
+                            'size' => $item->getSize(),
+                            'extension' => $item->getExtension(),
+                            'mime_type' => $item->getMimeType(),
+                        ]);
+                        return (int) $item->id;
+                    } else {
+                        throw new \Exception('Invalid file type');
+                    }
+                });
+
+                $this->media()
+                    ->wherePivot('collection_name', $collectionName)
+                    ->syncWithPivotValues($media, ['collection_name' => $collectionName]);
+            } else {
+                throw new \Exception('Invalid type');
+            }
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            foreach ($storedMedia as $storedMedia) {
+                Storage::disk('public')->delete($storedMedia);
+            }
+            throw new \Exception($e->getMessage());
+        }
+        DB::commit();
+        return $this;
+    }
+
+    /**
+     * Sync media to the model instance from a base64 file
+     *
+     * @param string|array $base64
+     * @param string|null $collectionName
+     *
+     * @return self
+     */
+    public function syncMediaFromBase64(string|array $base64, ?string $collectionName = null): self
+    {
+        $collectionName = $collectionName ?? self::$collectionName;
+        DB::beginTransaction();
+        try {
+            $storedMedia = [];
+
+            if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
+                throw new \Exception('Collection ' . $collectionName . ' not accepted');
+            }
+
+            if (is_array($base64)) {
+                $media = collect($base64)->map(function ($item) use ($collectionName, &$storedMedia) {
+                    $file = FileHelper::fromBase64($item);
+                    $storageName = $file->hashName();
+                    $path = $file->storeAs($collectionName, $storageName, 'public');
+                    $storedMedia[] = $path;
+                    $media = Media::create([
+                        'original_name' => $file->getClientOriginalName(),
+                        'storage_name' => $storageName,
+                        'path' => $path,
+                        'type' => $file->getType(),
+                        'size' => $file->getSize(),
+                        'extension' => $file->getExtension(),
+                        'mime_type' => $file->getMimeType(),
+                    ]);
+                    return (int) $media->id;
+                });
+
+                $this->media()
+                    ->wherePivot('collection_name', $collectionName)
+                    ->syncWithPivotValues($media, ['collection_name' => $collectionName]);
+            } else if (is_string($base64)) {
+                $file = FileHelper::fromBase64($base64);
+                $storageName = $file->hashName();
+                $path = $file->storeAs($collectionName, $storageName, 'public');
+                $storedMedia = $path;
+                $media = Media::create([
+                    'original_name' => $file->getClientOriginalName(),
+                    'storage_name' => $storageName,
+                    'path' => $path,
+                    'type' => $file->getType(),
+                    'size' => $file->getSize(),
+                    'extension' => $file->getExtension(),
+                    'mime_type' => $file->getMimeType(),
+                ]);
+
+                $this->media()
+                    ->wherePivot('collection_name', $collectionName)
+                    ->syncWithPivotValues([$media->id], ['collection_name' => $collectionName]);
+            } else {
+                throw new \Exception('Invalid type');
+            }
         } catch (\Throwable $e) {
             DB::rollBack();
             foreach ($storedMedia as $path) {

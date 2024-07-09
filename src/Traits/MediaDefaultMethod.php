@@ -7,6 +7,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Pkt\StarterKit\Helpers\FileHelper;
 
 trait MediaDefaultMethod
 {
@@ -148,5 +149,73 @@ trait MediaDefaultMethod
         DB::commit();
 
         return self::query()->whereIn('id', $mediaReturn->pluck('id')->toArray())->get();
+    }
+
+    /**
+     * Create media from base64 file.
+     *
+     * @param  string|array  $base64
+     * @param  string|null  $collectionName
+     * 
+     * @return \App\Models\Media
+     * @throws \Exception
+     */
+    public static function createFromBase64(string|array $base64, ?string $collectionName): Collection
+    {
+        DB::beginTransaction();
+        try {
+            $storedMedia = [];
+            $mediaReturn = collect();
+            if (is_array($base64)) {
+                foreach ($base64 as $item) {
+                    $collectionName = $collectionName ?? 'default';
+                    $file = FileHelper::fromBase64($item);
+                    $storageName = $file->hashName();
+                    $path = $file->storeAs($collectionName, $storageName, 'public');
+                    $storedMedia[] = $path;
+
+                    $media = new self();
+                    $media->original_name = $file->getClientOriginalName();
+                    $media->storage_name = $storageName;
+                    $media->path = $path;
+                    $media->type = $file->getType();
+                    $media->size = $file->getSize();
+                    $media->extension = $file->getExtension();
+                    $media->mime_type = $file->getMimeType();
+                    $media->save();
+
+                    $mediaReturn->push($media);
+                }
+            } else if (is_string($base64)) {
+                $collectionName = $collectionName ?? 'default';
+                $file = FileHelper::fromBase64($base64);
+                $storageName = $file->hashName();
+                $path = $file->storeAs($collectionName, $storageName, 'public');
+                $storedMedia[] = $path;
+
+                $media = new self();
+                $media->original_name = $file->getClientOriginalName();
+                $media->storage_name = $storageName;
+                $media->path = $path;
+                $media->type = $file->getType();
+                $media->size = $file->getSize();
+                $media->extension = $file->getExtension();
+                $media->mime_type = $file->getMimeType();
+                $media->save();
+
+                $mediaReturn->push($media);
+            } else {
+                throw new \Exception('Invalid type');
+            }
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            foreach ($storedMedia as $path) {
+                Storage::disk('public')->delete($path);
+            }
+            throw new \Exception($e->getMessage());
+        }
+
+        DB::commit();
+        return $mediaReturn;
     }
 }
