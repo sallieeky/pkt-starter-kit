@@ -1184,7 +1184,7 @@ $issue
     ->attachMediaFromElementRequest($validated['evidences']);
 ```
 
-1.  `attachMediaFromElementRequest($media, $collectionName)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from [Elemen Plus](https://element-plus.org/en-US/component/upload.html#file-list-control) upload file request.
+2.  `attachMediaFromElementRequest($media, $collectionName)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from [Elemen Plus](https://element-plus.org/en-US/component/upload.html#file-list-control) upload file request.
 ```php
 /**
  * ================================================
