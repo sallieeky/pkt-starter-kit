@@ -14,7 +14,7 @@ class MigrationSchemaBuilder
      */
     public static function addColumn(string $columnName, string $dataType, array $options = []): string
     {
-        $schema = '$table->'.$dataType.'(\''.$columnName.self::parseDataTypeAdditionalParams($dataType) .'\')';
+        $schema = '$table->'.$dataType.'(\''.$columnName.'\''.self::parseDataTypeAdditionalParams($dataType).')';
         if (!empty($options)) {
             $schema .= self::parseOptions($options). ';';
         } else {
@@ -57,7 +57,7 @@ class MigrationSchemaBuilder
      */
     public static function changeColumnDataType(string $columnName, string $dataType, array $options = []): string
     {
-        $schema = '$table->'.$dataType.'(\''.$columnName.self::parseDataTypeAdditionalParams($dataType) .'\')';
+        $schema = '$table->'.$dataType.'(\''.$columnName.'\''.self::parseDataTypeAdditionalParams($dataType).')';
         if (!empty($options)) {
             $schema .= self::parseOptions($options) . '->change();';
         } else {
@@ -96,7 +96,7 @@ class MigrationSchemaBuilder
         }
         if (in_array('nullable', $options)) {
             $schema .= '->nullable()';
-        } 
+        }
         if (in_array('unique', $options)) {
             $schema .= '->unique()';
         }
