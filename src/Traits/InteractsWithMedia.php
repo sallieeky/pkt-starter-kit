@@ -171,14 +171,17 @@ trait InteractsWithMedia
      * The media will be stored in the collection name folder
      * The media will be attached to the model instance
      * 
-     * @param array $media
+     * @param array|null $media
      * @param string|null $collectionName
      * 
      * @return self
      */
-    public function attachMediaFromElementRequest(array $media, ?string $collectionName = null): self
+    public function attachMediaFromElementRequest(array|null $media, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
+        if (!$media) {
+            return $this;
+        }
         DB::beginTransaction();
         try {
             $storedMedia = [];
@@ -219,14 +222,17 @@ trait InteractsWithMedia
      * Attach media from an existing media to the model instance
      * The media will be attached to the model instance
      * 
-     * @param Media|Collection|array|int $media
+     * @param Media|Collection|array|int|null $media
      * @param string|null $collectionName
      * 
      * @return self
      */
-    public function attachMediaFromExisting(Media|Collection|array|int $media, ?string $collectionName = null): self
+    public function attachMediaFromExisting(Media|Collection|array|int|null $media, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
+        if (!$media) {
+            return $this;
+        }
         DB::beginTransaction();
         try {
             if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
@@ -263,18 +269,20 @@ trait InteractsWithMedia
      * The media will be stored in the collection name folder
      * The media will be attached to the model instance
      * 
-     * @param UploadedFile|array $file
+     * @param UploadedFile|array|null $file
      * @param string|null $collectionName
      * 
      * @return self
      */
-    public function attachMediaFromUploadedFile(UploadedFile|array $file, ?string $collectionName = null): self
+    public function attachMediaFromUploadedFile(UploadedFile|array|null $file, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
+        if (!$file) {
+            return $this;
+        }
         DB::beginTransaction();
         try {
             $storedMedia = [];
-
             if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
                 throw new \Exception('Collection ' . $collectionName . ' not accepted');
             }
@@ -334,14 +342,17 @@ trait InteractsWithMedia
      * The media will be stored in the collection name folder
      * The media will be attached to the model instance
      * 
-     * @param string|array $base64
+     * @param string|array|null $base64
      * @param string|null $collectionName
      * 
      * @return self
      */
-    public function attachMediaFromBase64(string|array $base64, ?string $collectionName = null): self
+    public function attachMediaFromBase64(string|array|null $base64, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
+        if (!$base64) {
+            return $this;
+        }
         DB::beginTransaction();
         try {
             $storedMedia = [];
@@ -481,14 +492,17 @@ trait InteractsWithMedia
     /**
      * Sync media to the model instance
      * 
-     * @param array|SupportCollection|Collection|Media|int $media
+     * @param array|SupportCollection|Collection|Media|int|null $media
      * @param string|null $collectionName
      * 
      * @return self
      */
-    public function syncMedia(array|SupportCollection|Collection|Media|int $media, ?string $collectionName = null): self
+    public function syncMedia(array|SupportCollection|Collection|Media|int|null $media, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
+        if (!$media) {
+            return $this;
+        }
         DB::beginTransaction();
         try {
             if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
@@ -522,14 +536,17 @@ trait InteractsWithMedia
     /**
      * Sync media to the model instance from an Element Plus request
      *
-     * @param array $media
+     * @param array|null $media
      * @param string|null $collectionName
      *
      * @return self
      */
-    public function syncMediaFromElementRequest(array $media, ?string $collectionName = null): self
+    public function syncMediaFromElementRequest(array|null $media, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
+        if (!$media) {
+            return $this;
+        }
         DB::beginTransaction();
         try {
             $storedMedia = [];
@@ -577,14 +594,17 @@ trait InteractsWithMedia
     /**
      * Sync media to the model instance from an uploaded file
      *
-     * @param UploadedFile|array $file
+     * @param UploadedFile|array|null $file
      * @param string|null $collectionName
      *
      * @return self
      */
-    public function syncMediaFromUploadedFile(UploadedFile|array $file, ?string $collectionName = null): self
+    public function syncMediaFromUploadedFile(UploadedFile|array|null $file, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
+        if (!$file) {
+            return $this;
+        }
         DB::beginTransaction();
         try {
             $storedMedia = [];
@@ -650,14 +670,17 @@ trait InteractsWithMedia
     /**
      * Sync media to the model instance from a base64 file
      *
-     * @param string|array $base64
+     * @param string|array|null $base64
      * @param string|null $collectionName
      *
      * @return self
      */
-    public function syncMediaFromBase64(string|array $base64, ?string $collectionName = null): self
+    public function syncMediaFromBase64(string|array|null $base64, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
+        if (!$base64) {
+            return $this;
+        }
         DB::beginTransaction();
         try {
             $storedMedia = [];
