@@ -179,7 +179,7 @@ trait InteractsWithMedia
     public function attachMediaFromElementRequest(array|null $media, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
-        if (!$media) {
+        if (is_null($media)) {
             return $this;
         }
         DB::beginTransaction();
@@ -230,7 +230,7 @@ trait InteractsWithMedia
     public function attachMediaFromExisting(Media|Collection|array|int|null $media, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
-        if (!$media) {
+        if (is_null($media)) {
             return $this;
         }
         DB::beginTransaction();
@@ -277,7 +277,7 @@ trait InteractsWithMedia
     public function attachMediaFromUploadedFile(UploadedFile|array|null $file, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
-        if (!$file) {
+        if (is_null($file)) {
             return $this;
         }
         DB::beginTransaction();
@@ -350,7 +350,7 @@ trait InteractsWithMedia
     public function attachMediaFromBase64(string|array|null $base64, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
-        if (!$base64) {
+        if (is_null($base64)) {
             return $this;
         }
         DB::beginTransaction();
@@ -500,7 +500,7 @@ trait InteractsWithMedia
     public function syncMedia(array|SupportCollection|Collection|Media|int|null $media, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
-        if (!$media) {
+        if (is_null($media)) {
             return $this;
         }
         DB::beginTransaction();
@@ -511,7 +511,7 @@ trait InteractsWithMedia
 
             if ($media instanceof Collection) {
                 $media = $media?->pluck('id');
-            } else if ((is_array($media) || $media instanceof SupportCollection) && !array_key_exists('id', $media->toArray())) {
+            } else if ((is_array($media) || $media instanceof SupportCollection) && !array_key_exists('id', $media)) {
                 $media = $media;
             } else if ($media instanceof Media) {
                 $media = collect($media->id);
@@ -544,7 +544,7 @@ trait InteractsWithMedia
     public function syncMediaFromElementRequest(array|null $media, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
-        if (!$media) {
+        if (is_null($media)) {
             return $this;
         }
         DB::beginTransaction();
@@ -602,7 +602,7 @@ trait InteractsWithMedia
     public function syncMediaFromUploadedFile(UploadedFile|array|null $file, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
-        if (!$file) {
+        if (is_null($file)) {
             return $this;
         }
         DB::beginTransaction();
@@ -678,7 +678,7 @@ trait InteractsWithMedia
     public function syncMediaFromBase64(string|array|null $base64, ?string $collectionName = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
-        if (!$base64) {
+        if (is_null($base64)) {
             return $this;
         }
         DB::beginTransaction();
