@@ -209,6 +209,29 @@ To see if it's already registered or see all registered cron job, you can use th
 crontab -l
 ``` 
 
+To register your laravel schedular, you can add your action or command on `app/Console/Kernel.php`, for example.
+
+
+```php
+use Pkt\StarterKit\Actions\DeleteUnusedMedia;
+
+/**
+ * Define the application's command schedule.
+ */
+protected function schedule(Schedule $schedule): void
+{
+    ...
+
+    $schedule->call(new DeleteUnusedMedia)->monthlyOn(1, '00:00');
+    
+    # Or
+
+    $schedule->command('backup:clean')->daily()->at('01:00');
+    
+    ...
+}
+```
+
 ## Testing
 You can find test case in `tests` folder on your base project directory. This starter kit already setup for testing using [Pest](https://pestphp.com/).
 

@@ -1096,7 +1096,7 @@ $employees = Employee::query()
             'user.npk',
             'user.username',
             'nik'
-       ])
+       ], 'K236615')
        ->get();
 ```
 
