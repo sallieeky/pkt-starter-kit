@@ -114,7 +114,7 @@ class MakeViewCommand extends Command implements PromptsForMissingInput
             'table_name' => $viewName,
         ]);
 
-        $this->components->info('Model file created: '.'app/Models/'.$modelName.'.php');
+        $this->components->info('Model file created: '.'app/Models/Views/'.$modelName.'.php');
         $this->components->info('Migration file created: '.'database/migrations/'.$migrationName);
         
         return 1;
