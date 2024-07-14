@@ -135,9 +135,9 @@ class InstallCommand extends Command implements PromptsForMissingInput
 
             // End Controllers
 
-            // Helpers
-            (new Filesystem)->ensureDirectoryExists(app_path('Http/Helpers'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Helpers', app_path('Http/Helpers'));
+            // Helpers (Not used)
+            // (new Filesystem)->ensureDirectoryExists(app_path('Http/Helpers'));
+            // (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Helpers', app_path('Http/Helpers'));
             // End Helpers
 
             // Middleware
