@@ -80,7 +80,7 @@ class MakeWidgetCommand extends Command implements PromptsForMissingInput
             'WidgetName' => Str::headline($fileName),
         ]);
 
-        $this->components->info('Widget js/Widgets/' . $nameArgument . '.vue created successfully.');
+        $this->components->info('Widget file js/Widgets/' . $nameArgument . '.vue created successfully.');
         return 1;
     }
 

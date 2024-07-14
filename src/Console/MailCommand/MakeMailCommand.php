@@ -46,8 +46,8 @@ class MakeMailCommand extends Command implements PromptsForMissingInput
             '\'view-name\'' => "'mails.{$view}'",
         ]);
 
-        $this->components->info("Mail file created at app/Mail/{$name}.php");
-        $this->components->info("View file created at resource/views/mails/{$view}.blade.php");
+        $this->components->info("Mail file app/Mail/{$name}.php created successfully.");
+        $this->components->info("View file resource/views/mails/{$view}.blade.php created successfully.");
         return 1;
     }
 
