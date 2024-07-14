@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('original_name');
             $table->string('storage_name');
             $table->string('path');
+            $table->enum('visibility', ['public', 'private']);
             $table->string('type');
             $table->bigInteger('size');
             $table->string('extension');

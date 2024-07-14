@@ -14,14 +14,34 @@ use Pkt\StarterKit\Helpers\FileHelper;
 
 /**
  * InteractsWithMedia Trait
- * 
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|self query()
- * 
+ *
  * @mixin \Illuminate\Database\Eloquent\Builder
  * @mixin \Illuminate\Database\Query\Builder
  */
 trait InteractsWithMedia
 {
+    const MEDIA_VISIBILITY_PUBLIC = 'public';
+
+    const MEDIA_VISIBILITY_PRIVATE = 'private';
+
+    /**
+     * The collection name to be used when attaching media to the model
+     * Collection name can be set using the setMediaCollection method
+     * Collection name also used to naming the folder where the media will be stored
+     *
+     * @var string $collectionName
+     */
+    private static $collectionName;
+
+    /**
+     * Media visibility to determine the media is public or private
+     *
+     * @var string $visibility
+     */
+    private static $visibility = Media::DEFAULT_VISIBILITY;
+
     /**
      * Handle dynamic method calls into the model.
      *
@@ -71,17 +91,8 @@ trait InteractsWithMedia
     }
 
     /**
-     * The collection name to be used when attaching media to the model
-     * Collection name can be set using the setMediaCollection method
-     * Collection name also used to naming the folder where the media will be stored
-     * 
-     * @var string $collectionName
-     */
-    private static $collectionName;
-
-    /**
      * Get all media associated with the model instance
-     * 
+     *
      * @return MorphToMany
      */
     public function media(): MorphToMany
@@ -91,9 +102,9 @@ trait InteractsWithMedia
 
     /**
      * Set the collection name to be used when attaching media to the model
-     * 
-     * @param string $collectionName 
-     * 
+     *
+     * @param string $collectionName
+     *
      * @return self
      */
     public function setMediaCollection(string $collectionName): self
@@ -103,8 +114,34 @@ trait InteractsWithMedia
     }
 
     /**
+     * Set the media visibility to determine the media is public or private
+     *
+     * @param string $visibility public|private
+     *
+     * @return self
+     */
+    public function setMediaVisibility(string $visibility): self
+    {
+        if (!in_array($visibility, [self::MEDIA_VISIBILITY_PUBLIC, self::MEDIA_VISIBILITY_PRIVATE])) {
+            throw new \Exception('Invalid visibility type. Visibility must be public or private');
+        }
+        self::$visibility = $visibility;
+        return $this;
+    }
+
+    /**
+     * Get the media visibility
+     *
+     * @return string
+     */
+    public function getMediaVisibility(): string
+    {
+        return self::$visibility;
+    }
+
+    /**
      * Get all media associated with the model instance
-     * 
+     *
      * @return Collection<Media>
      */
     public function getAllMedia(): Collection
@@ -114,9 +151,9 @@ trait InteractsWithMedia
 
     /**
      * Get media from a specific collection associated with the model instance
-     * 
+     *
      * @param string|null $collectionName
-     * 
+     *
      * @return Collection<Media>
      */
     public function getMediaFromCollection(?string $collectionName): Collection
@@ -127,9 +164,9 @@ trait InteractsWithMedia
 
     /**
      * Get first media from a specific collection associated with the model instance
-     * 
+     *
      * @param string|null $collectionName
-     * 
+     *
      * @return Media
      */
     public function getFirstMediaFromCollection(?string $collectionName): Media
@@ -140,7 +177,7 @@ trait InteractsWithMedia
 
     /**
      * Get accepted media collections from the model instance
-     * 
+     *
      * @return array
      */
     public function getAcceptedMediaCollections(): array
@@ -150,7 +187,7 @@ trait InteractsWithMedia
 
     /**
      * Get available media collections from the model instance
-     * 
+     *
      * @return array
      */
     public static function getAvailableMediaCollections(): array
@@ -170,15 +207,17 @@ trait InteractsWithMedia
      * The media will be stored in the public disk
      * The media will be stored in the collection name folder
      * The media will be attached to the model instance
-     * 
+     *
      * @param array|null $media
      * @param string|null $collectionName
-     * 
+     * @param string|null $visibility public|private
+     *
      * @return self
      */
-    public function attachMediaFromElementRequest(array|null $media, ?string $collectionName = null): self
+    public function attachMediaFromElementRequest(array|null $media, ?string $collectionName = null, ?string $visibility = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
+        $visibility = $visibility ?? $this->getMediaVisibility();
         if (is_null($media)) {
             return $this;
         }
@@ -186,6 +225,9 @@ trait InteractsWithMedia
         try {
             $storedMedia = [];
 
+            if (!in_array($visibility, [self::MEDIA_VISIBILITY_PUBLIC, self::MEDIA_VISIBILITY_PRIVATE])) {
+                throw new \Exception('Invalid visibility type. Visibility must be public or private');
+            }
             if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
                 throw new \Exception('Collection ' . $collectionName . ' not accepted');
             }
@@ -193,12 +235,13 @@ trait InteractsWithMedia
             foreach ($media as $item) {
                 $item = $item['raw'];
                 $storageName = $item->hashName();
-                $path = $item->storeAs($collectionName, $storageName, 'public');
+                $path = $item->storeAs($visibility . '/' . $collectionName, $storageName);
                 $storedMedia[] = $path;
                 $item = Media::create([
                     'original_name' => $item->getClientOriginalName(),
                     'storage_name' => $storageName,
                     'path' => $path,
+                    'visibility' => $visibility,
                     'type' => $item->getType(),
                     'size' => $item->getSize(),
                     'extension' => $item->getExtension(),
@@ -221,10 +264,10 @@ trait InteractsWithMedia
     /**
      * Attach media from an existing media to the model instance
      * The media will be attached to the model instance
-     * 
+     *
      * @param Media|Collection|array|int|null $media
      * @param string|null $collectionName
-     * 
+     *
      * @return self
      */
     public function attachMediaFromExisting(Media|Collection|array|int|null $media, ?string $collectionName = null): self
@@ -268,33 +311,40 @@ trait InteractsWithMedia
      * The media will be stored in the public disk
      * The media will be stored in the collection name folder
      * The media will be attached to the model instance
-     * 
+     *
      * @param UploadedFile|array|null $file
      * @param string|null $collectionName
-     * 
+     * @param string|null $visibility public|private
+     *
      * @return self
      */
-    public function attachMediaFromUploadedFile(UploadedFile|array|null $file, ?string $collectionName = null): self
+    public function attachMediaFromUploadedFile(UploadedFile|array|null $file, ?string $collectionName = null, ?string $visibility = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
+        $visibility = $visibility ?? $this->getMediaVisibility();
         if (is_null($file)) {
             return $this;
         }
         DB::beginTransaction();
         try {
             $storedMedia = [];
+
+            if (!in_array($visibility, [self::MEDIA_VISIBILITY_PUBLIC, self::MEDIA_VISIBILITY_PRIVATE])) {
+                throw new \Exception('Invalid visibility type. Visibility must be public or private');
+            }
             if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
                 throw new \Exception('Collection ' . $collectionName . ' not accepted');
             }
 
             if ($file instanceof UploadedFile) {
                 $storageName = $file->hashName();
-                $path = $file->storeAs($collectionName, $storageName, 'public');
+                $path = $file->storeAs($visibility . '/' . $collectionName, $storageName);
                 $storedMedia[] = $path;
                 $media = Media::create([
                     'original_name' => $file->getClientOriginalName(),
                     'storage_name' => $storageName,
                     'path' => $path,
+                    'visibility' => $visibility,
                     'type' => $file->getType(),
                     'size' => $file->getSize(),
                     'extension' => $file->getExtension(),
@@ -305,12 +355,13 @@ trait InteractsWithMedia
                 foreach ($file as $item) {
                     if ($item instanceof UploadedFile) {
                         $storageName = $item->hashName();
-                        $path = $item->storeAs($collectionName, $storageName, 'public');
+                        $path = $item->storeAs($visibility . '/' . $collectionName, $storageName);
                         $storedMedia[] = $path;
                         $item = Media::create([
                             'original_name' => $item->getClientOriginalName(),
                             'storage_name' => $storageName,
                             'path' => $path,
+                            'visibility' => $visibility,
                             'type' => $item->getType(),
                             'size' => $item->getSize(),
                             'extension' => $item->getExtension(),
@@ -341,15 +392,18 @@ trait InteractsWithMedia
      * The media will be stored in the public disk
      * The media will be stored in the collection name folder
      * The media will be attached to the model instance
-     * 
+     *
      * @param string|array|null $base64
      * @param string|null $collectionName
-     * 
+     * @param string|null $visibility public|private
+     *
      * @return self
      */
-    public function attachMediaFromBase64(string|array|null $base64, ?string $collectionName = null): self
+    public function attachMediaFromBase64(string|array|null $base64, ?string $collectionName = null, ?string $visibility = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
+        $visibility = $visibility ?? $this->getMediaVisibility();
+
         if (is_null($base64)) {
             return $this;
         }
@@ -357,6 +411,9 @@ trait InteractsWithMedia
         try {
             $storedMedia = [];
 
+            if (!in_array($visibility, [self::MEDIA_VISIBILITY_PUBLIC, self::MEDIA_VISIBILITY_PRIVATE])) {
+                throw new \Exception('Invalid visibility type. Visibility must be public or private');
+            }
             if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
                 throw new \Exception('Collection ' . $collectionName . ' not accepted');
             }
@@ -365,12 +422,13 @@ trait InteractsWithMedia
                 foreach ($base64 as $item) {
                     $file = FileHelper::fromBase64($item);
                     $storageName = $file->hashName();
-                    $path = $file->storeAs($collectionName, $storageName, 'public');
+                    $path = $file->storeAs($visibility . '/' . $collectionName, $storageName);
                     $storedMedia[] = $path;
                     $media = Media::create([
                         'original_name' => $file->getClientOriginalName(),
                         'storage_name' => $storageName,
                         'path' => $path,
+                        'visibility' => $visibility,
                         'type' => $file->getType(),
                         'size' => $file->getSize(),
                         'extension' => $file->getExtension(),
@@ -381,12 +439,13 @@ trait InteractsWithMedia
             } else if (is_string($base64)) {
                 $file = FileHelper::fromBase64($base64);
                 $storageName = $file->hashName();
-                $path = $file->storeAs($collectionName, $storageName, 'public');
+                $path = $file->storeAs($visibility . '/' . $collectionName, $storageName);
                 $storedMedia = $path;
                 $media = Media::create([
                     'original_name' => $file->getClientOriginalName(),
                     'storage_name' => $storageName,
                     'path' => $path,
+                    'visibility' => $visibility,
                     'type' => $file->getType(),
                     'size' => $file->getSize(),
                     'extension' => $file->getExtension(),
@@ -410,9 +469,9 @@ trait InteractsWithMedia
 
     /**
      * Detach media from the model instance
-     * 
+     *
      * @param Media|Collection|array|int $media
-     * 
+     *
      * @return self
      */
     public function detachMedia(Media|Collection|array|int $media): self
@@ -445,9 +504,9 @@ trait InteractsWithMedia
 
     /**
      * Detach media from a specific collection associated with the model instance
-     * 
+     *
      * @param string|null $collectionName
-     * 
+     *
      * @return self
      */
     public function detachMediaFromCollection(?string $collectionName): self
@@ -472,7 +531,7 @@ trait InteractsWithMedia
 
     /**
      * Detach all media associated with the model instance
-     * 
+     *
      * @return self
      */
     public function detachAllMedia(): self
@@ -491,10 +550,10 @@ trait InteractsWithMedia
 
     /**
      * Sync media to the model instance
-     * 
+     *
      * @param array|SupportCollection|Collection|Media|int|null $media
      * @param string|null $collectionName
-     * 
+     *
      * @return self
      */
     public function syncMedia(array|SupportCollection|Collection|Media|int|null $media, ?string $collectionName = null): self
@@ -538,12 +597,15 @@ trait InteractsWithMedia
      *
      * @param array|null $media
      * @param string|null $collectionName
+     * @param string|null $visibility public|private
      *
      * @return self
      */
-    public function syncMediaFromElementRequest(array|null $media, ?string $collectionName = null): self
+    public function syncMediaFromElementRequest(array|null $media, ?string $collectionName = null, ?string $visibility = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
+        $visibility = $visibility ?? $this->getMediaVisibility();
+
         if (is_null($media)) {
             return $this;
         }
@@ -551,20 +613,24 @@ trait InteractsWithMedia
         try {
             $storedMedia = [];
 
+            if (!in_array($visibility, [self::MEDIA_VISIBILITY_PUBLIC, self::MEDIA_VISIBILITY_PRIVATE])) {
+                throw new \Exception('Invalid visibility type. Visibility must be public or private');
+            }
             if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
                 throw new \Exception('Collection ' . $collectionName . ' not accepted');
             }
 
-            $media = collect($media)->map(function ($item) use ($collectionName, &$storedMedia) {
+            $media = collect($media)->map(function ($item) use ($collectionName, &$storedMedia, $visibility) {
                 if (isset($item['raw'])){
                     $item = $item['raw'];
                     $storageName = $item->hashName();
-                    $path = $item->storeAs($collectionName, $storageName, 'public');
+                    $path = $item->storeAs($visibility . '/' . $collectionName, $storageName);
                     $storedMedia[] = $path;
                     $item = Media::create([
                         'original_name' => $item->getClientOriginalName(),
                         'storage_name' => $storageName,
                         'path' => $path,
+                        'visibility' => $visibility,
                         'type' => $item->getType(),
                         'size' => $item->getSize(),
                         'extension' => $item->getExtension(),
@@ -596,12 +662,15 @@ trait InteractsWithMedia
      *
      * @param UploadedFile|array|null $file
      * @param string|null $collectionName
+     * @param string|null $visibility public|private
      *
      * @return self
      */
-    public function syncMediaFromUploadedFile(UploadedFile|array|null $file, ?string $collectionName = null): self
+    public function syncMediaFromUploadedFile(UploadedFile|array|null $file, ?string $collectionName = null, ?string $visibility = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
+        $visibility = $visibility ?? $this->getMediaVisibility();
+
         if (is_null($file)) {
             return $this;
         }
@@ -609,18 +678,22 @@ trait InteractsWithMedia
         try {
             $storedMedia = [];
 
+            if (!in_array($visibility, [self::MEDIA_VISIBILITY_PUBLIC, self::MEDIA_VISIBILITY_PRIVATE])) {
+                throw new \Exception('Invalid visibility type. Visibility must be public or private');
+            }
             if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
                 throw new \Exception('Collection ' . $collectionName . ' not accepted');
             }
 
             if ($file instanceof UploadedFile) {
                 $storageName = $file->hashName();
-                $path = $file->storeAs($collectionName, $storageName, 'public');
+                $path = $file->storeAs($visibility . '/' . $collectionName, $storageName);
                 $storedMedia[] = $path;
                 $media = Media::create([
                     'original_name' => $file->getClientOriginalName(),
                     'storage_name' => $storageName,
                     'path' => $path,
+                    'visibility' => $visibility,
                     'type' => $file->getType(),
                     'size' => $file->getSize(),
                     'extension' => $file->getExtension(),
@@ -630,15 +703,16 @@ trait InteractsWithMedia
                     ->wherePivot('collection_name', $collectionName)
                     ->syncWithPivotValues([$media->id], ['collection_name' => $collectionName]);
             } else if (is_array($file)) {
-                $media = collect($file)->map(function ($item) use ($collectionName, &$storedMedia) {
+                $media = collect($file)->map(function ($item) use ($collectionName, &$storedMedia, $visibility) {
                     if ($item instanceof UploadedFile) {
                         $storageName = $item->hashName();
-                        $path = $item->storeAs($collectionName, $storageName, 'public');
+                        $path = $item->storeAs($visibility . '/' . $collectionName, $storageName);
                         $storedMedia[] = $path;
                         $item = Media::create([
                             'original_name' => $item->getClientOriginalName(),
                             'storage_name' => $storageName,
                             'path' => $path,
+                            'visibility' => $visibility,
                             'type' => $item->getType(),
                             'size' => $item->getSize(),
                             'extension' => $item->getExtension(),
@@ -672,12 +746,15 @@ trait InteractsWithMedia
      *
      * @param string|array|null $base64
      * @param string|null $collectionName
+     * @param string|null $visibility public|private
      *
      * @return self
      */
-    public function syncMediaFromBase64(string|array|null $base64, ?string $collectionName = null): self
+    public function syncMediaFromBase64(string|array|null $base64, ?string $collectionName = null, ?string $visibility = null): self
     {
         $collectionName = $collectionName ?? self::$collectionName;
+        $visibility = $visibility ?? $this->getMediaVisibility();
+
         if (is_null($base64)) {
             return $this;
         }
@@ -685,20 +762,24 @@ trait InteractsWithMedia
         try {
             $storedMedia = [];
 
+            if (!in_array($visibility, [self::MEDIA_VISIBILITY_PUBLIC, self::MEDIA_VISIBILITY_PRIVATE])) {
+                throw new \Exception('Invalid visibility type. Visibility must be public or private');
+            }
             if (!in_array($collectionName, $this->getAcceptedMediaCollections()) && !in_array('*', $this->getAcceptedMediaCollections())){
                 throw new \Exception('Collection ' . $collectionName . ' not accepted');
             }
 
             if (is_array($base64)) {
-                $media = collect($base64)->map(function ($item) use ($collectionName, &$storedMedia) {
+                $media = collect($base64)->map(function ($item) use ($collectionName, &$storedMedia, $visibility) {
                     $file = FileHelper::fromBase64($item);
                     $storageName = $file->hashName();
-                    $path = $file->storeAs($collectionName, $storageName, 'public');
+                    $path = $file->storeAs($visibility . '/' . $collectionName, $storageName);
                     $storedMedia[] = $path;
                     $media = Media::create([
                         'original_name' => $file->getClientOriginalName(),
                         'storage_name' => $storageName,
                         'path' => $path,
+                        'visibility' => $visibility,
                         'type' => $file->getType(),
                         'size' => $file->getSize(),
                         'extension' => $file->getExtension(),
@@ -713,12 +794,13 @@ trait InteractsWithMedia
             } else if (is_string($base64)) {
                 $file = FileHelper::fromBase64($base64);
                 $storageName = $file->hashName();
-                $path = $file->storeAs($collectionName, $storageName, 'public');
+                $path = $file->storeAs($visibility . '/' . $collectionName, $storageName);
                 $storedMedia = $path;
                 $media = Media::create([
                     'original_name' => $file->getClientOriginalName(),
                     'storage_name' => $storageName,
                     'path' => $path,
+                    'visibility' => $visibility,
                     'type' => $file->getType(),
                     'size' => $file->getSize(),
                     'extension' => $file->getExtension(),
