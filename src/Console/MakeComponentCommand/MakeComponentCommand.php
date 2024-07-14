@@ -52,7 +52,7 @@ class MakeComponentCommand extends Command implements PromptsForMissingInput
             'ComponentName' => Str::headline($fileName),
         ]);
 
-        $this->info('Component js/Components/' . $nameArgument . '.vue created successfully.');
+        $this->components->info('Component js/Components/' . $nameArgument . '.vue created successfully.');
         return 1;
     }
 

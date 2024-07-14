@@ -52,7 +52,7 @@ class MakeVueBlankPageCommand extends Command implements PromptsForMissingInput
             'ResourceTitle' => Str::headline($fileName),
         ]);
 
-        $this->info('Page js/Pages/' . $nameArgument . '.vue created successfully.');
+        $this->components->info('Page js/Pages/' . $nameArgument . '.vue created successfully.');
         return 1;
     }
 
