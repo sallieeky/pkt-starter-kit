@@ -114,7 +114,7 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
 
         $this->line('');
 
-        $this->info('Synced ' . $numberOfUsers . ' users from PKT Leader.');
+        $this->components->info('Synced ' . $numberOfUsers . ' users from PKT Leader.');
         $this->components->info('PKT Leader init and sync successfully.');
         return 1;
     }

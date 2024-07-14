@@ -104,8 +104,7 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
             'DownMigrationSchema' => $downMigrationSchema,
         ]);
 
-        $this->info('Migration file : database/migrations/'.$migrationName);
-        $this->info('Migration file created successfully');
+        $this->components->info('Migration file created successfully : database/migrations/'.$migrationName);
     }
 
     /**
