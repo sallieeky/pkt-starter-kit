@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Staudenmeir\LaravelMigrationViews\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -15,15 +15,19 @@ return new class extends Migration
          * Drop the view if it already exists.
          * ============================================
          */
-        Schema::dropViewIfExists('table_name');
+        DB::statement('DROP VIEW IF EXISTS table_name');
 
         /**
          * ============================================
          * Create the view with the given query.
          * ============================================
          */
-        $query = \App\Models\ModelName::query();
-        Schema::createView('table_name', $query);
+        DB::statement("
+            CREATE VIEW table_name AS
+            (
+                select * from related_table
+            )
+        ");
     }
 
     /**
@@ -36,6 +40,6 @@ return new class extends Migration
          * Drop the view if it already exists.
          * ============================================
          */
-        Schema::dropViewIfExists('table_name');
+        DB::statement('DROP VIEW IF EXISTS table_name');
     }
 };
