@@ -1144,6 +1144,18 @@ database/migrations/2024_06_11_000000_create_mediables_table.php
 
 If you already initialize media library, you can add `InteractsWithMedia` traits to your model that need to interact with media. This will indicate that your model will have a relationship with `Media` table or model. By default the relation with media will be `ManyToMany` so you can attach to existing media if needed.
 
+The default visibility of uploaded file on `storage` can be define from `app/Models/Media` and change the constant value of `DEFAULT_VISIBILITY` to `public` or `private`. When you set the visibility to **public**, it will store your file to `storage/app/public` it's mean that when you run the `php artisan storage:link` command it will symlink all files and folders on public storage to public that can be access by other directly. Also if you set the visibility to **private** it will store your file to `storage/app/private` that only can be access from your action.
+
+```php
+...
+const DEFAULT_VISIBILITY = 'public';
+
+# Or
+
+const DEFAULT_VISIBILITY = 'private';
+...
+```
+
 **Available Method**
 
 When it's having `Many to Many` relationship between your Model and Media model, you can use all ManyToMany method. You also can using dynamic relationship to media using `with` and for the params `mediaCollectionName` where CollectionName is based on existing collections.
@@ -1184,7 +1196,16 @@ $issue
     ->attachMediaFromElementRequest($validated['evidences']);
 ```
 
-2.  `attachMediaFromElementRequest($media, $collectionName)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from [Elemen Plus](https://element-plus.org/en-US/component/upload.html#file-list-control) upload file request.
+2. `setMediaVisibility($visibility)`, 
+this will override the default media visibility on your model. The media visibility that only can be accepted are `public` or `private`.
+```php
+$issue = Issue::create($validated);
+$issue
+    ->setMediaVisibility('private')
+    ->attachMediaFromElementRequest($validated['evidences']);
+```
+
+3.  `attachMediaFromElementRequest($media, $collectionName, $visibility)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from [Elemen Plus](https://element-plus.org/en-US/component/upload.html#file-list-control) upload file request.
 ```php
 /**
  * ================================================
@@ -1209,53 +1230,53 @@ $issue = Issue::create($validated);
 $issue->attachMediaFromElementRequest($validated['evidences'], 'evidences');
 ```
 
-3.  `attachMediaFromExisting($media, $collectionName)`, this will attach an existing media to your data.
+4.  `attachMediaFromExisting($media, $collectionName)`, this will attach an existing media to your data.
 ```php
 $issue = Issue::create($validated);
 $media = Media::query()->where('id', 1)->first()
 $issue->attachMediaFromExisting($media, 'evidences');
 ```
 
-4. `attachMediaFromUploadedFile($media, $collectionName)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from uploaded file format.
+5. `attachMediaFromUploadedFile($media, $collectionName, $visibility)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from uploaded file format.
 ```php
 $issue = Issue::create($validated);
 $file = $request->file('report');
 $issue->attachMediaFromUploadedFile($file, 'report');
 ```
 
-5. `attachMediaFromBase64($base64, $collectionName)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from base64 file format.
+6. `attachMediaFromBase64($base64, $collectionName, $visibility)`, this will store your file to `storage/app/public/[collectionName]` and automatically attach the file to your data from base64 file format.
 ```php
 $issue = Issue::create($validated);
 $base64 = $validated['base64_sign'];
 $issue->attachMediaFromBase64($base64, 'sign');
 ```
 
-6. `detachMedia($media)`, this will detaching media from your data.
+7. `detachMedia($media)`, this will detaching media from your data.
 ```php
 $issue = Issue::find(1);
 $issue->detachMedia([1,2,3]);
 ```
 
-7. `detachMediaFromCollection($collectionName)`, this will detaching all media on specific collection from your data.
+8. `detachMediaFromCollection($collectionName)`, this will detaching all media on specific collection from your data.
 ```php
 $issue = Issue::find(1);
 $issue->detachMediaFromCollection('evidences');
 ```
 
-8. `detachAllMedia()`, this will detaching all media from your data.
+9. `detachAllMedia()`, this will detaching all media from your data.
 ```php
 $issue = Issue::find(1);
 $issue->detachAllMedia();
 ```
 
-9. `syncMedia($media, $collectionName)`, this will syncing media data on your data.
+10. `syncMedia($media, $collectionName)`, this will syncing media data on your data.
 ```php
 $issue = Issue::find(1);
 $media = Media::query()->whereIn('id', [1,2,3])->get();
 $issue->syncMedia($media, 'evidences');
 ```
 
-10. `syncMediaFromElementRequest($media, $collectionName)`, this will syncing media data on your data from Element Plus request.
+11.  `syncMediaFromElementRequest($media, $collectionName, $visibility)`, this will syncing media data on your data from Element Plus request.
 ```php
 /**
  * ================================================
@@ -1299,44 +1320,44 @@ $issue = Issue::find(1);
 $issue->syncMediaFromElementRequest($validated['media_evidences'], 'evidences');
 ```
 
-11. `syncMediaFromUploadedFile($media, $collectionName)`, this will syncing media data from uploaded file format.
+12.  `syncMediaFromUploadedFile($media, $collectionName, $visibility)`, this will syncing media data from uploaded file format.
 ```php
 $issue = Issue::find(1);
 $media = $request->file('media_report')
 $issue->syncMediaFromUploadedFile($media, 'report');
 ```
 
-12. `syncMediaFromBase64($base64, $collectionName)`, this will syncing media data from base64 file format.
+13.  `syncMediaFromBase64($base64, $collectionName, $visibility)`, this will syncing media data from base64 file format.
 ```php
 $issue = Issue::find(1);
 $base64 = $validated['base64_sign']
 $issue->syncMediaFromBase64($base64, 'sign');
 ```
 
-13.  `getAllMedia()`, this will get all media related from data.
+14.   `getAllMedia()`, this will get all media related from data.
 ```php
 $issue = Issue::find(1);
 $issue->getAllMedia();
 ```
 
-14.  `getMediaFromCollection($collectionName)`, this will get all media from specific collection related from data.
+15.   `getMediaFromCollection($collectionName)`, this will get all media from specific collection related from data.
 ```php
 $issue = Issue::find(1);
 $issue->getMediaFromCollection('evidences');
 ```
 
-15.  `getFirstMediaFromCollection($collectionName)`, this will get first media from specific collection related from data.
+16.   `getFirstMediaFromCollection($collectionName)`, this will get first media from specific collection related from data.
 ```php
 $issue = Issue::find(1);
 $issue->getFirstMediaFromCollection('report');
 ```
 
-16.  `getAcceptedMediaCollections()`, this will display accepted media that can be assign from model.
+17.   `getAcceptedMediaCollections()`, this will display accepted media that can be assign from model.
 ```php
 $issue = Issue::getAcceptedMediaCollections();
 ```
 
-17.  `getAvailableMediaCollections()`, this will display available media collection on your model.
+18.   `getAvailableMediaCollections()`, this will display available media collection on your model.
 ```php
 $issue = Issue::getAvailableMediaCollections();
 ```
@@ -1347,19 +1368,19 @@ $issue = Issue::getAvailableMediaCollections();
 $media = Media::getAllCollections();
 ```
 
-2. `createFromElementRequest($media, $collectionName)`, this will store your file from [Elemen Plus](https://element-plus.org/en-US/component/upload.html#file-list-control) upload file request to `storage/app/public/[collectionName]` and automatically add the media to database.
+2. `createFromElementRequest($media, $collectionName, $visibility)`, this will store your file from [Elemen Plus](https://element-plus.org/en-US/component/upload.html#file-list-control) upload file request to `storage/app/public/[collectionName]` and automatically add the media to database.
 ```php
 $elementRequest = $validated['evidences'];
 $media = Media::createFromElementRequest($elementRequest, 'evidences');
 ```
 
-3. `createFromUploadedFile($file, $collectionName)`, this will store your file from uploaded file format to `storage/app/public/[collectionName]` and automatically add the media to database.
+3. `createFromUploadedFile($file, $collectionName, $visibility)`, this will store your file from uploaded file format to `storage/app/public/[collectionName]` and automatically add the media to database.
 ```php
 $file = $request->file('report');
-$media = Media::createFromUploadedFile($file, 'report');
+$media = Media::createFromUploadedFile($file, 'report', 'private');
 ```
 
-4. `createFromBase64($base64, $collectionName)`, this will store your file from base64 file format to `storage/app/public/[collectionName]` and automatically add the media to database.
+4. `createFromBase64($base64, $collectionName, $visibility)`, this will store your file from base64 file format to `storage/app/public/[collectionName]` and automatically add the media to database.
 ```php
 $file = $validated['base64_sign'];
 $media = Media::createFromBase64($file, 'sign');
@@ -1411,7 +1432,7 @@ public function create(CreateIssueRequest $request)
 
         $issue->attachMediaFromElementRequest($validated['media_evidences'], 'evidences');
         $issue->attachMediaFromExisting($media, 'evidences');
-        $issue->attachMediaFromElementRequest($validated['media_report'], 'report');
+        $issue->attachMediaFromElementRequest($validated['media_report'], 'report', 'private');
     } catch (\Throwable $e) {
         DB::rollBack();
         return redirect()->back()->withErrors([
@@ -1436,7 +1457,7 @@ public function update(Issue $issue, UpdateIssueRequest $request)
         $validated = $request->validated();
         $issue->update($validated);
         $issue->syncMediaFromElementRequest($request['media_evidences'], 'evidences');
-        $issue->syncMediaFromElementRequest($request['media_report'], 'report');
+        $issue->syncMediaFromElementRequest($request['media_report'], 'report', 'private');
     } catch (\Throwable $e) {
         DB::rollBack();
         return redirect()->back()->withErrors([
