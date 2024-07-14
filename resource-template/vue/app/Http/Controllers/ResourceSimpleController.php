@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Helpers\DxAdapter;
 use App\Http\Requests\ModelName\CreateModelNameRequest;
 use App\Http\Requests\ModelName\UpdateModelNameRequest;
 use App\Models\ModelName;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-
+use Pkt\StarterKit\Helpers\DxAdapter;
 
 class ModelNameController extends Controller
 {
