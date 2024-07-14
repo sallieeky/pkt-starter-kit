@@ -56,6 +56,9 @@ class MakeViewCommand extends Command implements PromptsForMissingInput
         if ($type === 'eloquent') {
             if (!$this->option('model')) {
                 $modelFiles = File::allFiles(app_path('Models'));
+                $modelFiles = array_filter($modelFiles, function($file) {
+                    return !str_contains($file->getRelativePathname(), 'Views/');
+                });
                 $model = [];
                 foreach ($modelFiles as $file) {
                     $modelPathname = $file->getRelativePathname();

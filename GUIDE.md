@@ -434,21 +434,32 @@ database/factories/EmployeeFactory.php
 
 This command will create new `migration` and `model` for your database view table
 ```cmd
-php artisan pkt:make-view <ViewModelName> --model=<RelatedModel>
+php artisan pkt:make-view <ViewModelName> <additional-flag>
 ```
 
+Additional flag you can use <br>
+- `--model=<RelatedModel>` you can predefined the related model for your view table.
+- `--raw` if you want to use raw query for your creating view method.
+
+
 #### Example
-If you want to make view for active user, you can execute command
+If you want to make view for active user, you can execute command.
 ```cmd
 php artisan pkt:make-view VwActiveUser --model=User
+
+<!-- Question -->
+ Select the creation type of view table [eloquent]:
+  [0] eloquent
+  [1] raw
+ > 0
 ```
-this command wil generate
+this command wil generate.
 ```
 app/Models/Views/VwActiveUser.php
 database/migrations/..._create_vw_active_users_view.php
 ```
 
-Inside file **database/migrations/..._create_vw_active_users_view.php**
+- Inside file `database/migrations/..._create_vw_active_users_view.php` if you using `eloquent` type.
 ```php
 <?php
 
@@ -467,7 +478,7 @@ return new class extends Migration
          * Drop the view if it already exists.
          * ============================================
          */
-        Schema::dropViewIfExists('table_name');
+        Schema::dropViewIfExists('vw_active_users');
 
         /**
          * ============================================
@@ -477,6 +488,69 @@ return new class extends Migration
         $query = \App\Models\User::query()
             ->where('is_active', true);
         Schema::createView('vw_active_users', $query);
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        /**
+         * ============================================
+         * Drop the view if it already exists.
+         * ============================================
+         */
+        Schema::dropViewIfExists('vw_active_users');
+    }
+};
+```
+
+- Inside file `database/migrations/..._create_vw_active_users_view.php` if you using `raw` type.
+```php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        /**
+         * ============================================
+         * Drop the view if it already exists.
+         * ============================================
+         */
+        DB::statement('DROP VIEW IF EXISTS vw_active_users');
+
+        /**
+         * ============================================
+         * Create the view with the given query.
+         * ============================================
+         */
+        DB::statement("
+            CREATE VIEW vw_active_users AS
+            (
+                select * from users
+                where is_active = true
+            )
+        ");
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        /**
+         * ============================================
+         * Drop the view if it already exists.
+         * ============================================
+         */
+        DB::statement('DROP VIEW IF EXISTS vw_active_users');
     }
 };
 ```
@@ -1149,9 +1223,11 @@ The default visibility of uploaded file on `storage` can be define from `app/Mod
 ```php
 ...
 const DEFAULT_VISIBILITY = 'public';
+...
 
 # Or
 
+...
 const DEFAULT_VISIBILITY = 'private';
 ...
 ```
