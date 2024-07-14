@@ -45,4 +45,19 @@ class FileHelper
         // return UploadedFile object
         return $file;
     }
+
+    /**
+     * Replace content in file
+     *
+     * @param string $file
+     * @param array $replacements
+     * 
+     * @return void
+     */
+    protected function replaceContent($file, $replacements): void
+    {
+        $content = file_get_contents($file);
+        $content = str_replace(array_keys($replacements), array_values($replacements), $content);
+        file_put_contents($file, $content);
+    }
 }
