@@ -15,7 +15,7 @@ class MakeModelFromExistingTableCommand extends Command implements PromptsForMis
      *
      * @var string
      */
-    protected $signature = 'pkt:make-model 
+    protected $signature = 'pkt:model-sync 
                 {--table= : The existing table name}';
 
 
@@ -24,7 +24,7 @@ class MakeModelFromExistingTableCommand extends Command implements PromptsForMis
      *
      * @var string
      */
-    protected $description = 'Make a model from an existing table in the database';
+    protected $description = 'Make a model from an existing table in the database if the model does not exist';
 
     /**
      * Execute the console command.
@@ -33,7 +33,7 @@ class MakeModelFromExistingTableCommand extends Command implements PromptsForMis
      */
     public function handle()
     {
-        $type = $this->option('table') ? 'One Table' : $this->choice('Do you want to sync all table and model or just one table?', ['All Tables', 'One Table']);
+        $type = $this->option('table') ? 'One Table' : $this->choice('Do you want to sync all table and model or just one table?', ['All Tables', 'One Table'], 0);
         $tableStatus = [];
         if ($type === 'All Tables') {
             $existingTables = collect(DB::connection()->getDoctrineSchemaManager()->listTableNames())->filter(function ($table) {
@@ -87,8 +87,8 @@ class MakeModelFromExistingTableCommand extends Command implements PromptsForMis
                 if ($modelExists) {
                     $tableStatus[] = [
                         'table' => $table,
-                        'status' => false,
-                        'model' => null,
+                        'status' => 'failed',
+                        'model' => 'exists at app/Models/'.$modelName.'.php',
                     ];
                     continue;
                 } else {
@@ -101,7 +101,7 @@ class MakeModelFromExistingTableCommand extends Command implements PromptsForMis
 
                     $tableStatus[] = [
                         'table' => $table,
-                        'status' => true,
+                        'status' => 'success',
                         'model' => 'app/Models/'.$modelName.'.php',
                     ];
                 }
@@ -130,6 +130,8 @@ class MakeModelFromExistingTableCommand extends Command implements PromptsForMis
                 return 1;
             }
 
+            $primaryKey = optional(optional(DB::connection()->getDoctrineSchemaManager()->listTableIndexes($this->option('table')))['primary']->getColumns())[0];
+
             $modelFiles = File::allFiles(app_path('Models'));
             $modelFiles = array_filter($modelFiles, function($file) {
                 return !str_contains($file->getRelativePathname(), 'Views/');
@@ -142,39 +144,48 @@ class MakeModelFromExistingTableCommand extends Command implements PromptsForMis
                 $models[] = $modelPathname;
             }
 
+            $modelExists = false;
             foreach ($models as $model) {
-                $model = app('App\Models\\'.$model);
-                if ($model->getTable() === $this->option('table')) {
+                $modelClass = app('App\Models\\'.$model);
+                if ($modelClass->getTable() === $this->option('table')) {
                     $tableStatus[] = [
                         'table' => $this->option('table'),
-                        'status' => false,
-                        'model' => null,
+                        'status' => 'failed',
+                        'model' => 'exists at app/Models/'.$model.'.php',
                     ];
-                    continue;
+                    $modelExists = true;
+                    break;
                 } else {
-                    $table = Str::lower($this->option('table'));
-                    $table = Str::replaceFirst('tr_', '', $table);
-                    $table = Str::replaceFirst('ms_', '', $table);
-                    $table = Str::replaceFirst('vl_', '', $table);
-
-                    $modelName = Str::studly(Str::singular($table));
-                    copy(__DIR__.'/../../../additional-stubs/default/app/Models/BlankModel.php', app_path('Models/'.$modelName.'.php'));
-                    $this->replaceContent(app_path('Models/'.$modelName.'.php'), [
-                        'ModelName' => $modelName,
-                        'table_names' => $table,
-                        'table_name_id' => $table.'_id',
-                    ]);
-
-                    $tableStatus[] = [
-                        'table' => $this->option('table'),
-                        'status' => true,
-                        'model' => 'app/Models/'.$modelName.'.php',
-                    ];
+                    $modelExists = false;
                 }
+            }
+
+            if (!$modelExists) {
+                $tableName = Str::lower($this->option('table'));
+                $tableName = Str::replaceFirst('tr_', '', $tableName);
+                $tableName = Str::replaceFirst('ms_', '', $tableName);
+                $tableName = Str::replaceFirst('vl_', '', $tableName);
+
+                $modelName = Str::studly(Str::singular($tableName));
+
+                copy(__DIR__.'/../../../additional-stubs/default/app/Models/BlankModel.php', app_path('Models/'.$modelName.'.php'));
+                $this->replaceContent(app_path('Models/'.$modelName.'.php'), [
+                    'ModelName' => $modelName,
+                    'table_names' => $this->option('table'),
+                    'table_name_id' => $primaryKey,
+                ]);
+
+                $tableStatus[] = [
+                    'table' => $this->option('table'),
+                    'status' => 'success',
+                    'model' => 'app/Models/'.$modelName.'.php',
+                ];
             }
         }
 
-        $this->components->table(['Table', 'Status', 'Model'], $tableStatus);
+        $this->table(['Table', 'Status', 'Model'], $tableStatus);
+
+        $this->components->info('Model sync successfully');
         return 1;
     }
 
