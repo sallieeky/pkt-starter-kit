@@ -90,7 +90,6 @@ class MakeModelFromExistingTableCommand extends Command implements PromptsForMis
                         'status' => false,
                         'model' => null,
                     ];
-                    $this->components->error('Model already exists for the table');
                     continue;
                 } else {
                     copy(__DIR__.'/../../../additional-stubs/default/app/Models/BlankModel.php', app_path('Models/'.$modelName.'.php'));
@@ -146,7 +145,11 @@ class MakeModelFromExistingTableCommand extends Command implements PromptsForMis
             foreach ($models as $model) {
                 $model = app('App\Models\\'.$model);
                 if ($model->getTable() === $this->option('table')) {
-                    $this->components->error('Model already exists for the table');
+                    $tableStatus[] = [
+                        'table' => $this->option('table'),
+                        'status' => false,
+                        'model' => null,
+                    ];
                     continue;
                 } else {
                     $table = Str::lower($this->option('table'));
