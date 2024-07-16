@@ -201,7 +201,7 @@ trait ManipulateVueResource
         }
 
         $this->components->info('Vue page file resources/js/Pages/' . $nameArgument . '/' . $nameArgument . 'Manage.vue created successfully.');
-        if ($this->components->multiPage) {
+        if ($this->multiPage) {
             $this->components->info('Vue page file resources/js/Pages/' . $nameArgument . '/' . $nameArgument . 'Create.vue created successfully.');
             $this->components->info('Vue page file resources/js/Pages/' . $nameArgument . '/' . $nameArgument . 'Update.vue created successfully.');
         }
