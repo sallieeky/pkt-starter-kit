@@ -257,7 +257,7 @@ class Role extends ModelsRole
 
 ## Additional Command
 
-### Make resource command
+### Make Resource
 This command will help you to create basic single page <strong>CRUD</strong> by only execute 1 command
 
 ```cmd
@@ -286,7 +286,7 @@ After you run the command, it's recommended to re-seed the role and permission t
 php artisan db:seed --class=RoleAndPermissionSeeder
 ```
 
-### Make Blank Page Command
+### Make Blank Page
 This command will generate blank page file for your frontend
 ```cmd
 php artisan pkt:make-page <Filepath/Filename>
@@ -299,7 +299,7 @@ php artisan pkt:make-page MasterData/Equipment
 
 this command will generate file `resources/js/Pages/MasterData/Equipment.vue`
 
-### Make Component Command
+### Make Component
 This command will generate blank component file for your frontend
 ```cmd
 php artisan pkt:make-component <Filepath/Filename>
@@ -312,7 +312,7 @@ php artisan pkt:make-component Dashboard/AdminTab
 
 this command will generate file `resources/js/Components/Dashboard/AdminTab.vue`
 
-### Make Widget Command
+### Make Widget
 Widget is almost the same with component, but it's commonly used only once and for specific page for example chart, table, form, etc, but you can still reuse it on other page if needed.
 ```cmd
 php artisan pkt:make-widget <Filepath/Filename>
@@ -362,7 +362,7 @@ this command will generate file `resources/js/Widgets/Dashboard/MonthlyProductio
 <img src="/art/Widgets/DonutChartWidget.png" alt="Donut Chart Widget">
 
 
-### Init Leader Command
+### Init Leader
 First you need to setup `.env` file and add this line.
 ```.env
 LEADER_API_KEY=<ask admin>
@@ -390,7 +390,7 @@ user_flag       => string
 user_alias      => string
 ```
 
-### Sync Leader Command
+### Sync Leader
 First you need to setup `.env` file and add this line.
 ```.env
 LEADER_API_KEY=<ask admin>
@@ -666,6 +666,35 @@ Select additional options ──────────────────
 <!-- Output -->
 Migration file : 2024_06_15_220000_add_birth_to_users_table.php
 Migration file created successfully
+```
+
+### Model Sync
+
+Sometimes you want to interact with existing database table from your new apps or existing apps that not using model to do the query, so you need to make all the model that related to that table manually. So here we provide the command to automatically sync the model with the database table, if the model that related to the table is not exist, it will create a new model, but if the model is already exist it will pass.
+
+```cmd
+php artisan pkt:model-sync <additional-flag>
+```
+
+Additional flag you can use <br>
+- `--table=<table_name>` if you want to sync with specific existing table.
+
+```cmd
+php artisan pkt:model-sync
+
+<!-- Question -->
+Do you want to sync all table and model or just one table? [All Tables]:
+  [0] All Tables
+  [1] One Table
+ > 0
+
+<!-- Output -->
++-----------+---------+--------------------------------+
+| Table     | Status  | Model                          |
++-----------+---------+--------------------------------+
+| tr_issues | success | exists at app/Models/Issue.php |
+| users     | failed  | exists at app/Models/User.php  |
++-----------+---------+--------------------------------+
 ```
 
 ### Init and Make Mail
