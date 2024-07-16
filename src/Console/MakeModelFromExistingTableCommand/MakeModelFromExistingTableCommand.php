@@ -125,12 +125,9 @@ class MakeModelFromExistingTableCommand extends Command implements PromptsForMis
                 ]);
             })->values();
 
-            if (!in_array($this->option('table'), $existingTables->toArray())) {
-                $this->components->error('Table not found');
-                return 1;
-            }
+            $table = $this->choice('Select table', $existingTables->toArray(), 0);
 
-            $primaryKey = optional(optional(DB::connection()->getDoctrineSchemaManager()->listTableIndexes($this->option('table')))['primary']->getColumns())[0];
+            $primaryKey = optional(optional(DB::connection()->getDoctrineSchemaManager()->listTableIndexes($table))['primary']->getColumns())[0];
 
             $modelFiles = File::allFiles(app_path('Models'));
             $modelFiles = array_filter($modelFiles, function($file) {
@@ -147,9 +144,9 @@ class MakeModelFromExistingTableCommand extends Command implements PromptsForMis
             $modelExists = false;
             foreach ($models as $model) {
                 $modelClass = app('App\Models\\'.$model);
-                if ($modelClass->getTable() === $this->option('table')) {
+                if ($modelClass->getTable() === $table) {
                     $tableStatus[] = [
-                        'table' => $this->option('table'),
+                        'table' => $table,
                         'status' => 'failed',
                         'model' => 'exists at app/Models/'.$model.'.php',
                     ];
@@ -161,7 +158,7 @@ class MakeModelFromExistingTableCommand extends Command implements PromptsForMis
             }
 
             if (!$modelExists) {
-                $tableName = Str::lower($this->option('table'));
+                $tableName = Str::lower($table);
                 $tableName = Str::replaceFirst('tr_', '', $tableName);
                 $tableName = Str::replaceFirst('ms_', '', $tableName);
                 $tableName = Str::replaceFirst('vl_', '', $tableName);
@@ -171,12 +168,12 @@ class MakeModelFromExistingTableCommand extends Command implements PromptsForMis
                 copy(__DIR__.'/../../../additional-stubs/default/app/Models/BlankModel.php', app_path('Models/'.$modelName.'.php'));
                 $this->replaceContent(app_path('Models/'.$modelName.'.php'), [
                     'ModelName' => $modelName,
-                    'table_names' => $this->option('table'),
+                    'table_names' => $table,
                     'table_name_id' => $primaryKey,
                 ]);
 
                 $tableStatus[] = [
-                    'table' => $this->option('table'),
+                    'table' => $table,
                     'status' => 'success',
                     'model' => 'app/Models/'.$modelName.'.php',
                 ];
