@@ -12,6 +12,7 @@ class ModelName extends Model
 
     protected $table = 'table_names';
     protected $primaryKey = 'table_name_id';
+    protected $guarded = ['table_name_id'];
     
     /**
      * The attributes that should be cast.
