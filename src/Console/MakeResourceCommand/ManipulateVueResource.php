@@ -22,14 +22,14 @@ trait ManipulateVueResource
         // check if the vue page already exists
         $exist = (new Filesystem)->exists(resource_path('js/Pages/' . $nameArgument ));
         if ($exist && !$this->option('force')) {
-            $this->error('Vue page already exists: ' . $nameArgument);
+            $this->components->error('Vue page already exists: ' . $nameArgument);
             return 0;
         }
 
         // check if the controller already exists
         $exist = (new Filesystem)->exists(app_path('Http/Controllers/' . $nameArgument . 'Controller.php'));
         if ($exist && !$this->option('force')) {
-            $this->error('Controller already exists: ' . $nameArgument);
+            $this->components->error('Controller already exists: ' . $nameArgument);
             return 0;
         }
 
@@ -41,7 +41,7 @@ trait ManipulateVueResource
         $this->manipulatePermissions();
 
         $this->line('');
-        $this->info('You can run php artisan db:seed --class=RoleAndPermissionSeeder to update the permissions');
+        $this->components->info('You can run php artisan db:seed --class=RoleAndPermissionSeeder to update the permissions');
     }
 
     /**
@@ -200,10 +200,10 @@ trait ManipulateVueResource
             ]);
         }
 
-        $this->info('Vue page created in: resources/js/Pages/' . $nameArgument . '/' . $nameArgument . 'Manage.vue');
-        if ($this->multiPage) {
-            $this->info('Vue page created in: resources/js/Pages/' . $nameArgument . '/' . $nameArgument . 'Create.vue');
-            $this->info('Vue page created in: resources/js/Pages/' . $nameArgument . '/' . $nameArgument . 'Update.vue');
+        $this->components->info('Vue page file resources/js/Pages/' . $nameArgument . '/' . $nameArgument . 'Manage.vue created successfully.');
+        if ($this->components->multiPage) {
+            $this->components->info('Vue page file resources/js/Pages/' . $nameArgument . '/' . $nameArgument . 'Create.vue created successfully.');
+            $this->components->info('Vue page file resources/js/Pages/' . $nameArgument . '/' . $nameArgument . 'Update.vue created successfully.');
         }
     }
 
@@ -231,7 +231,7 @@ trait ManipulateVueResource
             'modelName' => Str::camel($modelName),
         ]);
 
-        $this->info('Controller created in: app/Http/Controllers/' . $nameArgument . 'Controller.php');
+        $this->components->info('Controller app/Http/Controllers/' . $nameArgument . 'Controller.php created successfully.');
     }
 
     /**
@@ -284,8 +284,8 @@ trait ManipulateVueResource
             'Rules' => $rules,
         ]);
 
-        $this->info('Create Request created in: app/Http/Requests/' . $modelName . '/Create' . $modelName . 'Request.php');
-        $this->info('Update Request created in: app/Http/Requests/' . $modelName . '/Update' . $modelName . 'Request.php');
+        $this->components->info('Create Request file app/Http/Requests/' . $modelName . '/Create' . $modelName . 'Request.php created successfully.');
+        $this->components->info('Update Request file app/Http/Requests/' . $modelName . '/Update' . $modelName . 'Request.php created successfully.');
     }
 
     /**
@@ -334,7 +334,7 @@ Route::authenticated()
 
         file_put_contents(base_path('routes/web.php'), $route, FILE_APPEND);
 
-        $this->info('Route updated in: routes/web.php');
+        $this->components->info('Route file routes/web.php updated successfully.');
     }
 
     /**
@@ -361,7 +361,7 @@ Route::authenticated()
         $sideMenuItemContent = preg_replace('/(export const navItems = \[)(.*?)(\];)/s', '$1$2' . $sidemenuItem . '$3', $sideMenuItemContent);
         file_put_contents(resource_path('js/Core/Config/SidemenuItem.js'), $sideMenuItemContent);
 
-        $this->info('SidemenuItem updated in: resources/js/Core/Config/SidemenuItem.js');
+        $this->components->info('SidemenuItem file resources/js/Core/Config/SidemenuItem.js updated successfully.');
     }
 
     /**
@@ -397,6 +397,6 @@ Route::authenticated()
 
         file_put_contents(config_path('permissions.php'), $content);
 
-        $this->info('Permissions updated in: config/permissions.php');
+        $this->components->info('Permissions file config/permissions.php updated successfully.');
     }
 }

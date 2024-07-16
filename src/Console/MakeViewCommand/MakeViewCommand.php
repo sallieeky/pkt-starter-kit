@@ -42,12 +42,12 @@ class MakeViewCommand extends Command implements PromptsForMissingInput
         $migrationPath = database_path('migrations/' . $migrationName);
         
         if (file_exists($path) || file_exists($migrationPath)) {
-            $this->error('View already exists!');
+            $this->components->error('View already exists!');
             return 0;
         }
 
         if ($this->option('model') && !class_exists('App\Models\\'.$this->option('model'))) {
-            $this->error('Model not found!');
+            $this->components->error('Model not found!');
             return 0;
         }
 
