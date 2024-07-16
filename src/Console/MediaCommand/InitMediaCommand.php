@@ -30,7 +30,7 @@ class InitMediaCommand extends Command implements PromptsForMissingInput
     {
         // check if media already initialized
         if (file_exists(app_path('Http/Controllers/Starter/MediaController.php')) || file_exists(app_path('Models/Media.php')) || file_exists(database_path('migrations/2024_06_11_000000_create_media_table.php')) || file_exists(database_path('migrations/2024_06_11_00000_create_mediables_table.php'))){
-            $this->error('Media already initialized.');
+            $this->components->error('Media already initialized.');
             return 0;
         }
 

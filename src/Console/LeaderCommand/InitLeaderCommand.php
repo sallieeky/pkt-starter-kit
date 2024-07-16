@@ -44,7 +44,7 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
 
         // check if leader already installed
         if (file_exists(database_path('migrations/2024_04_04_000000_add_leader_to_users_table.php'))) {
-            $this->info('You already initialize the leader.');
+            $this->components->info('You already initialize the leader.');
 
             // ask to sync again
             if ($this->confirm('Do you want to sync user?')) {

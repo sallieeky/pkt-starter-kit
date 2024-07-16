@@ -71,7 +71,7 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
         } else if ($type === 'manipulate multiple columns / custom schema') {
             $this->manipulateMultipleColumns($tableName);
         } else {
-            $this->error('Invalid migration type');
+            $this->components->error('Invalid migration type');
         }
 
         return 0;

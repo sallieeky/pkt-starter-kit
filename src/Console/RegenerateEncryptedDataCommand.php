@@ -60,39 +60,39 @@ class RegenerateEncryptedDataCommand extends Command implements PromptsForMissin
                 (!config('crypt.previous_key') || !config('crypt.previous_iv'))
             )
         ){
-            $this->error('The encryption key and iv cannot be regenerated.');
+            $this->components->error('The encryption key and iv cannot be regenerated.');
             return 0;
         }
 
         if ($this->option('generate')) {
             $envKey = $this->option('key') ?? $this->secret('What is the encryption key?');
             if ($envKey !== config('crypt.key')) {
-                $this->error('The encryption key is not the same as the one in your .env file.');
+                $this->components->error('The encryption key is not the same as the one in your .env file.');
                 return 0;
             }
     
             $envIv = $this->option('iv') ?? $this->secret('What is the encryption iv?');
             if ($envIv !== config('crypt.iv')) {
-                $this->error('The encryption iv is not the same as the one in your .env file.');
+                $this->components->error('The encryption iv is not the same as the one in your .env file.');
                 return 0;
             }
         } else {
             $envKey = $this->option('previous-key') ?? $this->secret('What is the previous encryption key?');
             if ($envKey !== config('crypt.previous_key')) {
-                $this->error('The previous encryption key is not the same as the one in your .env file.');
+                $this->components->error('The previous encryption key is not the same as the one in your .env file.');
                 return 0;
             }
     
             $envIv = $this->option('previous-iv') ?? $this->secret('What is the previous encryption iv?');
             if ($envIv !== config('crypt.previous_iv')) {
-                $this->error('The previous encryption iv is not the same as the one in your .env file.');
+                $this->components->error('The previous encryption iv is not the same as the one in your .env file.');
                 return 0;
             }
         }
 
         $confirmation = $this->option('yes') || $this->confirm('Are you sure you want to regenerate the encrypted data in the database?');
         if (!$confirmation) {
-            $this->info('The encrypted data in the database was not regenerated.');
+            $this->components->info('The encrypted data in the database was not regenerated.');
             return 0;
         }
 
