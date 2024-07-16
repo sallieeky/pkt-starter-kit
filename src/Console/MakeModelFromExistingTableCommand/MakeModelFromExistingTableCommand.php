@@ -24,7 +24,7 @@ class MakeModelFromExistingTableCommand extends Command implements PromptsForMis
      *
      * @var string
      */
-    protected $description = 'Make a model from an existing table in the database if the model does not exist';
+    protected $description = 'Create a model from an existing table in the database if the model does not exist';
 
     /**
      * Execute the console command.
