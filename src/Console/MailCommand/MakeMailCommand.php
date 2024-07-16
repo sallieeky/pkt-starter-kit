@@ -39,15 +39,15 @@ class MakeMailCommand extends Command implements PromptsForMissingInput
         copy(__DIR__ . '/../../../mail-stubs/app/Mail/Mail.php', app_path("Mail/{$name}.php"));
         copy(__DIR__ . '/../../../mail-stubs/resources/views/mails/mail.blade.php', resource_path("views/mails/{$view}.blade.php"));
 
-        $subject = Str::title($name);
+        $subject = Str::headline($name);
         $this->replaceContent(app_path("Mail/{$name}.php"), [
             'ClassName' => $name,
             '\'Subject\'' => "'{$subject}'",
             '\'view-name\'' => "'mails.{$view}'",
         ]);
 
-        $this->info("Mail file created at app/Mail/{$name}.php");
-        $this->info("View file created at resource/views/mails/{$view}.blade.php");
+        $this->components->info("Mail file app/Mail/{$name}.php created successfully.");
+        $this->components->info("View file resource/views/mails/{$view}.blade.php created successfully.");
         return 1;
     }
 

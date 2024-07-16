@@ -33,7 +33,7 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
     {
         // make sure the user already set the LEADER_API_KEY
         if (!env('LEADER_API_KEY')) {
-            $this->error('Please set the LEADER_API_KEY in .env file');
+            $this->components->error('Please set the LEADER_API_KEY in .env file');
             return 0;
         }
 
@@ -44,7 +44,7 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
 
         // check if leader already installed
         if (file_exists(database_path('migrations/2024_04_04_000000_add_leader_to_users_table.php'))) {
-            $this->info('You already initialize the leader.');
+            $this->components->info('You already initialize the leader.');
 
             // ask to sync again
             if ($this->confirm('Do you want to sync user?')) {
@@ -87,7 +87,7 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
                 });
             } catch (\Exception $e) {
                 DB::rollBack();
-                $this->error('Failed to get users data from PKT Leader API.');
+                $this->components->error('Failed to get users data from PKT Leader API.');
                 return 0;
             }
             DB::commit();
@@ -114,7 +114,7 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
 
         $this->line('');
 
-        $this->info('Synced ' . $numberOfUsers . ' users from PKT Leader.');
+        $this->components->info('Synced ' . $numberOfUsers . ' users from PKT Leader.');
         $this->components->info('PKT Leader init and sync successfully.');
         return 1;
     }

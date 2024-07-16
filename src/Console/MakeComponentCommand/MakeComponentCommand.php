@@ -34,7 +34,7 @@ class MakeComponentCommand extends Command implements PromptsForMissingInput
         $nameArgument = ucfirst($this->argument('name'));
         $regexCheck = '/^[a-zA-Z0-9\/]+$/';
         if(!preg_match($regexCheck, $nameArgument)){
-            $this->error('Please input correctly page name without using symbol charater or whitespace');
+            $this->components->error('Please input correctly page name without using symbol charater or whitespace');
             return 0;
         }
         $dirName = dirname($nameArgument);
@@ -43,7 +43,7 @@ class MakeComponentCommand extends Command implements PromptsForMissingInput
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Components/'.$dirName));
 
         if(file_exists(resource_path('js/Components/' . $nameArgument . '.vue'))){
-            $this->error('Component js/Components/' . $nameArgument . '.vue already exists.');
+            $this->components->error('Component js/Components/' . $nameArgument . '.vue already exists.');
             return 0;
         }
 
@@ -52,7 +52,7 @@ class MakeComponentCommand extends Command implements PromptsForMissingInput
             'ComponentName' => Str::headline($fileName),
         ]);
 
-        $this->info('Component js/Components/' . $nameArgument . '.vue created successfully.');
+        $this->components->info('Component js/Components/' . $nameArgument . '.vue created successfully.');
         return 1;
     }
 

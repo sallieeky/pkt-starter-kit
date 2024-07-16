@@ -16,6 +16,14 @@ class Media extends Model
     use HasFactory, HasCreatedUpdatedBy, HasUuids, MediaDefaultMethod, SoftDeletes;
 
     /**
+     * The default visibility of the media file.
+     * default: public | private
+     *
+     * @var string
+     */
+    const DEFAULT_VISIBILITY = 'public';
+
+    /**
      * The attributes that are protected from mass assignment.
      *
      * @var array<int, string>

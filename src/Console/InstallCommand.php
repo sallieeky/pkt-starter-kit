@@ -36,7 +36,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
     public function handle()
     {
         if (!$this->confirm('Make sure that this is the empty project. Do you want to continue?')) {
-            $this->info('Installation aborted.');
+            $this->components->info('Installation aborted.');
             return 1;
         }
         
@@ -44,10 +44,10 @@ class InstallCommand extends Command implements PromptsForMissingInput
             $this->installVueStack();
         } elseif ($this->argument('stack') === 'react') {
             // $this->installReactStack();
-            $this->info('React stack is not available yet. Please use "vue" stack.');
+            $this->components->info('React stack is not available yet. Please use "vue" stack.');
             return 1;
         } else {
-            $this->error('Invalid stack. Please use "vue", or "react".');
+            $this->components->error('Invalid stack. Please use "vue", or "react".');
             return 1;
         }
         return 1;
@@ -135,9 +135,9 @@ class InstallCommand extends Command implements PromptsForMissingInput
 
             // End Controllers
 
-            // Helpers
-            (new Filesystem)->ensureDirectoryExists(app_path('Http/Helpers'));
-            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Helpers', app_path('Http/Helpers'));
+            // Helpers (Not used)
+            // (new Filesystem)->ensureDirectoryExists(app_path('Http/Helpers'));
+            // (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/default/app/Http/Helpers', app_path('Http/Helpers'));
             // End Helpers
 
             // Middleware

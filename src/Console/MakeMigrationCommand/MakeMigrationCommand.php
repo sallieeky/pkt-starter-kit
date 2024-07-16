@@ -71,7 +71,7 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
         } else if ($type === 'manipulate multiple columns / custom schema') {
             $this->manipulateMultipleColumns($tableName);
         } else {
-            $this->error('Invalid migration type');
+            $this->components->error('Invalid migration type');
         }
 
         return 0;
@@ -104,8 +104,7 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
             'DownMigrationSchema' => $downMigrationSchema,
         ]);
 
-        $this->info('Migration file : database/migrations/'.$migrationName);
-        $this->info('Migration file created successfully');
+        $this->components->info('Migration file database/migrations/'.$migrationName.' created successfully.');
     }
 
     /**
@@ -136,8 +135,7 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
             'DownMigrationSchema' => $downMigrationSchema,
         ]);
 
-        $this->info('Migration file : database/migrations/'.$migrationName);
-        $this->info('Migration file created successfully');
+        $this->components->info('Migration file database/migrations/'.$migrationName.' created successfully.');
     }
 
     /**
@@ -169,8 +167,7 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
             'DownMigrationSchema' => $downMigrationSchema,
         ]);
 
-        $this->info('Migration file : database/migrations/'.$migrationName);
-        $this->info('Migration file created successfully');
+        $this->components->info('Migration file : database/migrations/'.$migrationName.' created successfully.');
     }
 
     /**
@@ -203,8 +200,7 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
             'DownMigrationSchema' => $downMigrationSchema,
         ]);
 
-        $this->info('Migration file : database/migrations/'.$migrationName);
-        $this->info('Migration file created successfully');
+        $this->components->info('Migration file : database/migrations/'.$migrationName.' created successfully.');
     }
 
     /**
@@ -228,8 +224,7 @@ class MakeMigrationCommand extends Command implements PromptsForMissingInput
             'DownMigrationSchema' => $downMigrationSchema,
         ]);
 
-        $this->info('Migration file : database/migrations/'.$migrationName);
-        $this->info('Migration file created successfully');
+        $this->components->info('Migration file : database/migrations/'.$migrationName.' created successfully.');
     }
 
     /**

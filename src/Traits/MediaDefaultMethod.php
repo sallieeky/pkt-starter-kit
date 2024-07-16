@@ -31,14 +31,20 @@ trait MediaDefaultMethod
      *
      * @param  \Illuminate\Http\UploadedFile|array  $file
      * @param  string|null  $collectionName
-     * 
+     * @param  string|null  $visibility public|private
+     *
      * @return \App\Models\Media|\Illuminate\Database\Eloquent\Collection
      * @throws \Exception
      */
-    public static function createFromUploadedFile(UploadedFile|array $file, ?string $collectionName): self|Collection
+    public static function createFromUploadedFile(UploadedFile|array $file, ?string $collectionName, ?string $visibility = null): self|Collection
     {
+        $visibility = $visibility ?? self::DEFAULT_VISIBILITY;
+
         DB::beginTransaction();
         try {
+            if ($visibility !== 'public' && $visibility !== 'private') {
+                throw new \Exception('Invalid visibility type. Visibility must be public or private');
+            }
             $returnFile = null;
             $storedMedia = [];
             if (is_array($file)) {
@@ -49,12 +55,13 @@ trait MediaDefaultMethod
 
                     $collectionName = $collectionName ?? 'default';
                     $storageName = $item->hashName();
-                    $path = $item->storeAs($collectionName, $storageName, 'public');
+                    $path = $item->storeAs($visibility . '/' . $collectionName, $storageName);
 
                     $media = new self();
                     $media->original_name = $item->getClientOriginalName();
                     $media->storage_name = $storageName;
                     $media->path = $path;
+                    $media->visibility = $visibility;
                     $media->type = $item->getType();
                     $media->size = $item->getSize();
                     $media->extension = $item->getExtension();
@@ -75,12 +82,13 @@ trait MediaDefaultMethod
 
                 $collectionName = $collectionName ?? 'default';
                 $storageName = $file->hashName();
-                $path = $file->storeAs($collectionName, $storageName, 'public');
+                $path = $file->storeAs($visibility . '/' . $collectionName, $storageName);
 
                 $media = new self();
                 $media->original_name = $file->getClientOriginalName();
                 $media->storage_name = $storageName;
                 $media->path = $path;
+                $media->visibility = $visibility;
                 $media->type = $file->getType();
                 $media->size = $file->getSize();
                 $media->extension = $file->getExtension();
@@ -109,28 +117,35 @@ trait MediaDefaultMethod
      *
      * @param  string|null  $collectionName Collection name
      * @param  array  $element Element Plus request
-     * 
+     * @param  string|null  $visibility public|private
+     *
      * @return \App\Models\Media|\Illuminate\Database\Eloquent\Collection
      * @throws \Exception
      */
-    public static function createFromElementRequest(array $element, ?string $collectionName): Collection
+    public static function createFromElementRequest(array $element, ?string $collectionName, ?string $visibility = null): Collection
     {
         $collectionName = $collectionName ?? 'default';
+        $visibility = $visibility ?? self::DEFAULT_VISIBILITY;
 
         DB::beginTransaction();
         try {
+            if ($visibility !== 'public' && $visibility !== 'private') {
+                throw new \Exception('Invalid visibility type. Visibility must be public or private');
+            }
+
             $storedMedia = [];
             $mediaReturn = collect();
             foreach ($element as $item) {
                 $item = $item['raw'];
                 $storageName = $item->hashName();
-                $path = $item->storeAs($collectionName, $storageName, 'public');
+                $path = $item->storeAs($visibility . '/' . $collectionName, $storageName);
                 $storedMedia[] = $path;
 
                 $media = new self();
                 $media->original_name = $item->getClientOriginalName();
                 $media->storage_name = $storageName;
                 $media->path = $path;
+                $media->visibility = $visibility;
                 $media->type = $item->getType();
                 $media->size = $item->getSize();
                 $media->extension = $item->getExtension();
@@ -156,14 +171,19 @@ trait MediaDefaultMethod
      *
      * @param  string|array  $base64
      * @param  string|null  $collectionName
-     * 
+     * @param  string|null  $visibility public|private
+     *
      * @return \App\Models\Media
      * @throws \Exception
      */
-    public static function createFromBase64(string|array $base64, ?string $collectionName): Collection
+    public static function createFromBase64(string|array $base64, ?string $collectionName, ?string $visibility = null): Collection
     {
+        $visibility = $visibility ?? self::DEFAULT_VISIBILITY;
         DB::beginTransaction();
         try {
+            if ($visibility !== 'public' && $visibility !== 'private') {
+                throw new \Exception('Invalid visibility type. Visibility must be public or private');
+            }
             $storedMedia = [];
             $mediaReturn = collect();
             if (is_array($base64)) {
@@ -171,13 +191,14 @@ trait MediaDefaultMethod
                     $collectionName = $collectionName ?? 'default';
                     $file = FileHelper::fromBase64($item);
                     $storageName = $file->hashName();
-                    $path = $file->storeAs($collectionName, $storageName, 'public');
+                    $path = $file->storeAs($visibility . '/' . $collectionName, $storageName);
                     $storedMedia[] = $path;
 
                     $media = new self();
                     $media->original_name = $file->getClientOriginalName();
                     $media->storage_name = $storageName;
                     $media->path = $path;
+                    $media->visibility = $visibility;
                     $media->type = $file->getType();
                     $media->size = $file->getSize();
                     $media->extension = $file->getExtension();
@@ -190,13 +211,14 @@ trait MediaDefaultMethod
                 $collectionName = $collectionName ?? 'default';
                 $file = FileHelper::fromBase64($base64);
                 $storageName = $file->hashName();
-                $path = $file->storeAs($collectionName, $storageName, 'public');
+                $path = $file->storeAs($visibility . '/' . $collectionName, $storageName);
                 $storedMedia[] = $path;
 
                 $media = new self();
                 $media->original_name = $file->getClientOriginalName();
                 $media->storage_name = $storageName;
                 $media->path = $path;
+                $media->visibility = $visibility;
                 $media->type = $file->getType();
                 $media->size = $file->getSize();
                 $media->extension = $file->getExtension();

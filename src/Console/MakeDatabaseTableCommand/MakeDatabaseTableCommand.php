@@ -38,7 +38,7 @@ class MakeDatabaseTableCommand extends Command implements PromptsForMissingInput
 
         // check if model already exists
         if (file_exists(app_path('Models/'.Str::studly($singularName).'.php'))) {
-            $this->error('Model already exists: '.app_path('Models/'.Str::studly($singularName).'.php'));
+            $this->components->error('Model already exists: '. 'app/Models/'.Str::studly($singularName).'.php');
             return 0;
         }
 
@@ -81,9 +81,9 @@ class MakeDatabaseTableCommand extends Command implements PromptsForMissingInput
             'table_name_uuid' => $columnName.'_uuid',
         ]);
 
-        $this->info('Model file created: '.'app/Models/'.$modelName.'.php');
-        $this->info('Migration file created: '.'database/migrations/'.$migrationName);
-        $this->info('Factory file created: '.'database/factories/'.$factoryName.'.php');
+        $this->components->info('Model file '.'app/Models/'.$modelName.'.php created successfully.');
+        $this->components->info('Migration file '.'database/migrations/'.$migrationName.' created successfully.');
+        $this->components->info('Factory file '.'database/factories/'.$factoryName.'.php created successfully.');
 
         return 1;
     }

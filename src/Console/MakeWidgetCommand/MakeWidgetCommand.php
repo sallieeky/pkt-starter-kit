@@ -34,7 +34,7 @@ class MakeWidgetCommand extends Command implements PromptsForMissingInput
         $nameArgument = ucfirst($this->argument('name'));
         $regexCheck = '/^[a-zA-Z0-9\/]+$/';
         if(!preg_match($regexCheck, $nameArgument)){
-            $this->error('Please input correctly page name without using symbol charater or whitespace');
+            $this->components->error('Please input correctly page name without using symbol charater or whitespace');
             return 0;
         }
         $dirName = dirname($nameArgument);
@@ -43,7 +43,7 @@ class MakeWidgetCommand extends Command implements PromptsForMissingInput
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Widgets/'.$dirName));
 
         if(file_exists(resource_path('js/Widgets/' . $nameArgument . '.vue'))){
-            $this->error('Widget js/Widgets/' . $nameArgument . '.vue already exists.');
+            $this->components->error('Widget js/Widgets/' . $nameArgument . '.vue already exists.');
             return 0;
         }
 
@@ -80,7 +80,7 @@ class MakeWidgetCommand extends Command implements PromptsForMissingInput
             'WidgetName' => Str::headline($fileName),
         ]);
 
-        $this->info('Widget js/Widgets/' . $nameArgument . '.vue created successfully.');
+        $this->components->info('Widget file js/Widgets/' . $nameArgument . '.vue created successfully.');
         return 1;
     }
 

@@ -30,7 +30,7 @@ class InitMailCommand extends Command implements PromptsForMissingInput
     public function handle()
     {
         if (file_exists(resource_path('views/components/mails/layouts/app.blade.php'))) {
-            $this->error('You already have initialize mail.');
+            $this->components->error('You already have initialize mail.');
             return 1;
         }
 

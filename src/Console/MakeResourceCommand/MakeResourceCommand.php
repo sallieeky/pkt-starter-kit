@@ -37,7 +37,7 @@ class MakeResourceCommand extends Command implements PromptsForMissingInput
     {
         // make sure the user already run pkt:install
         if (!file_exists(resource_path('js/Core/Config/SidemenuItem.js')) && !file_exists(config_path('permissions.php'))) {
-            $this->error('Please run php artisan pkt:install first');
+            $this->components->error('Please run php artisan pkt:install first');
             return 0;
         }
 
@@ -46,7 +46,7 @@ class MakeResourceCommand extends Command implements PromptsForMissingInput
         try {
             $model = app('App\\Models\\' . $nameArgument);
         } catch (\Exception $e) {
-            $this->error('Model not found: ' . $nameArgument);
+            $this->components->error('Model not found: ' . $nameArgument);
             return 0;
         }
 
@@ -82,7 +82,7 @@ class MakeResourceCommand extends Command implements PromptsForMissingInput
     {
         $exist = (new Filesystem)->exists(base_path('tests/Feature/'.$nameArgument));
         if ($exist && !$this->option('force')) {
-            $this->error('Test already exists: tests/Feature/'.$nameArgument);
+            $this->components->error('Test already exists: tests/Feature/'.$nameArgument);
             return 0;
         }
 
@@ -121,7 +121,6 @@ class MakeResourceCommand extends Command implements PromptsForMissingInput
         }
 
         $this->line('');
-        $this->info('Additional');
-        $this->info('Test cases created: tests/Feature/'.$nameArgument);
+        $this->components->info('Test cases files tests/Feature/'.$nameArgument.' created successfully.');
     }
 }

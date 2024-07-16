@@ -13,7 +13,7 @@ class MediaController extends Controller
      */
     public function getMedia(Media $media, Request $request)
     {
-        return response()->file(storage_path('app/public/' . $media->path));
+        return response()->file(storage_path('app/' . $media->path));
     }
 
     /**
