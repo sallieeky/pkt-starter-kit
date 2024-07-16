@@ -38,7 +38,7 @@ class MakeDatabaseTableCommand extends Command implements PromptsForMissingInput
 
         // check if model already exists
         if (file_exists(app_path('Models/'.Str::studly($singularName).'.php'))) {
-            $this->error('Model already exists: '. 'app/Models/'.Str::studly($singularName).'.php');
+            $this->components->error('Model already exists: '. 'app/Models/'.Str::studly($singularName).'.php');
             return 0;
         }
 

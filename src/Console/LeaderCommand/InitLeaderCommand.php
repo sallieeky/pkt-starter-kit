@@ -33,7 +33,7 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
     {
         // make sure the user already set the LEADER_API_KEY
         if (!env('LEADER_API_KEY')) {
-            $this->error('Please set the LEADER_API_KEY in .env file');
+            $this->components->error('Please set the LEADER_API_KEY in .env file');
             return 0;
         }
 
@@ -87,7 +87,7 @@ class InitLeaderCommand extends Command implements PromptsForMissingInput
                 });
             } catch (\Exception $e) {
                 DB::rollBack();
-                $this->error('Failed to get users data from PKT Leader API.');
+                $this->components->error('Failed to get users data from PKT Leader API.');
                 return 0;
             }
             DB::commit();

@@ -32,7 +32,7 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
     {
         // make sure the user already set the LEADER_API_KEY
         if (!env('LEADER_API_KEY') || !file_exists(database_path('migrations/2024_04_04_000000_add_leader_to_users_table.php'))) {
-            $this->error('Please initialize PKT Leader first. Run php artisan pkt:leader-init');
+            $this->components->error('Please initialize PKT Leader first. Run php artisan pkt:leader-init');
             return 0;
         }
 
@@ -75,7 +75,7 @@ class SyncLeaderCommand extends Command implements PromptsForMissingInput
                 });
             } catch (\Exception $e) {
                 DB::rollBack();
-                $this->error('Failed to get users data from PKT Leader API.');
+                $this->components->error('Failed to get users data from PKT Leader API.');
                 return 0;
             }
             DB::commit();
