@@ -40,7 +40,6 @@ trait ManipulateVueResource
         $this->manipulateSidemenuItem();
         $this->manipulatePermissions();
 
-        $this->line('');
         $this->components->info('You can run php artisan db:seed --class=RoleAndPermissionSeeder to update the permissions');
     }
 
