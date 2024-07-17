@@ -147,6 +147,11 @@ export const navItems = [
         icon: "home"
     },
     {
+        label: "Master Data",
+        type: "header",
+        permission: "user.browse | role.browse | user_log.browse"
+    },
+    {
         label: "User Management",
         href: "/users",
         icon: "users",
@@ -169,9 +174,32 @@ export const navItems = [
             },
         ]
     },
+    {
+        label: "Personalization",
+        type: "fixed-header",
+    },
+    {
+        label: "Notification",
+        href: "/notification",
+        icon: "bell",
+        type: "fixed",
+    },
+    {
+        label: "Setting",
+        href: "/setting",
+        icon: "cog-6-tooth",
+        type: "fixed",
+    },
     ... (additional page)
 ];
 ```
+
+You can add the parameter below.
+- `label` to define the text.
+- `href` to define url when menu clicked.
+- `icon` to define the icon, this refer to [Heroicons](https://heroicons.com/).
+- `permission` to define the permission needed to show the menu.
+- `type` to define the type between `header`, `fixed`, `header-fixed`.
 
 ## Manage Global Search
 <img src="/art/GlobalSearch.png" alt="Global Search">

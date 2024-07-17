@@ -35,12 +35,12 @@
                         }}</span>
                 </template>
                 <DxColumn data-field="method" caption="Method" width="100" alignment="center" />
-                <DxColumn data-field="path" caption="Path" minWidth="200" />
+                <DxColumn data-field="path" caption="Path" :minWidth="200" />
                 <DxColumn data-field="timestamp" caption="Timestamp" data-type="datetime" format="dd/MM/yyyy HH:mm"
                     width="160" />
                 <DxColumn data-field="ip_client" caption="IP Client" width="100" data-type="string" />
                 <DxColumn data-field="user_id" caption="UId" width="80" />
-                <DxColumn data-field="name" caption="User Name" minWidth="200" />
+                <DxColumn data-field="name" caption="User Name" :minWidth="200" />
                 <DxMasterDetail :enabled="true" template="masterDetailTemplate" />
                 <template #masterDetailTemplate="{ data: logData }">
                     <div class="w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden">

@@ -16,7 +16,7 @@ const props = defineProps({
         type: String
     },
     size: {
-        type: Number,
+        type: [String, Number],
         default: 24
     }
 });
