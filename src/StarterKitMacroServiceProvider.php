@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 
 class StarterKitMacroServiceProvider extends ServiceProvider
@@ -32,6 +33,7 @@ class StarterKitMacroServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        DB::getDoctrineConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
         foreach ($this->macros as $class => $macro) {
             $class::mixin(new $macro);
         }
