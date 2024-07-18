@@ -5,6 +5,11 @@ export const navItems = [
         icon: "home"
     },
     {
+        label: "Master Data",
+        type: "header",
+        permission: "user.browse | role.browse | user_log.browse"
+    },
+    {
         label: "User Management",
         href: "/users",
         icon: "users",

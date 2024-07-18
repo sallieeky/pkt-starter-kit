@@ -114,6 +114,7 @@ import { Workbook } from 'exceljs';
 import { saveAs } from 'file-saver';
 import BsIcon from '@/Components/BsIcon.vue';
 import BsIconButton from '@/Components/BsIconButton.vue';
+import { dxLoad } from '@/Core/Helpers/dx-helpers';
 
 // DIALOG FORM
 const formModelNameRef = ref();
@@ -236,10 +237,6 @@ function deleteModelNameAction(dataModelName) {
 
 // DEVEXTREME DATAGRID
 const datagridRef = ref();
-const allMode = ref("page");
-const dataGridAction = ref("index");
-const btnEditVisible = ref(false);
-const btnDeleteVisible = ref(false);
 const dataSelected = ref([]);
 
 var itemSelected = computed(() => dataSelected.value.length > 0);
@@ -250,43 +247,11 @@ const remoteOperations = ref({
     sorting: true,
 });
 
-function isNotEmpty(value) {
-    return value !== undefined && value !== null && value !== "";
-};
-
+const dataKey = 'PrimaryKey'; //change to data primary key
+const dataRoute = RouteDataProcessing;
 const dataSource = new CustomStore({
-    key: "PrimaryKey",
-    load: function (loadOptions) {
-        let params = "?";
-        ["skip", "take", "requireTotalCount", "sort", "filter"].forEach(
-            function (i) {
-                if (i in loadOptions && isNotEmpty(loadOptions[i])) {
-                    params += `${i}=${JSON.stringify(loadOptions[i])}&`;
-                }
-            }
-        );
-        params = params.slice(0, -1);
-
-        if (dataGridAction.value == "select.all") {
-            if (allMode.value == "allPages") {
-                return axios.get(RouteDataProcessing, { params: params })
-                    .then((response) => {
-                        dataGridAction.value = "index";
-                        data = response.data;
-                    })
-                    .catch((error) => { });
-            } else {
-                dataGridAction.value = "index";
-            }
-        } else {
-            return axios.get(RouteDataProcessing + params)
-                .then((response) => {
-                    dataGridAction.value = "index";
-                    return response.data;
-                })
-                .catch((error) => { });
-        }
-    }.bind(this),
+    key: dataKey,
+    load: dxLoad(dataRoute).bind(this),
 });
 
 function refreshDatagrid() {
@@ -295,17 +260,6 @@ function refreshDatagrid() {
 
 function onSelectionChanged(data) {
     dataSelected.value = data.selectedRowsData;
-
-    if (data.selectedRowKeys.length < 1) {
-        btnEditVisible.value = false;
-        btnDeleteVisible.value = false;
-    } else if (data.selectedRowKeys.length == 1) {
-        btnEditVisible.value = true;
-        btnDeleteVisible.value = true;
-    } else {
-        btnEditVisible.value = false;
-        btnDeleteVisible.value = false;
-    }
 };
 
 function onExporting(e) {

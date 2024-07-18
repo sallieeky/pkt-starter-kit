@@ -1,14 +1,13 @@
 <template>
     <button 
-        :disabled="disabled"
-        class="px-3 py-2 text-[12px] align-middle rounded-lg font-bold m-1" 
+        class="align-middle font-bold m-1" 
         :class="style"
     >
-        <div class="flex items-center">
-            <div class="pr-2" v-if="icon != null">
-                <bs-icon :icon="icon"></bs-icon>
+        <div class="flex items-center justify-center align-middle gap-1">
+            <div v-if="icon != null">
+                <bs-icon :icon="icon" :size="iconSize"></bs-icon>
             </div>
-            <div class="flex items-center h-5">
+            <div class="h-5 flex items-center justify-center align-middle" v-if="props.showLabel">
                 <slot/>
             </div>
         </div>
@@ -30,18 +29,25 @@ const props = defineProps({
     },
     size:{
         type: String,
-        default: "small"
+        default: "medium"
     },
     icon:{
         type: String
+    },
+    showLabel:{
+        type: Boolean,
+        default: true
     }
 });
 
 // Button Style
 const style = ref([]);
+const iconSize = ref(24);
+
 switch(props.type){
     case 'primary':
         style.value = [
+            ...style.value,
             "bg-primary",
             "text-white",
             "hover:bg-primary-hover",
@@ -52,6 +58,7 @@ switch(props.type){
         break;
     case 'primary-outline':
         style.value = [
+            ...style.value,
             "bg-white",
             "text-primary",
             "border border-primary",
@@ -62,10 +69,12 @@ switch(props.type){
             "active:bg-primary-border",
             "active:border-primary-pressed",
             "disabled:text-primary-disabled disabled:border-primary-disabled disabled:cursor-not-allowed",
+            
         ]
         break;
     case 'secondary':
         style.value = [
+            ...style.value,
             "bg-secondary",
             "text-white",
             "hover:bg-secondary-hover",
@@ -76,7 +85,8 @@ switch(props.type){
         break;
     case 'secondary-outline':
         style.value = [
-        "bg-white",
+            ...style.value,
+            "bg-white",
             "text-secondary",
             "border border-secondary",
             "hover:bg-secondary-focus",
@@ -90,6 +100,7 @@ switch(props.type){
         break;
     case 'danger':
         style.value = [
+            ...style.value,
             "bg-danger",
             "text-white",
             "hover:bg-danger-hover",
@@ -100,7 +111,8 @@ switch(props.type){
         break;
     case 'danger-outline':
         style.value = [
-        "bg-white",
+            ...style.value,
+            "bg-white",
             "text-danger",
             "border border-danger",
             "hover:bg-danger-focus",
@@ -113,6 +125,57 @@ switch(props.type){
         ]
         break;
     default:
+        style.value = [
+            ...style.value,
+            "bg-primary",
+            "text-white",
+            "hover:bg-primary-hover",
+            "focus:bg-primary-hover",
+            "active:bg-primary-pressed",
+        ]
+        break;
+}
+
+switch(props.size){
+    case 'small':
+        style.value = [
+            ...style.value,
+            "px-2",
+            "py-2",
+            "text-[11px]",
+            "rounded-md",
+        ];
+        iconSize.value = 18;
+        break;
+    case 'medium':
+        style.value = [
+            ...style.value,
+            "px-3",
+            "py-2",
+            "text-[12px]",
+            "rounded-lg",
+        ];
+        iconSize.value = 22;
+        break;
+    case 'large':
+        style.value = [
+            ...style.value,
+            "px-4",
+            "py-3",
+            "text-[13px]",
+            "rounded-lg",
+        ];
+        iconSize.value = 24;
+        break;
+    default:
+        style.value = [
+            ...style.value,
+            "px-3",
+            "py-2",
+            "text-[12px]",
+            "rounded-lg",
+        ];
+        iconSize.value = 22;
         break;
 }
 </script>

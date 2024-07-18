@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+        <link rel="stylesheet" href="/style/splash-screen.css">
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
@@ -18,7 +19,14 @@
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
         @inertiaHead
     </head>
-    <body class="font-sans antialiased bg-primary-surface">
+    <body class="font-sans antialiased bg-primary-surface page-loading">
         @inertia
+
+        <!--begin::Loading markup-->
+        <div id="splash-screen" class="splash-screen">
+            <img src="/images/logo-long-small.png" class="light-logo" alt="Application Logo" />
+            <img src="/images/loading.svg"/>
+        </div>
+        <!--end::Loading markup-->
     </body>
 </html>
