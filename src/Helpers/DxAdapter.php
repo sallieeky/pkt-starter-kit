@@ -617,7 +617,8 @@ class DxAdapter
                         });
                         break;
                     default:
-                        throw new Exception("Error Processing Request");
+                        // throw new Exception("Error Processing Request");
+                        $this->applyStringFilterRelation($item, $conjungtion);
                         break;
                 }
                 break;
@@ -649,7 +650,8 @@ class DxAdapter
                         });
                         break;
                     default:
-                        throw new Exception("Error Processing Request");
+                        // throw new Exception("Error Processing Request");
+                        $this->applyStringFilterRelation($item, $conjungtion);
                         break;
                 }
                 break;
@@ -681,7 +683,8 @@ class DxAdapter
                         });
                         break;
                     default:
-                        throw new Exception("Error Processing Request");
+                        // throw new Exception("Error Processing Request");
+                        $this->applyStringFilterRelation($item, $conjungtion);
                         break;
                 }
                 break;
