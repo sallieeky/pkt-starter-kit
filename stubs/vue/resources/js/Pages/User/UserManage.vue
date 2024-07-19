@@ -1,6 +1,10 @@
 <template>
     <Head title="User Management" />
     <MainLayout title="User Management">
+        <template #header-action>
+            <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+            <BsButton type="primary" icon="arrows-up-down" @click="syncLeader" v-if="btnSyncLeaderVisible && can('user.update')">Sync Leader</BsButton>
+        </template>
         <div class="flex flex-col">
             <DxDataGrid ref="datagridRef" :data-source="dataSource" key="user_id" :column-auto-width="true"
                 :remote-operations="remoteOperations" :item-per-page="10" @selection-changed="onSelectionChanged"
@@ -78,14 +82,13 @@
                     <DxItem location="before" template="buttonTemplate" />
                     <DxItem name="columnChooserButton" />
                     <DxItem name="exportButton" />
+                    <DxItem widget="dxButton" :options="{ icon: 'refresh', onClick: refreshDatagrid }" />
                 </DxToolbar>
                 <template #buttonTemplate>
                     <div class="flex flex-row w-full">
                         <Transition name="fadetransition" mode="out-in" appear>
                             <div v-if="!itemSelected">
-                                <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
-                                <BsButton type="primary" icon="arrows-up-down" @click="syncLeader" v-if="btnSyncLeaderVisible && can('user.update')">Sync Leader</BsButton>
-                                <BsButton type="primary" icon="arrow-path" @click="refreshDatagrid">Refresh</BsButton>
+                                <!-- Table Header Action Here -->
                             </div>
                             <div v-else class="h-auto flex items-center px-4">
                                 <BsIconButton icon="x-mark" class="mr-2" @click="clearSelection" />

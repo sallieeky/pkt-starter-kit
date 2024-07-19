@@ -18,7 +18,7 @@
             <DxPaging :page-size="10" />
             <DxPager :visible="true" :allowed-page-sizes="[10, 20, 50]" :show-page-size-selector="true" />
 
-            <!-- End your column here -->
+            <!-- Your column here -->
             <DxColumn data-field="product" caption="Product" />
             <DxColumn data-field="quantity" caption="Quantity" :dataType="'number'">
                 <DxFormat type="fixedPoint" :precision="0" />
@@ -32,12 +32,13 @@
                 <DxItem location="before" template="buttonTemplate" />
                 <DxItem name="columnChooserButton" />
                 <DxItem name="exportButton" />
+                <DxItem widget="dxButton" :options="{ icon: 'refresh', onClick: refreshDatagrid }" />
             </DxToolbar>
             <template #buttonTemplate>
                 <div class="flex flex-row w-full">
                     <Transition name="fadetransition" mode="out-in" appear>
                         <div v-if="!itemSelected">
-                            <BsButton type="primary" icon="arrow-path" @click="refreshDatagrid">Refresh</BsButton>
+                            <!-- Table Header Action Here -->
                         </div>
                         <div v-else class="h-auto flex items-center px-4">
                             <BsIconButton icon="x-mark" class="mr-2" @click="clearSelection" />

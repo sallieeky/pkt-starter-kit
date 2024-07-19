@@ -1,6 +1,9 @@
 <template>
     <Head title="ResourceTitle" />
     <MainLayout title="ResourceTitle">
+        <template #header-action>
+            <BsButton type="primary" icon="plus" @click="addModelNameAction" v-if="CreatePermission">Add ModelLabel</BsButton>
+        </template>
         <div class="flex flex-col">
             <DxDataGrid ref="datagridRef" :data-source="dataSource" key="PrimaryKey" :column-auto-width="true"
                 :remote-operations="remoteOperations" :item-per-page="10" @selection-changed="onSelectionChanged"
@@ -39,14 +42,13 @@
                     <DxItem location="before" template="buttonTemplate" />
                     <DxItem name="columnChooserButton" />
                     <DxItem name="exportButton" />
+                    <DxItem widget="dxButton" :options="{ icon: 'refresh', onClick: refreshDatagrid }" />
                 </DxToolbar>
                 <template #buttonTemplate>
                     <div class="flex flex-row w-full">
                         <Transition name="fadetransition" mode="out-in" appear>
                             <div v-if="!itemSelected">
-                                <BsButton type="primary" icon="plus" @click="addModelNameAction" v-if="CreatePermission">
-                                    Add ModelLabel</BsButton>
-                                <BsButton type="primary" icon="arrow-path" @click="refreshDatagrid">Refresh</BsButton>
+                                <!-- Table Header Action Here -->
                             </div>
                             <div v-else class="h-auto flex items-center px-4">
                                 <BsIconButton icon="x-mark" class="mr-2" @click="clearSelection" />
@@ -55,7 +57,6 @@
                         </Transition>
                     </div>
                 </template>
-
             </DxDataGrid>
         </div>
     </MainLayout>
