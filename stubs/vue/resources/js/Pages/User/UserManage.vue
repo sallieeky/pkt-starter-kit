@@ -95,8 +95,9 @@
                                 <span class="font-bold mr-2">{{ dataSelected.length }} dipilih</span>
 
                                 <div class="flex items-center border-l-2 px-2 h-full">
-                                    <BsIconButton icon="check-circle" class="text-success" @click="switchUserStatus(dataSelected, true)" />
-                                    <BsIconButton icon="x-circle" class="text-danger" @click="switchUserStatus(dataSelected, false)" />
+                                    <BsIconButton icon="check-circle" class="text-success" @click="switchUserStatus(dataSelected, true)" v-if="can('user.update')" />
+                                    <BsIconButton icon="x-circle" class="text-danger" @click="switchUserStatus(dataSelected, false)" v-if="can('user.update')" />
+                                    <p class="font-semibold italic text-gray-700" v-if="!can('user.update')">No Action</p>
                                 </div>
                             </div>
                         </Transition>
