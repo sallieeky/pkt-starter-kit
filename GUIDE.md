@@ -194,12 +194,73 @@ export const navItems = [
 ];
 ```
 
-You can add the parameter below.
+On your `navItems` You can add the parameter below.
 - `label` to define the text.
 - `href` to define url when menu clicked.
 - `icon` to define the icon, this refer to [Heroicons](https://heroicons.com/).
 - `permission` to define the permission needed to show the menu.
 - `type` to define the type between `header`, `fixed`, `header-fixed`.
+
+When your page using `MainLayout` from `resources/js/Layouts/MainLayout.vue` you have a ability to pass the params below.
+- `title="Page Title"` to show the title of the page on your website.
+- `back` to make your title clickable and can be using to back to the previous page.
+- `back-confirm` to make your title clickable and can be using to back to the previous page with confirmation first.  
+```js
+<template>
+    <MainLayout title="Page Title" back-confirm>
+        ...
+    </MainLayout>
+<template>
+<script setup>
+    ...
+    import MainLayout from '@/Layouts/MainLayout.vue';
+    ...
+</script>
+```
+
+Additional slot / template you can use if you using `MainLayout` from `resources/js/Layouts/MainLayout.vue`.
+- `#header-action` to make the action on the top right on your page.
+- `#header-action-dropdown` to make the action on the top right on your page using dropdown.
+- `#footer-action` to make the action on the end of your page.
+- `#footer-action-fixed` to make the action fixed on the bottom of your page.
+```js
+<template>
+    <MainLayout title="Page Title" back-confirm>
+        <template #header-action>
+            <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+        </template>
+
+        <template #header-action-dropdown>
+            <el-dropdown-item>
+                <BsIcon icon="pencil-square" class="mr-2" /> Edit User
+            </el-dropdown-item>
+            <el-dropdown-item>
+                <BsIcon icon="arrow-path-rounded-square" class="mr-2" /> Enable User
+            </el-dropdown-item>
+        </template>
+
+        {/* Content */}
+
+        <template #footer-action>
+            <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+            <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+        </template>
+
+        <template #footer-action-fixed>
+              <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+              <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+              <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+        </template>
+    </MainLayout>
+<template>
+<script setup>
+    ...
+    import MainLayout from '@/Layouts/MainLayout.vue';
+    import BsButton from '@/Components/BsButton.vue';
+    import BsIcon from '@/Components/BsIcon.vue';
+    ...
+</script>
+```
 
 ## Manage Global Search
 <img src="/art/GlobalSearch.png" alt="Global Search">
