@@ -85,14 +85,19 @@
                     <DxItem widget="dxButton" :options="{ icon: 'refresh', onClick: refreshDatagrid }" />
                 </DxToolbar>
                 <template #buttonTemplate>
-                    <div class="flex flex-row w-full">
+                    <div class="flex w-full">
                         <Transition name="fadetransition" mode="out-in" appear>
                             <div v-if="!itemSelected">
                                 <!-- Table Header Action Here -->
                             </div>
-                            <div v-else class="h-auto flex items-center px-4">
-                                <BsIconButton icon="x-mark" class="mr-2" @click="clearSelection" />
-                                <span class="font-bold mr-4">{{ dataSelected.length }} dipilih</span>
+                            <div v-else class="flex items-center border-2 border-primary-border rounded-full gap-1 text-sm">
+                                <BsIconButton icon="x-mark" @click="clearSelection" />
+                                <span class="font-bold mr-2">{{ dataSelected.length }} dipilih</span>
+
+                                <div class="flex items-center border-l-2 px-2 h-full">
+                                    <BsIconButton icon="check-circle" class="text-success" @click="switchUserStatus(dataSelected, true)" />
+                                    <BsIconButton icon="x-circle" class="text-danger" @click="switchUserStatus(dataSelected, false)" />
+                                </div>
                             </div>
                         </Transition>
                     </div>
@@ -317,23 +322,27 @@ function deleteUserAction(dataUser) {
         })
 }
 function switchUserStatus(dataUser, status) {
-    useForm({
-        is_active : status
-    }).put(route('user.switch_status', dataUser.user_uuid), {
-        onSuccess: (response) => {
-            ElMessage({
-                message: response.props.flash.message,
-                type: 'success',
-            });
-            refreshDatagrid();
-            dialogFormVisible.value = false;
-        },
-        onError: (errors) => {
-            formUserErrors.value = errors;
-        },
-        onFinish: () => {
-        }
-    });
+    if (Array.isArray(dataUser)) {
+        dataUser.forEach((user) => {
+            switchUserStatus(user, status);
+        });
+    } else {
+        useForm({
+            is_active : status
+        }).put(route('user.switch_status', dataUser.user_uuid), {
+            onSuccess: (response) => {
+                ElMessage({
+                    message: response.props.flash.message,
+                    type: 'success',
+                });
+                refreshDatagrid();
+                dialogFormVisible.value = false;
+            },
+            onError: (errors) => {
+                formUserErrors.value = errors;
+            },
+        });
+    }
 }
 function syncLeader(){
     const loading = ElLoading.service({
