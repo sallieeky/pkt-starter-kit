@@ -22,7 +22,23 @@
                                     </div>
 
                                     <div class="flex items-center gap-1">
-                                        <slot name="header-action" />
+                                        <div v-if="$slots['header-action']" class="hidden sm:block">
+                                            <slot name="header-action" />
+                                        </div>
+                                        <div v-if="$slots['header-action']" class="sm:hidden">
+                                            <el-dropdown trigger="click" placement="bottom-end">
+                                                <span class="el-dropdown-link">
+                                                    <BsIcon icon="ellipsis-vertical" />
+                                                </span>
+                                                <template #dropdown>
+                                                    <el-dropdown-menu>
+                                                        <div class="flex flex-col">
+                                                            <slot name="header-action" />
+                                                        </div>
+                                                    </el-dropdown-menu>
+                                                </template>
+                                            </el-dropdown>
+                                        </div>
 
                                         <div v-if="$slots['header-action-dropdown']">
                                             <el-dropdown trigger="click" placement="bottom-end">
