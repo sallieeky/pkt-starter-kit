@@ -1,6 +1,6 @@
 <template>
     <Head title="ResourceTitle" />
-    <MainLayout title="ResourceTitle">
+    <MainLayout title="ResourceTitle" back-confirm>
         <el-form ref="formRef" :model="formModelName" label-width="200px" label-position="top"
             require-asterisk-position="right" autocomplete="off">
 

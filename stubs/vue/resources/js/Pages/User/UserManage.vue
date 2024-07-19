@@ -1,6 +1,10 @@
 <template>
     <Head title="User Management" />
     <MainLayout title="User Management">
+        <template #header-action>
+            <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+            <BsButton type="primary" icon="arrows-up-down" @click="syncLeader" v-if="btnSyncLeaderVisible && can('user.update')">Sync Leader</BsButton>
+        </template>
         <div class="flex flex-col">
             <DxDataGrid ref="datagridRef" :data-source="dataSource" key="user_id" :column-auto-width="true"
                 :remote-operations="remoteOperations" :item-per-page="10" @selection-changed="onSelectionChanged"
@@ -78,18 +82,23 @@
                     <DxItem location="before" template="buttonTemplate" />
                     <DxItem name="columnChooserButton" />
                     <DxItem name="exportButton" />
+                    <DxItem widget="dxButton" :options="{ icon: 'refresh', onClick: refreshDatagrid }" />
                 </DxToolbar>
                 <template #buttonTemplate>
-                    <div class="flex flex-row w-full">
+                    <div class="flex w-full">
                         <Transition name="fadetransition" mode="out-in" appear>
                             <div v-if="!itemSelected">
-                                <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
-                                <BsButton type="primary" icon="arrows-up-down" @click="syncLeader" v-if="btnSyncLeaderVisible && can('user.update')">Sync Leader</BsButton>
-                                <BsButton type="primary" icon="arrow-path" @click="refreshDatagrid">Refresh</BsButton>
+                                <!-- Table Header Action Here -->
                             </div>
-                            <div v-else class="h-auto flex items-center px-4">
-                                <BsIconButton icon="x-mark" class="mr-2" @click="clearSelection" />
-                                <span class="font-bold mr-4">{{ dataSelected.length }} dipilih</span>
+                            <div v-else class="flex items-center border-2 border-primary-border rounded-full gap-1 text-sm">
+                                <BsIconButton icon="x-mark" @click="clearSelection" />
+                                <span class="font-bold mr-2">{{ dataSelected.length }} dipilih</span>
+
+                                <div class="flex items-center border-l-2 px-2 h-full">
+                                    <BsIconButton icon="check-circle" class="text-success" @click="switchUserStatus(dataSelected, true)" v-if="can('user.update')" />
+                                    <BsIconButton icon="x-circle" class="text-danger" @click="switchUserStatus(dataSelected, false)" v-if="can('user.update')" />
+                                    <p class="font-semibold italic text-gray-700" v-if="!can('user.update')">No Action</p>
+                                </div>
                             </div>
                         </Transition>
                     </div>
@@ -314,23 +323,27 @@ function deleteUserAction(dataUser) {
         })
 }
 function switchUserStatus(dataUser, status) {
-    useForm({
-        is_active : status
-    }).put(route('user.switch_status', dataUser.user_uuid), {
-        onSuccess: (response) => {
-            ElMessage({
-                message: response.props.flash.message,
-                type: 'success',
-            });
-            refreshDatagrid();
-            dialogFormVisible.value = false;
-        },
-        onError: (errors) => {
-            formUserErrors.value = errors;
-        },
-        onFinish: () => {
-        }
-    });
+    if (Array.isArray(dataUser)) {
+        dataUser.forEach((user) => {
+            switchUserStatus(user, status);
+        });
+    } else {
+        useForm({
+            is_active : status
+        }).put(route('user.switch_status', dataUser.user_uuid), {
+            onSuccess: (response) => {
+                ElMessage({
+                    message: response.props.flash.message,
+                    type: 'success',
+                });
+                refreshDatagrid();
+                dialogFormVisible.value = false;
+            },
+            onError: (errors) => {
+                formUserErrors.value = errors;
+            },
+        });
+    }
 }
 function syncLeader(){
     const loading = ElLoading.service({

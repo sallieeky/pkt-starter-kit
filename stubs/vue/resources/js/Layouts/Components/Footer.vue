@@ -1,5 +1,5 @@
 <template>
-    <div class="py-4 px-6 text-xs text-gray-800">
+    <div class="py-4 px-6 text-xs text-gray-800 text-center sm:text-start">
         <div :class="[
             { 'lg:pl-20': collapsed },
             { 'lg:pl-64': !collapsed }

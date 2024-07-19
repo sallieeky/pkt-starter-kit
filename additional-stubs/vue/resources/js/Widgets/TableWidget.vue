@@ -18,7 +18,7 @@
             <DxPaging :page-size="10" />
             <DxPager :visible="true" :allowed-page-sizes="[10, 20, 50]" :show-page-size-selector="true" />
 
-            <!-- End your column here -->
+            <!-- Your column here -->
             <DxColumn data-field="product" caption="Product" />
             <DxColumn data-field="quantity" caption="Quantity" :dataType="'number'">
                 <DxFormat type="fixedPoint" :precision="0" />
@@ -32,16 +32,23 @@
                 <DxItem location="before" template="buttonTemplate" />
                 <DxItem name="columnChooserButton" />
                 <DxItem name="exportButton" />
+                <DxItem widget="dxButton" :options="{ icon: 'refresh', onClick: refreshDatagrid }" />
             </DxToolbar>
             <template #buttonTemplate>
-                <div class="flex flex-row w-full">
+                <div class="flex w-full">
                     <Transition name="fadetransition" mode="out-in" appear>
                         <div v-if="!itemSelected">
-                            <BsButton type="primary" icon="arrow-path" @click="refreshDatagrid">Refresh</BsButton>
+                            <!-- Table Action Here -->
                         </div>
-                        <div v-else class="h-auto flex items-center px-4">
-                            <BsIconButton icon="x-mark" class="mr-2" @click="clearSelection" />
-                            <span class="font-bold mr-4">{{ dataSelected.length }} dipilih</span>
+                        <div v-else class="flex items-center border-2 border-primary-border rounded-full gap-1 text-sm">
+                            <BsIconButton icon="x-mark" @click="clearSelection" />
+                            <span class="font-bold mr-2">{{ dataSelected.length }} dipilih</span>
+
+                            <div class="flex items-center border-l-2 px-2 h-full">
+                                <!-- Table Bulk Action -->
+                                <p class="font-semibold italic text-gray-700">No Action</p>
+                                <!-- End Table Bulk Action -->
+                            </div>
                         </div>
                     </Transition>
                 </div>
@@ -53,7 +60,6 @@
 
 <script setup>
 import { defineProps, ref, computed } from 'vue';
-import BsButton from '@/Components/BsButton.vue';
 import BsIconButton from '@/Components/BsIconButton.vue';
 import {
     DxColumn,
