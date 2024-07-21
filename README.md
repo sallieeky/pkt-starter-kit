@@ -305,6 +305,9 @@ composer update pkt/starter-kit:v2.4.1.1
     <a href="https://tailwindcss.com/">
         <img src="/art/TailwindCSS.png" alt="Tailwind CSS" width="200">
     </a>
+    <a href="https://inertiajs.com/">
+        <img src="/art/Intertiajs.png" alt="InertiaJS" width="200">
+    </a>
 </p>
 
 ## Authors
