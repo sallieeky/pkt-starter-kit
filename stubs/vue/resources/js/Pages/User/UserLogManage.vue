@@ -14,7 +14,7 @@
                     <DxItem location="before" template="leftToolbar" />
                     <DxItem name="columnChooserButton" />
                     <DxItem name="exportButton" />
-                    <DxItem widget="dxButton" :options="{ icon: 'refresh', onClick: getLogData }" />
+                    <DxItem v-if="fileSelected" widget="dxButton" :options="{ icon: 'refresh', onClick: getLogData }" />
                 </DxToolbar>
                 <template #leftToolbar>
                     <div class="flex flex-row w-32 sm:w-80">
