@@ -1,5 +1,5 @@
-const allMode = "page";
-const dataGridAction = "index";
+let allMode = "page";
+let dataGridAction = "index";
 
 function isNotEmpty(value) {
     return value !== undefined && value !== null && value !== "";

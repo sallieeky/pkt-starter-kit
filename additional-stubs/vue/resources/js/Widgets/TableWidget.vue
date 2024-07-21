@@ -44,7 +44,7 @@
                             <BsIconButton icon="x-mark" @click="clearSelection" />
                             <span class="font-bold mr-2">{{ dataSelected.length }} dipilih</span>
 
-                            <div class="flex items-center border-l-2 px-2 h-full">
+                            <div class="flex items-center border-l-2 px-2 h-full gap-1">
                                 <!-- Table Bulk Action -->
                                 <p class="font-semibold italic text-gray-700">No Action</p>
                                 <!-- End Table Bulk Action -->
