@@ -14,10 +14,11 @@
                     <DxItem location="before" template="leftToolbar" />
                     <DxItem name="columnChooserButton" />
                     <DxItem name="exportButton" />
+                    <DxItem v-if="fileSelected" widget="dxButton" :options="{ icon: 'refresh', onClick: getLogData }" />
                 </DxToolbar>
                 <template #leftToolbar>
-                    <div class="flex flex-row w-80">
-                        <el-select v-model="fileSelected" @change="getLogData" width="300">
+                    <div class="flex flex-row w-32 sm:w-80">
+                        <el-select v-model="fileSelected" @change="getLogData">
                             <el-option v-for="filename in logFiles" :value="filename">{{ filename }}</el-option>
                         </el-select>
                     </div>

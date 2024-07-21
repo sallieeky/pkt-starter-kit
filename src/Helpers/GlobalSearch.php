@@ -2,6 +2,7 @@
 
 namespace Pkt\StarterKit\Helpers;
 
+use Illuminate\Support\Facades\File;
 use Pkt\StarterKit\Casts\Encrypted;
 use Illuminate\Support\Str;
 
@@ -40,9 +41,14 @@ class GlobalSearch
      */
     public function __construct()
     {
-        $models = array_diff(scandir(app_path('Models')), ['.', '..']);
+        $files = File::allFiles(app_path('Models'));
+        $models = [];
+        foreach ($files as $file) {
+            $model = str_replace('/', '\\', $file->getRelativePathname());
+            $models[] = str_replace('.php', '', $model);
+        }
         foreach ($models as $model) {
-            $model = 'App\Models\\' . str_replace('.php', '', $model);
+            $model = 'App\Models\\' . $model;
             if (class_exists($model)) {
                 new $model;
             }
@@ -58,7 +64,7 @@ class GlobalSearch
     public static function search($query)
     {
         $results = collect(static::$models)->map(function ($model) use ($query) {
-            return ($model->searchableEloquentQuery() ?? $model->where($model->getKeyName(), -103918291))->where(function ($queryBuilder) use ($model, $query) {
+            return ($model->searchableEloquentQuery() ?? $model->where($model->getKeyName(), -3593394))->where(function ($queryBuilder) use ($model, $query) {
                 foreach ($model->searchableAttributes() as $attribute) {
                     if (isset($model->getCasts()[$attribute]) && str_contains(optional($model->getCasts())[$attribute], Encrypted::class)) {
                         $queryBuilder->orWhereEncrypted($attribute, $query);
