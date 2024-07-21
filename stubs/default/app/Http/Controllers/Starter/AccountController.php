@@ -13,6 +13,9 @@ class AccountController extends Controller
     public function accountPicture($npk)
     {
         try {
+            if (config('leader.LEADER_API_KEY') === null) {
+                throw new \Exception('Leader API Key is not set');
+            }
             $cacheDuration = now()->addDays(30);
             $picture = Cache::remember("account-picture-$npk", $cacheDuration, function () use ($npk) {
                 $request = Http::get("https://leader.pupukkaltim.com/public/foto-thumbnail/$npk.jpg");

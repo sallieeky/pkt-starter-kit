@@ -16,6 +16,16 @@
                 <DxHeaderFilter :visible="true" />
                 <DxPaging :page-size="10" />
                 <DxPager :visible="true" :allowed-page-sizes="[10, 20, 50]" :show-page-size-selector="true" />
+                <DxColumn data-field="profile_picture" caption="Profile" :allowHeaderFiltering="false" width="100" alignment="center" cell-template="profile" :allowExporting="false" />
+                <template #profile="{ data }">
+                    <el-image
+                        :src="route('account-picture', {npk: data.data?.npk || 'default'})"
+                        fit="cover"
+                        class="rounded-full"
+                        style="width: 50px; height: 50px;"
+                        :preview-src-list="[route('account-picture', {npk: (data.data?.npk || 'default')})]"
+                    />
+                </template>
                 <DxColumn data-field="username" caption="Username" :allowHeaderFiltering="false" />
                 <DxColumn data-field="npk" caption="NPK" :allowHeaderFiltering="false" />
                 <DxColumn data-field="name" caption="Nama" :allowHeaderFiltering="false" />
@@ -94,9 +104,15 @@
                                 <BsIconButton icon="x-mark" @click="clearSelection" />
                                 <span class="font-bold mr-2">{{ dataSelected.length }} dipilih</span>
 
-                                <div class="flex items-center border-l-2 px-2 h-full">
-                                    <BsIconButton icon="check-circle" class="text-success" @click="switchUserStatus(dataSelected, true)" v-if="can('user.update')" />
-                                    <BsIconButton icon="x-circle" class="text-danger" @click="switchUserStatus(dataSelected, false)" v-if="can('user.update')" />
+                                <div class="flex items-center border-l-2 px-2 h-full gap-1">
+                                    <div class="flex items-center rounded-full hover:bg-gray-200 cursor-pointer" @click="switchUserStatus(dataSelected, true)">
+                                        <BsIconButton icon="check-circle" class="text-success" v-if="can('user.update')" />
+                                        <span class="mr-2 font-semibold">Enable</span>
+                                    </div>
+                                    <div class="flex items-center rounded-full hover:bg-gray-200 cursor-pointer" @click="switchUserStatus(dataSelected, false)">
+                                        <BsIconButton icon="x-circle" class="text-danger" v-if="can('user.update')" />
+                                        <span class="mr-2 font-semibold">Disable</span>
+                                    </div>
                                     <p class="font-semibold italic text-gray-700" v-if="!can('user.update')">No Action</p>
                                 </div>
                             </div>
@@ -292,7 +308,7 @@ async function editUserSubmitAction() {
 }
 function deleteUserAction(dataUser) {
     ElMessageBox.confirm(
-        'Apakah anda yakin untuk mengahapus user ini ?',
+        'Are you sure to delete this user ?',
         'Warning',
         {
             confirmButtonText: 'OK',
@@ -324,8 +340,23 @@ function deleteUserAction(dataUser) {
 }
 function switchUserStatus(dataUser, status) {
     if (Array.isArray(dataUser)) {
-        dataUser.forEach((user) => {
-            switchUserStatus(user, status);
+        ElMessageBox.confirm(
+            'Are you sure to switch these users status to ' + (status ? 'Active' : 'Inactive') + ' ?',
+            'Warning',
+            {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                type: 'warning',
+            }
+        ).then(() => {
+            dataUser.forEach((user) => {
+                switchUserStatus(user, status);
+            });
+        }).catch(() => {
+            ElMessage({
+                type: 'info',
+                message: 'Action Canceled',
+            })
         });
     } else {
         useForm({
