@@ -86,7 +86,7 @@ trait InstallVueStack
         // Update npm packages
         $this->components->task('Installing new npm module and build...', function () {
             (new Filesystem)->delete(base_path('package-lock.json'));
-            $this->runCommands(['npm install', 'npm run build']);
+            $this->runCommands(['npm install']);
         });
         // End update npm packages
 
