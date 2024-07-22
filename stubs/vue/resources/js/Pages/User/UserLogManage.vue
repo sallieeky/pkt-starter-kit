@@ -4,7 +4,7 @@
     <MainLayout title="User Log">
         <div class="flex flex-col">
             <DxDataGrid ref="datagridRef" :data-source="logData" :remote-operations="false" :item-per-page="10"
-                :column-auto-width="true" @exporting="onExporting">
+                :column-auto-width="true" :hover-state-enabled="true" @exporting="onExporting">
                 <DxFilterRow :visible="true" />
                 <DxExport :enabled="true" />
                 <DxColumnChooser :enabled="true" mode="select" />
