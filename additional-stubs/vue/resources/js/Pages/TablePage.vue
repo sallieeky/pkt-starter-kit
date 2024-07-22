@@ -80,18 +80,12 @@ import { dxLoad } from '@/Core/Helpers/dx-helpers';
 // ========================================================================
 // Dummy Data Source. Change this to your data source
 // ========================================================================
-const dataSource = () => {
-    let data = [];
-    for (let i = 0; i < 20; i++) {
-        data.push({
-            product_id: i + 1,
-            product: `Product ${i + 1}`,
-            quantity: Math.floor(Math.random() * 100),
-            target: Math.floor(Math.random() * 100),
-        });
-    }
-    return data;
-};
+const dataSource = Array.from({ length: 20 }, (_, i) => ({
+    product_id: i + 1,
+    product: `Product ${i + 1}`,
+    quantity: Math.floor(Math.random() * 100),
+    target: Math.floor(Math.random() * 100),
+}));
 
 // Ref and Variables
 const datagridRef = ref();

@@ -39,13 +39,14 @@ class MakeVueBlankPageCommand extends Command implements PromptsForMissingInput
         }
         $dirName = dirname($nameArgument);
         $fileName = basename($nameArgument);
-        $type = $this->choice('Select page type', ['Blank/custom page', 'Custom page with form', 'Custom page with table'], 0);
         
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages/'.$dirName));
         if(file_exists(resource_path('js/Pages/' . $nameArgument . '.vue'))){
             $this->components->error('Page js/Pages/' . $nameArgument . '.vue already exists.');
             return 0;
         }
+
+        $type = $this->choice('Select page type', ['Blank/custom page', 'Custom page with table', 'Custom page with form'], 0);
 
         if($type === 'Blank/custom page'){
             copy(__DIR__.'/../../../additional-stubs/vue/resources/js/Pages/BlankPage.vue', resource_path('js/Pages/' . $nameArgument . '.vue'));
@@ -65,7 +66,13 @@ class MakeVueBlankPageCommand extends Command implements PromptsForMissingInput
         return 1;
     }
 
-    
+    /**
+     * Replace the placeholders in the given stub.
+     *
+     * @param  string  $file
+     * @param  array  $replacements
+     * @return void
+     */    
     protected function replaceContent($file, $replacements)
     {
         $content = file_get_contents($file);
