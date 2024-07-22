@@ -9,7 +9,7 @@
     <div>
         <DxDataGrid ref="datagridRef" :data-source="dataSource" key="product_id" :column-auto-width="true"
             :remote-operations="remoteOperations" :item-per-page="10" @selection-changed="onSelectionChanged"
-            @exporting="onExporting">
+            :hover-state-enabled="true" @exporting="onExporting">
             <DxFilterRow :visible="true" />
             <DxExport :enabled="true" />
             <DxSelection select-all-mode="page" show-check-boxes-mode="always" mode="multiple" />
