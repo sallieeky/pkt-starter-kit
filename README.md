@@ -309,7 +309,7 @@ composer update pkt/starter-kit:v2.4.1.1
         <img src="/art/Intertiajs.png" alt="InertiaJS" width="200">
     </a>
     <a href="https://inertiajs.com/">
-        <img src="/art/VueJs.png" alt="VueJS" width="200">
+        <img src="/art/VueJs.png" alt="VueJS" width="200" height="100">
     </a>
 </p>
 
