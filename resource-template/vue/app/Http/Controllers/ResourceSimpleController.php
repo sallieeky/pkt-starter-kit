@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Pkt\StarterKit\Helpers\DxAdapter;
+use Pkt\StarterKit\Helpers\DxResponse;
 
 class ModelNameController extends Controller
 {
@@ -21,13 +22,8 @@ class ModelNameController extends Controller
     public function dataProcessing(Request $request)
     {
         $loadData = ModelName::query()->select('*');
-        $loadDatais = DxAdapter::load($loadData);
-        $data = $loadDatais->paginate($request->take ?? $loadDatais->count());
-        return response()->json([
-            'status' => true,
-            'data' => $data->items(),
-            'totalCount' => $data->total(),
-        ], 200);
+        $loadDataDx = DxAdapter::load($loadData);
+        return DxResponse::json($loadDataDx, $request);
     }
     public function create(CreateModelNameRequest $request)
     {
