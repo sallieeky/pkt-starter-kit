@@ -105,12 +105,12 @@
                                 <span class="font-bold mr-2">{{ dataSelected.length }} dipilih</span>
 
                                 <div class="flex items-center border-l-2 px-2 h-full gap-1">
-                                    <div class="flex items-center rounded-full hover:bg-gray-200 cursor-pointer" @click="switchUserStatus(dataSelected, true)">
-                                        <BsIconButton icon="check-circle" class="text-success" v-if="can('user.update')" />
+                                    <div class="flex items-center rounded-full hover:bg-gray-200 cursor-pointer" @click="switchUserStatus(dataSelected, true)"  v-if="can('user.update')">
+                                        <BsIconButton icon="check-circle" class="text-success" />
                                         <span class="mr-2 font-semibold">Enable</span>
                                     </div>
-                                    <div class="flex items-center rounded-full hover:bg-gray-200 cursor-pointer" @click="switchUserStatus(dataSelected, false)">
-                                        <BsIconButton icon="x-circle" class="text-danger" v-if="can('user.update')" />
+                                    <div class="flex items-center rounded-full hover:bg-gray-200 cursor-pointer" @click="switchUserStatus(dataSelected, false)"  v-if="can('user.update')">
+                                        <BsIconButton icon="x-circle" class="text-danger" />
                                         <span class="mr-2 font-semibold">Disable</span>
                                     </div>
                                     <p class="font-semibold italic text-gray-700" v-if="!can('user.update')">No Action</p>
