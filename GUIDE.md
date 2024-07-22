@@ -375,8 +375,8 @@ After you run the command, it's recommended to re-seed the role and permission t
 php artisan db:seed --class=RoleAndPermissionSeeder
 ```
 
-### Make Blank Page
-This command will generate blank page file for your frontend
+### Make Page
+This command will generate page file for your frontend. The type of page will be between blank/custom page, custom page with existing dummy table using DevExtreme DataGrid, and custom page with existing dummy form using ElemenPlus.
 ```cmd
 php artisan pkt:make-page <Filepath/Filename>
 ```
@@ -384,9 +384,16 @@ php artisan pkt:make-page <Filepath/Filename>
 #### Example
 ```cmd
 php artisan pkt:make-page MasterData/Equipment
+
+<!-- Question -->
+Select page type [Blank/custom page]:
+  [0] Blank/custom page
+  [1] Custom page with table
+  [2] Custom page with form
+ > 2
 ```
 
-this command will generate file `resources/js/Pages/MasterData/Equipment.vue`
+this command will generate file `resources/js/Pages/MasterData/Equipment.vue`.
 
 ### Make Component
 This command will generate blank component file for your frontend
@@ -399,7 +406,7 @@ php artisan pkt:make-component <Filepath/Filename>
 php artisan pkt:make-component Dashboard/AdminTab
 ```
 
-this command will generate file `resources/js/Components/Dashboard/AdminTab.vue`
+this command will generate file `resources/js/Components/Dashboard/AdminTab.vue`.
 
 ### Make Widget
 Widget is almost the same with component, but it's commonly used only once and for specific page for example chart, table, form, etc, but you can still reuse it on other page if needed.

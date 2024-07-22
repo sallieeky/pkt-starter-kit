@@ -41,22 +41,38 @@ class MakeVueBlankPageCommand extends Command implements PromptsForMissingInput
         $fileName = basename($nameArgument);
         
         (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages/'.$dirName));
-
         if(file_exists(resource_path('js/Pages/' . $nameArgument . '.vue'))){
             $this->components->error('Page js/Pages/' . $nameArgument . '.vue already exists.');
             return 0;
         }
 
-        copy(__DIR__.'/../../../resource-template/vue/resources/js/Pages/BlankPage.vue', resource_path('js/Pages/' . $nameArgument . '.vue'));
+        $type = $this->choice('Select page type', ['Blank/custom page', 'Custom page with table', 'Custom page with form'], 0);
+
+        if($type === 'Blank/custom page'){
+            copy(__DIR__.'/../../../additional-stubs/vue/resources/js/Pages/BlankPage.vue', resource_path('js/Pages/' . $nameArgument . '.vue'));
+        }else if($type === 'Custom page with form'){
+            copy(__DIR__.'/../../../additional-stubs/vue/resources/js/Pages/FormPage.vue', resource_path('js/Pages/' . $nameArgument . '.vue'));
+        }else if($type === 'Custom page with table'){
+            copy(__DIR__.'/../../../additional-stubs/vue/resources/js/Pages/TablePage.vue', resource_path('js/Pages/' . $nameArgument . '.vue'));
+        } else {
+            $this->components->error('Invalid page type');
+            return 0;
+        }
         $this->replaceContent(resource_path('js/Pages/' . $nameArgument . '.vue'), [
-            'ResourceTitle' => Str::headline($fileName),
+            'PageTitle' => Str::headline($fileName),
         ]);
 
         $this->components->info('Page js/Pages/' . $nameArgument . '.vue created successfully.');
         return 1;
     }
 
-    
+    /**
+     * Replace the placeholders in the given stub.
+     *
+     * @param  string  $file
+     * @param  array  $replacements
+     * @return void
+     */    
     protected function replaceContent($file, $replacements)
     {
         $content = file_get_contents($file);
