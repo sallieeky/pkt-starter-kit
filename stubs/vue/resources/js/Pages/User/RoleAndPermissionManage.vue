@@ -89,7 +89,7 @@
                                                 <div class="grid grid-cols-1 2xl:grid-cols-2">
                                                     <div class="flex flex-row justify-between items-center px-4 py-2" v-for="permissionObj in permissionList">
                                                         <span class="text-gray-800">{{ parsePermissionName(permissionObj.name) }}</span>
-                                                        <el-switch :disabled="!can('role.assign_permission')" :active-value="1" :inactive-value="0" v-model="permissionObj.role_has_permission" @change="(newValue)=>onSwitchChange(selectedRole.id, permissionObj, newValue)"/>
+                                                        <el-switch :disabled="!can('role.assign_permission') || selectedRole.id == 1" :active-value="1" :inactive-value="0" v-model="permissionObj.role_has_permission" @change="(newValue)=>onSwitchChange(selectedRole.id, permissionObj, newValue)"/>
                                                     </div>
                                                 </div>
                                             </div>
