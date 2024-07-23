@@ -372,36 +372,24 @@ Route::authenticated()
             return;
         }
 
+        // Modify the array
         $masterDataFound = false;
+        $userManagementIndex = null;
 
-        foreach ($navItems as &$item) {
+        foreach ($navItems as $index => $item) {
             if ($item['label'] === 'Master Data') {
                 $masterDataFound = true;
-                // Add new submenu if it does not already exist
-                $submenuExists = false;
-                foreach ($item['submenu'] as $submenu) {
-                    if ($submenu['label'] === $label) {
-                        $submenuExists = true;
-                        break;
-                    }
-                }
-                if (!$submenuExists) {
-                    $item['submenu'][] = [
-                        "label" => $label,
-                        "href" => '/master/'.$route,
-                        "permission" => $permission
-                    ];
-                }
-                break;
+            }
+            if ($item['label'] === 'User Management') {
+                $userManagementIndex = $index;
             }
         }
-
-        // If "Master Data" is not found, add it
+        // Add "Master Data" before "User Management" if it does not exist
         if (!$masterDataFound) {
             $newItem = [
                 "label" => "Master Data",
-                "href" => "/master",
-                "icon" => "inbox-stack",
+                "href" => "/master-data",
+                "icon" => "database",
                 "submenu" => [
                     [
                         "label" => $label,
@@ -410,7 +398,33 @@ Route::authenticated()
                     ]
                 ]
             ];
-            $navItems[] = $newItem;
+
+            if ($userManagementIndex !== null) {
+                array_splice($navItems, $userManagementIndex, 0, [$newItem]);
+            } else {
+                $navItems[] = $newItem; // Add to the end if "User Management" is not found
+            }
+        } else {
+            // If "Master Data" exists, ensure the submenu is correct
+            foreach ($navItems as &$item) {
+                if ($item['label'] === 'Master Data') {
+                    $submenuExists = false;
+                    foreach ($item['submenu'] as $submenu) {
+                        if ($submenu['label'] === $label) {
+                            $submenuExists = true;
+                            break;
+                        }
+                    }
+                    if (!$submenuExists) {
+                        $item['submenu'][] = [
+                            "label" => $label,
+                            "href" => '/master/'.$route,
+                            "permission" => $permission
+                        ];
+                    }
+                    break;
+                }
+            }
         }
 
         $updatedNavItemsJson = json_encode($navItems, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
