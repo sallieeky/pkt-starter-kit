@@ -347,7 +347,7 @@ class Role extends ModelsRole
 ## Additional Command
 
 ### Make Resource
-This command will help you to create basic single page <strong>CRUD</strong> by only execute 1 command
+This command will help you to create basic single page <strong>CRUD</strong> by only execute 1 command.
 
 ```cmd
 php artisan pkt:make-resource ModelName <additional-flag>
@@ -414,6 +414,11 @@ Widget is almost the same with component, but it's commonly used only once and f
 php artisan pkt:make-widget <Filepath/Filename>
 ```
 
+Additionally, its **recommended** to add `VITE_AMCHARTS_LICENSE_KEY` to your `.env` file. By default `VITE_AMCHARTS_LICENSE_KEY` already there you just need to enter the value.
+```.env
+VITE_AMCHARTS_LICENSE_KEY=<ask admin>
+``` 
+
 #### Example
 ```cmd
 php artisan pkt:make-widget Dashboard/MonthlyProductionChart
@@ -433,28 +438,28 @@ Select type of Widget [Blank Widget]:
 
 this command will generate file `resources/js/Widgets/Dashboard/MonthlyProductionChart.vue`.
 
-#### Blank Widget
+- Blank Widget <br>
 <img src="/art/Widgets/BlankWidget.png" alt="Blank Widget">
 
-#### Table Widget
+- Table Widget <br>
 <img src="/art/Widgets/TableWidget.png" alt="Table Widget">
 
-#### Form Widget
+- Form Widget <br>
 <img src="/art/Widgets/FormWidget.png" alt="Form Widget">
 
-#### Statistic Widget
+- Statistic Widget <br>
 <img src="/art/Widgets/StatisticWidget.png" alt="Statistic Widget">
 
-#### Bar/Column Chart Widget
+- Bar/Column Chart Widget <br>
 <img src="/art/Widgets/BarChartWidget.png" alt="Bar/Column Chart Widget">
 
-#### Line Chart Widget
+- Line Chart Widget <br>
 <img src="/art/Widgets/LineChartWidget.png" alt="Line Chart Widget">
 
-#### Pie Chart Widget
+- Pie Chart Widget <br>
 <img src="/art/Widgets/PieChartWidget.png" alt="Pie Chart Widget">
 
-#### Donut Chart Widget
+- Donut Chart Widget <br>
 <img src="/art/Widgets/DonutChartWidget.png" alt="Donut Chart Widget">
 
 
