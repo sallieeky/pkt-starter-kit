@@ -31,12 +31,18 @@ class RoleAndPermissionController extends Controller
     public function update(Role $role, RoleRequest $request)
     {
         $validated = $request->validated();
+        if($role->id == 1){
+            return redirect()->back()->withErrors(['message'=>'Superadmin cannot be changed']);
+        }
         $role->update($validated);
         return redirect()->back()->with('message','Success to update role');
     }
     
     public function delete(Role $role, Request $request)
     {
+        if($role->id == 1){
+            return redirect()->back()->withErrors(['message'=>'Superadmin cannot be deleted']);
+        }
         $role->delete();
         return redirect()->back()->with('message','Success to delete role');
     }
@@ -50,7 +56,12 @@ class RoleAndPermissionController extends Controller
                     $join->on('permissions.id', '=', 'role_has_permissions.permission_id')
                         ->where('role_has_permissions.role_id', '=', $roleId);
                 })
-                ->addSelect(DB::raw('CASE WHEN role_has_permissions.role_id IS NOT NULL THEN 1 ELSE 0 END AS role_has_permission'))
+                ->addSelect(DB::raw('
+                    CASE 
+                        WHEN role_has_permissions.role_id IS NOT NULL
+                        THEN 1 
+                        ELSE 0 
+                    END AS role_has_permission'))
                 ->orderBy('id')
                 ->get();
             $permissions = $permissions->map(function ($p){
@@ -104,6 +115,12 @@ class RoleAndPermissionController extends Controller
     public function switchPermission(Role $role,UpdateRolePermissionRequest $request)
     {
         $validated = $request->validated();
+        if($role->id == 1){
+            return response()->json([
+                'status' => false,
+                'message' => 'Superadmin cannot be changed',
+            ], 403);
+        }
         try {
             $permission = Permission::find($validated['id_permission']);
             if($validated['value']){
