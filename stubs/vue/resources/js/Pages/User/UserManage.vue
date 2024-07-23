@@ -1,10 +1,14 @@
 <template>
     <Head title="User Management" />
     <MainLayout title="User Management">
+        <template #header-action>
+            <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+            <BsButton type="primary" icon="arrows-up-down" @click="syncLeader" v-if="btnSyncLeaderVisible && can('user.update')">Sync Leader</BsButton>
+        </template>
         <div class="flex flex-col">
             <DxDataGrid ref="datagridRef" :data-source="dataSource" key="user_id" :column-auto-width="true"
                 :remote-operations="remoteOperations" :item-per-page="10" @selection-changed="onSelectionChanged"
-                @exporting="onExporting">
+                :hover-state-enabled="true" @cell-dbl-click="editUserAction($event.data)" @exporting="onExporting">
                 <DxFilterRow :visible="true" />
                 <DxExport :enabled="true" />
                 <DxSelection select-all-mode="page" show-check-boxes-mode="always" mode="multiple" />
@@ -12,6 +16,16 @@
                 <DxHeaderFilter :visible="true" />
                 <DxPaging :page-size="10" />
                 <DxPager :visible="true" :allowed-page-sizes="[10, 20, 50]" :show-page-size-selector="true" />
+                <DxColumn data-field="profile_picture" caption="Profile" :allowHeaderFiltering="false" width="100" alignment="center" cell-template="profile" :allowExporting="false" />
+                <template #profile="{ data }">
+                    <el-image
+                        :src="route('account-picture', {npk: data.data?.npk || 'default'})"
+                        fit="cover"
+                        class="rounded-full"
+                        style="width: 50px; height: 50px;"
+                        :preview-src-list="[route('account-picture', {npk: (data.data?.npk || 'default')})]"
+                    />
+                </template>
                 <DxColumn data-field="username" caption="Username" :allowHeaderFiltering="false" />
                 <DxColumn data-field="npk" caption="NPK" :allowHeaderFiltering="false" />
                 <DxColumn data-field="name" caption="Nama" :allowHeaderFiltering="false" />
@@ -78,18 +92,29 @@
                     <DxItem location="before" template="buttonTemplate" />
                     <DxItem name="columnChooserButton" />
                     <DxItem name="exportButton" />
+                    <DxItem widget="dxButton" :options="{ icon: 'refresh', onClick: refreshDatagrid }" />
                 </DxToolbar>
                 <template #buttonTemplate>
-                    <div class="flex flex-row w-full">
+                    <div class="flex w-full">
                         <Transition name="fadetransition" mode="out-in" appear>
                             <div v-if="!itemSelected">
-                                <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
-                                <BsButton type="primary" icon="arrows-up-down" @click="syncLeader" v-if="btnSyncLeaderVisible && can('user.update')">Sync Leader</BsButton>
-                                <BsButton type="primary" icon="arrow-path" @click="refreshDatagrid">Refresh</BsButton>
+                                <!-- Table Header Action Here -->
                             </div>
-                            <div v-else class="h-auto flex items-center px-4">
-                                <BsIconButton icon="x-mark" class="mr-2" @click="clearSelection" />
-                                <span class="font-bold mr-4">{{ dataSelected.length }} dipilih</span>
+                            <div v-else class="flex items-center border-2 border-primary-border rounded-full gap-1 text-sm">
+                                <BsIconButton icon="x-mark" @click="clearSelection" />
+                                <span class="font-bold mr-2">{{ dataSelected.length }} dipilih</span>
+
+                                <div class="flex items-center border-l-2 px-2 h-full gap-1">
+                                    <div class="flex items-center rounded-full hover:bg-gray-200 cursor-pointer" @click="switchUserStatus(dataSelected, true)"  v-if="can('user.update')">
+                                        <BsIconButton icon="check-circle" class="text-success" />
+                                        <span class="mr-2 font-semibold">Enable</span>
+                                    </div>
+                                    <div class="flex items-center rounded-full hover:bg-gray-200 cursor-pointer" @click="switchUserStatus(dataSelected, false)"  v-if="can('user.update')">
+                                        <BsIconButton icon="x-circle" class="text-danger" />
+                                        <span class="mr-2 font-semibold">Disable</span>
+                                    </div>
+                                    <p class="font-semibold italic text-gray-700" v-if="!can('user.update')">No Action</p>
+                                </div>
                             </div>
                         </Transition>
                     </div>
@@ -283,7 +308,7 @@ async function editUserSubmitAction() {
 }
 function deleteUserAction(dataUser) {
     ElMessageBox.confirm(
-        'Apakah anda yakin untuk mengahapus user ini ?',
+        'Are you sure to delete this user ?',
         'Warning',
         {
             confirmButtonText: 'OK',
@@ -314,23 +339,42 @@ function deleteUserAction(dataUser) {
         })
 }
 function switchUserStatus(dataUser, status) {
-    useForm({
-        is_active : status
-    }).put(route('user.switch_status', dataUser.user_uuid), {
-        onSuccess: (response) => {
-            ElMessage({
-                message: response.props.flash.message,
-                type: 'success',
+    if (Array.isArray(dataUser)) {
+        ElMessageBox.confirm(
+            'Are you sure to switch these users status to ' + (status ? 'Active' : 'Inactive') + ' ?',
+            'Warning',
+            {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                type: 'warning',
+            }
+        ).then(() => {
+            dataUser.forEach((user) => {
+                switchUserStatus(user, status);
             });
-            refreshDatagrid();
-            dialogFormVisible.value = false;
-        },
-        onError: (errors) => {
-            formUserErrors.value = errors;
-        },
-        onFinish: () => {
-        }
-    });
+        }).catch(() => {
+            ElMessage({
+                type: 'info',
+                message: 'Action Canceled',
+            })
+        });
+    } else {
+        useForm({
+            is_active : status
+        }).put(route('user.switch_status', dataUser.user_uuid), {
+            onSuccess: (response) => {
+                ElMessage({
+                    message: response.props.flash.message,
+                    type: 'success',
+                });
+                refreshDatagrid();
+                dialogFormVisible.value = false;
+            },
+            onError: (errors) => {
+                formUserErrors.value = errors;
+            },
+        });
+    }
 }
 function syncLeader(){
     const loading = ElLoading.service({

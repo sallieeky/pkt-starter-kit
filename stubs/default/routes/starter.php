@@ -26,6 +26,7 @@ Route::authenticated()->group(function () {
 
     Route::controller(AccountController::class)->group(function(){
         Route::get('/account','accountPage')->name('account');
+        Route::get('/picture/{npk}', 'accountPicture')->name('account-picture');
     });
 
     Route::controller(UserLogController::class)->group(function () {

@@ -194,12 +194,73 @@ export const navItems = [
 ];
 ```
 
-You can add the parameter below.
+On your `navItems` You can add the parameter below.
 - `label` to define the text.
 - `href` to define url when menu clicked.
 - `icon` to define the icon, this refer to [Heroicons](https://heroicons.com/).
 - `permission` to define the permission needed to show the menu.
 - `type` to define the type between `header`, `fixed`, `header-fixed`.
+
+When your page using `MainLayout` from `resources/js/Layouts/MainLayout.vue` you have a ability to pass the params below.
+- `title="Page Title"` to show the title of the page on your website.
+- `back` to make your title clickable and can be using to back to the previous page.
+- `back-confirm` to make your title clickable and can be using to back to the previous page with confirmation first.  
+```js
+<template>
+    <MainLayout title="Page Title" back-confirm>
+        ...
+    </MainLayout>
+<template>
+<script setup>
+    ...
+    import MainLayout from '@/Layouts/MainLayout.vue';
+    ...
+</script>
+```
+
+Additional slot / template you can use if you using `MainLayout` from `resources/js/Layouts/MainLayout.vue`.
+- `#header-action` to make the action on the top right on your page.
+- `#header-action-dropdown` to make the action on the top right on your page using dropdown.
+- `#footer-action` to make the action on the end of your page.
+- `#footer-action-fixed` to make the action fixed on the bottom of your page.
+```js
+<template>
+    <MainLayout title="Page Title" back-confirm>
+        <template #header-action>
+            <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+        </template>
+
+        <template #header-action-dropdown>
+            <el-dropdown-item>
+                <BsIcon icon="pencil-square" class="mr-2" /> Edit User
+            </el-dropdown-item>
+            <el-dropdown-item>
+                <BsIcon icon="arrow-path-rounded-square" class="mr-2" /> Enable User
+            </el-dropdown-item>
+        </template>
+
+        {/* Content */}
+
+        <template #footer-action>
+            <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+            <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+        </template>
+
+        <template #footer-action-fixed>
+              <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+              <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+              <BsButton type="primary" icon="plus" @click="addUserAction" v-if="can('user.create')">Add User</BsButton>
+        </template>
+    </MainLayout>
+<template>
+<script setup>
+    ...
+    import MainLayout from '@/Layouts/MainLayout.vue';
+    import BsButton from '@/Components/BsButton.vue';
+    import BsIcon from '@/Components/BsIcon.vue';
+    ...
+</script>
+```
 
 ## Manage Global Search
 <img src="/art/GlobalSearch.png" alt="Global Search">
@@ -286,7 +347,7 @@ class Role extends ModelsRole
 ## Additional Command
 
 ### Make Resource
-This command will help you to create basic single page <strong>CRUD</strong> by only execute 1 command
+This command will help you to create basic single page <strong>CRUD</strong> by only execute 1 command.
 
 ```cmd
 php artisan pkt:make-resource ModelName <additional-flag>
@@ -314,8 +375,8 @@ After you run the command, it's recommended to re-seed the role and permission t
 php artisan db:seed --class=RoleAndPermissionSeeder
 ```
 
-### Make Blank Page
-This command will generate blank page file for your frontend
+### Make Page
+This command will generate page file for your frontend. The type of page will be between blank/custom page, custom page with existing dummy table using DevExtreme DataGrid, and custom page with existing dummy form using ElemenPlus.
 ```cmd
 php artisan pkt:make-page <Filepath/Filename>
 ```
@@ -323,9 +384,16 @@ php artisan pkt:make-page <Filepath/Filename>
 #### Example
 ```cmd
 php artisan pkt:make-page MasterData/Equipment
+
+<!-- Question -->
+Select page type [Blank/custom page]:
+  [0] Blank/custom page
+  [1] Custom page with table
+  [2] Custom page with form
+ > 2
 ```
 
-this command will generate file `resources/js/Pages/MasterData/Equipment.vue`
+this command will generate file `resources/js/Pages/MasterData/Equipment.vue`.
 
 ### Make Component
 This command will generate blank component file for your frontend
@@ -338,13 +406,18 @@ php artisan pkt:make-component <Filepath/Filename>
 php artisan pkt:make-component Dashboard/AdminTab
 ```
 
-this command will generate file `resources/js/Components/Dashboard/AdminTab.vue`
+this command will generate file `resources/js/Components/Dashboard/AdminTab.vue`.
 
 ### Make Widget
 Widget is almost the same with component, but it's commonly used only once and for specific page for example chart, table, form, etc, but you can still reuse it on other page if needed.
 ```cmd
 php artisan pkt:make-widget <Filepath/Filename>
 ```
+
+Additionally, its **recommended** to add `VITE_AMCHARTS_LICENSE_KEY` to your `.env` file. By default `VITE_AMCHARTS_LICENSE_KEY` already there you just need to enter the value.
+```.env
+VITE_AMCHARTS_LICENSE_KEY=<ask admin>
+``` 
 
 #### Example
 ```cmd
@@ -365,28 +438,28 @@ Select type of Widget [Blank Widget]:
 
 this command will generate file `resources/js/Widgets/Dashboard/MonthlyProductionChart.vue`.
 
-#### Blank Widget
+- Blank Widget <br>
 <img src="/art/Widgets/BlankWidget.png" alt="Blank Widget">
 
-#### Table Widget
+- Table Widget <br>
 <img src="/art/Widgets/TableWidget.png" alt="Table Widget">
 
-#### Form Widget
+- Form Widget <br>
 <img src="/art/Widgets/FormWidget.png" alt="Form Widget">
 
-#### Statistic Widget
+- Statistic Widget <br>
 <img src="/art/Widgets/StatisticWidget.png" alt="Statistic Widget">
 
-#### Bar/Column Chart Widget
+- Bar/Column Chart Widget <br>
 <img src="/art/Widgets/BarChartWidget.png" alt="Bar/Column Chart Widget">
 
-#### Line Chart Widget
+- Line Chart Widget <br>
 <img src="/art/Widgets/LineChartWidget.png" alt="Line Chart Widget">
 
-#### Pie Chart Widget
+- Pie Chart Widget <br>
 <img src="/art/Widgets/PieChartWidget.png" alt="Pie Chart Widget">
 
-#### Donut Chart Widget
+- Donut Chart Widget <br>
 <img src="/art/Widgets/DonutChartWidget.png" alt="Donut Chart Widget">
 
 

@@ -1,10 +1,13 @@
 <template>
     <Head title="ResourceTitle" />
     <MainLayout title="ResourceTitle">
+        <template #header-action>
+            <BsButton type="primary" icon="plus" @click="addModelNameAction" v-if="CreatePermission">Add ModelLabel</BsButton>
+        </template>
         <div class="flex flex-col">
             <DxDataGrid ref="datagridRef" :data-source="dataSource" key="PrimaryKey" :column-auto-width="true"
                 :remote-operations="remoteOperations" :item-per-page="10" @selection-changed="onSelectionChanged"
-                @exporting="onExporting">
+                :hover-state-enabled="true" @cell-dbl-click="editModelNameAction($event.data)" @exporting="onExporting">
                 <DxFilterRow :visible="true" />
                 <DxExport :enabled="true" />
                 <DxSelection select-all-mode="page" show-check-boxes-mode="always" mode="multiple" />
@@ -39,23 +42,27 @@
                     <DxItem location="before" template="buttonTemplate" />
                     <DxItem name="columnChooserButton" />
                     <DxItem name="exportButton" />
+                    <DxItem widget="dxButton" :options="{ icon: 'refresh', onClick: refreshDatagrid }" />
                 </DxToolbar>
                 <template #buttonTemplate>
-                    <div class="flex flex-row w-full">
+                    <div class="flex w-full">
                         <Transition name="fadetransition" mode="out-in" appear>
                             <div v-if="!itemSelected">
-                                <BsButton type="primary" icon="plus" @click="addModelNameAction" v-if="CreatePermission">
-                                    Add ModelLabel</BsButton>
-                                <BsButton type="primary" icon="arrow-path" @click="refreshDatagrid">Refresh</BsButton>
+                                <!-- Table Action Here -->
                             </div>
-                            <div v-else class="h-auto flex items-center px-4">
-                                <BsIconButton icon="x-mark" class="mr-2" @click="clearSelection" />
-                                <span class="font-bold mr-4">{{ dataSelected.length }} dipilih</span>
+                            <div v-else class="flex items-center border-2 border-primary-border rounded-full gap-1 text-sm">
+                                <BsIconButton icon="x-mark" @click="clearSelection" />
+                                <span class="font-bold mr-2">{{ dataSelected.length }} dipilih</span>
+
+                                <div class="flex items-center border-l-2 px-2 h-full gap-1">
+                                    <!-- Table Bulk Action -->
+                                    <p class="font-semibold italic text-gray-700">No Action</p>
+                                    <!-- End Table Bulk Action -->
+                                </div>
                             </div>
                         </Transition>
                     </div>
                 </template>
-
             </DxDataGrid>
         </div>
     </MainLayout>
@@ -101,7 +108,7 @@ const editModelNameAction = (dataModelName) => {
 }
 function deleteModelNameAction(dataModelName) {
     ElMessageBox.confirm(
-        'Apakah anda yakin untuk mengahapus ModelLabel ini ?',
+        'Are you sure to delete this ModelLabel ?',
         'Warning',
         {
             confirmButtonText: 'OK',

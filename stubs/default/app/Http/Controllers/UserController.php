@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Pkt\StarterKit\Helpers\DxAdapter;
+use Pkt\StarterKit\Helpers\DxResponse;
 use Pkt\StarterKit\Helpers\LeaderApi;
 use Spatie\Permission\Models\Role;
 
@@ -27,13 +28,8 @@ class UserController extends Controller
     public function dataProcessing(Request $request)
     {
         $loadData = User::with(['roles'])->select('*');
-        $loadDatais = DxAdapter::load($loadData);
-        $data = $loadDatais->paginate($request->take ?? $loadDatais->count());
-        return response()->json([
-            'status' => true,
-            'data' => $data->items(),
-            'totalCount' => $data->total(),
-        ], 200);
+        $loadDataDx = DxAdapter::load($loadData);
+        return DxResponse::json($loadDataDx, $request);
     }
     public function create(CreateUserRequest $request)
     {
