@@ -14,6 +14,8 @@ use Spatie\Permission\Models\Role;
 
 class RoleAndPermissionController extends Controller
 {
+    private const SUPERADMIN_ROLE_ID = 1;
+
     public function roleAndPemissionManagePage(Request $request)
     {
         return Inertia::render('User/RoleAndPermissionManage', [
@@ -31,7 +33,7 @@ class RoleAndPermissionController extends Controller
     public function update(Role $role, RoleRequest $request)
     {
         $validated = $request->validated();
-        if($role->id == 1){
+        if($role->id == self::SUPERADMIN_ROLE_ID){
             return redirect()->back()->withErrors(['message'=>'Superadmin cannot be changed']);
         }
         $role->update($validated);
@@ -40,9 +42,14 @@ class RoleAndPermissionController extends Controller
     
     public function delete(Role $role, Request $request)
     {
-        if($role->id == 1){
+        if($role->id == self::SUPERADMIN_ROLE_ID){
             return redirect()->back()->withErrors(['message'=>'Superadmin cannot be deleted']);
         }
+
+        if ($role->users()->count() > 0) {
+            return redirect()->back()->withErrors(['message'=>'Role cannot be deleted because it has users']);
+        }
+
         $role->delete();
         return redirect()->back()->with('message','Success to delete role');
     }
@@ -115,7 +122,7 @@ class RoleAndPermissionController extends Controller
     public function switchPermission(Role $role,UpdateRolePermissionRequest $request)
     {
         $validated = $request->validated();
-        if($role->id == 1){
+        if($role->id == self::SUPERADMIN_ROLE_ID){
             return response()->json([
                 'status' => false,
                 'message' => 'Superadmin cannot be changed',
