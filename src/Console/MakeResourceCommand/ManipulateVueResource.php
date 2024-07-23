@@ -305,7 +305,7 @@ trait ManipulateVueResource
         if ($this->multiPage) {
             $route = "
 Route::authenticated()
-    ->prefix('$route')
+    ->prefix('/master/$route')
     ->name('$groupName.')
     ->controller(App\Http\Controllers\\{$modelName}Controller::class)->group(function () {
         Route::get('/', 'managePage')->name('browse')->can('$groupName.browse');
@@ -319,7 +319,7 @@ Route::authenticated()
         } else {
         $route = "
 Route::authenticated()
-    ->prefix('$route')
+    ->prefix('/master/$route')
     ->name('$groupName.')
     ->controller(App\Http\Controllers\\{$modelName}Controller::class)->group(function () {
         Route::get('/', 'managePage')->name('browse')->can('$groupName.browse');
@@ -346,19 +346,84 @@ Route::authenticated()
         $modelName = $this->nameArgument;
         $label = Str::headline($modelName);
         $route = Str::lower(Str::kebab(Str::plural($modelName)));
-        $icon = 'cube';
         $permission = Str::lower(Str::snake($modelName)) . '.browse';
 
-        $sidemenuItem = "    {
-        label: '$label',
-        href: '/$route',
-        icon: '$icon',
-        permission: '$permission',
-    }," . PHP_EOL;
+        $filePath = resource_path('js/Core/Config/SidemenuItem.js');
+        $navItemsJsString = file_get_contents($filePath);
 
-        $sideMenuItemContent = file_get_contents(resource_path('js/Core/Config/SidemenuItem.js'));
-        $sideMenuItemContent = preg_replace('/(export const navItems = \[)(.*?)(\];)/s', '$1$2' . $sidemenuItem . '$3', $sideMenuItemContent);
-        file_put_contents(resource_path('js/Core/Config/SidemenuItem.js'), $sideMenuItemContent);
+        if ($navItemsJsString === false) {
+            $this->components->error('File resources/js/Core/Config/SidemenuItem.js not found');
+            return;
+        }
+
+        // Add quotes around object keys
+        $navItemsJsString = preg_replace('/(\w+):/i', '"$1":', $navItemsJsString);
+
+        // Remove the JavaScript specific parts
+        $navItemsJsString = preg_replace('/export const navItems = |;/', '', $navItemsJsString);
+
+        // Remove trailing commas before closing braces
+        $navItemsJsString = preg_replace('/,\s*(\]|\})/', '$1', $navItemsJsString);
+
+        $navItems = json_decode($navItemsJsString, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->components->error('SidemenuItem file resources/js/Core/Config/SidemenuItem.js failed to update. Please ensure file has correct format.');
+            return;
+        }
+
+        $masterDataFound = false;
+
+        foreach ($navItems as &$item) {
+            if ($item['label'] === 'Master Data') {
+                $masterDataFound = true;
+                // Add new submenu if it does not already exist
+                $submenuExists = false;
+                foreach ($item['submenu'] as $submenu) {
+                    if ($submenu['label'] === $label) {
+                        $submenuExists = true;
+                        break;
+                    }
+                }
+                if (!$submenuExists) {
+                    $item['submenu'][] = [
+                        "label" => $label,
+                        "href" => '/master/'.$route,
+                        "permission" => $permission
+                    ];
+                }
+                break;
+            }
+        }
+
+        // If "Master Data" is not found, add it
+        if (!$masterDataFound) {
+            $newItem = [
+                "label" => "Master Data",
+                "href" => "/master",
+                "icon" => "inbox-stack",
+                "submenu" => [
+                    [
+                        "label" => $label,
+                        "href" => '/master/'.$route,
+                        "permission" => $permission
+                    ]
+                ]
+            ];
+            $navItems[] = $newItem;
+        }
+
+        $updatedNavItemsJson = json_encode($navItems, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+        if ($updatedNavItemsJson === false) {
+            $this->components->error('SidemenuItem file resources/js/Core/Config/SidemenuItem.js failed to update. Please ensure file has correct format.');
+        }
+
+        // Prepare the JavaScript export string
+        $updatedNavItemsJsString = "export const navItems = " . $updatedNavItemsJson . ";";
+
+        // Write the updated content back to the JavaScript file
+        file_put_contents($filePath, $updatedNavItemsJsString);
 
         $this->components->info('SidemenuItem file resources/js/Core/Config/SidemenuItem.js updated successfully.');
     }
