@@ -53,12 +53,13 @@ const props = defineProps({
 
 const chartdiv = ref(null);
 onMounted(() => {
-    am4core.addLicense("CH283435101");
+    am4core.addLicense(import.meta.env.VITE_AMCHARTS_LICENSE_KEY ?? "");
     am4core.useTheme(am4themes_animated);
     am4core.useTheme(am4themes_pkt_themes);
 
     // Create chart instance for line chart
     var chart = am4core.create(chartdiv.value, am4charts.XYChart);
+    chart.logo.dispose();
     chart.padding(0, 0, 0, 0);
     chart.margin(0, 0, 0, 0);
 
