@@ -416,6 +416,8 @@ class InstallCommand extends Command implements PromptsForMissingInput
         $cryptIv = Str::random(16);
 
         $variables = Arr::where([
+            'VITE_AMCHARTS_LICENSE_KEY' => 'VITE_AMCHARTS_LICENSE_KEY=""',
+            'AMCHART_NEW_LINE' => null,
             'REVERB_APP_ID' => "REVERB_APP_ID={$appId}",
             'REVERB_APP_KEY' => "REVERB_APP_KEY={$appKey}",
             'REVERB_APP_SECRET' => "REVERB_APP_SECRET={$appSecret}",
