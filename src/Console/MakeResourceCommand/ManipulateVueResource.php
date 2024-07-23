@@ -377,7 +377,7 @@ Route::authenticated()
         $userManagementIndex = null;
 
         foreach ($navItems as $index => $item) {
-            if ($item['label'] === 'Master Data') {
+            if ($item['label'] === 'Master Data' && empty($item['type'])) {
                 $masterDataFound = true;
             }
             if ($item['label'] === 'User Management') {
@@ -407,7 +407,7 @@ Route::authenticated()
         } else {
             // If "Master Data" exists, ensure the submenu is correct
             foreach ($navItems as &$item) {
-                if ($item['label'] === 'Master Data') {
+                if ($item['label'] === 'Master Data' && empty($item['type'])) {
                     $submenuExists = false;
                     foreach ($item['submenu'] as $submenu) {
                         if ($submenu['label'] === $label) {
