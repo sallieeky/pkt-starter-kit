@@ -389,7 +389,7 @@ Route::authenticated()
             $newItem = [
                 "label" => "Master Data",
                 "href" => "/master-data",
-                "icon" => "database",
+                "icon" => "inbox-stack",
                 "submenu" => [
                     [
                         "label" => $label,
