@@ -242,8 +242,9 @@ async function editUserRoleSubmitAction() {
                     router.reload({ only: ['roles'] });
                 },
                 onError: (errors) => {
+                    console.log(errors);
                     ElMessage({
-                        message: 'Something wrong !!!',
+                        message: errors.message ?? "Failed to update role !",
                         type: 'error',
                     });
                 }
@@ -262,18 +263,19 @@ function deleteUserRoleAction(dataRole) {
         }
     )
         .then(() => {
+            roleUsers.value = null;
+            idSelectedRole.value = null;
             router.delete(route('role.delete',dataRole.id), {
                 onSuccess: (response) => {
                     ElMessage({
                         message: response.props.flash.message,
                         type: 'success',
                     });
-                    idSelectedRole.value = null;
-                    router.reload({ only: ['roles'] });
+                    // router.reload();
                 },
                 onError: (errors) => {
                     ElMessage({
-                        message: 'Something wrong !!!',
+                        message: errors.message,
                         type: 'error',
                     });
                 }

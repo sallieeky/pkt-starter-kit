@@ -1,14 +1,11 @@
 <template>
     <div :key="unique" class="flex flex-col transition-colors duration-300 cursor-pointer pl-4" :class="[
-        { 'rounded-md gap-4': !sidemenu },
+        { 'rounded-md': !sidemenu },
         { 'rounded-full w-10': sidemenu },
     ]" @click.stop="() => expanded = !expanded">
         <Link 
             :href="menuItem.href" 
-            class="group"
-            :class="[
-                { 'pb-4':!hasSubmenu||sidemenu},
-            ]"
+            class="group pb-4"
             v-if="!hasSubmenu"
             @click="menuItemClicked"
         >
@@ -41,7 +38,7 @@
             </div>
         </Link>
         <div v-else class="group">
-            <div class="flex justify-between" @click="sideMenuStore.showSidemenu">
+            <div class="flex justify-between pb-4" @click="sideMenuStore.showSidemenu">
                 <div class="flex gap-2 align-middle items-center">
                     <div v-if="menuItem.icon != null">
                         <bs-icon 
