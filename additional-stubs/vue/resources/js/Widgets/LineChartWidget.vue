@@ -43,7 +43,7 @@ onMounted(() => {
 
     // Create chart instance for line chart
     var chart = am4core.create(chartdiv.value, am4charts.XYChart);
-    chart.logo.dispose();
+    chart.logo?.dispose();
 
     // Add data
     chart.data = props.dataSource;
