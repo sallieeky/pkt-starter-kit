@@ -5,15 +5,29 @@ export const navItems = [
         "icon": "home"
     },
     {
-        "label": "Master Data",
+        "label": "Data Management",
         "type": "header",
-        "permission": "user.browse | role.browse | user_log.browse"
+        "permission": [
+            "user.browse",
+            "role.browse",
+            "user_log.browse",
+        ]
+    },
+    {
+        "label": "Master Data",
+        "href": "/master",
+        "icon": "inbox-stack",
+        "permission": [],
     },
     {
         "label": "User Management",
         "href": "/users",
         "icon": "users",
-        "permission": "user.browse | role.browse | user_log.browse",
+        "permission": [
+            "user.browse",
+            "role.browse",
+            "user_log.browse",
+        ],
         "submenu": [
             {
                 "label": "User",

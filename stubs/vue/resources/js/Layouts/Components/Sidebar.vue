@@ -11,8 +11,13 @@
         ]">
             <ul class="my-2 flex flex-col gap-2 items-stretch">
                 <li v-for="menuItem, index in sideMenuItems" :key="index">
-                    <div v-if="can(menuItem.permission) && menuItem.type === 'header' && !sidemenu" class="text-xs text-gray-700 uppercase font-bold mb-2">
-                        {{ menuItem.label }}
+                    <div>
+                        <div v-if="can(menuItem.permission) && menuItem.type === 'header' && !sidemenu" class="text-xs text-gray-700 uppercase font-bold mb-2  transition-[width] overflow-hidden overflow-elipsis whitespace-nowrap">
+                            {{ menuItem.label }}
+                        </div>
+                        <div v-if="can(menuItem.permission) && menuItem.type === 'header' && sidemenu" class="mb-2 pl-2">
+                            <hr class=" border-t-[3px] border-gray-400 mb-4 mt-2">
+                        </div>
                     </div>
                     <sidebar-menu-item v-if="can(menuItem.permission) && menuItem.type !== 'header'" :menu-item="menuItem" :key="index">
                         {{ menuItem.permission }}
