@@ -142,55 +142,53 @@ If you need to add the page to sidebar you can add in `resources/js/Core/Config/
 ```js
 export const navItems = [
     {
-        label: "Dashboard",
-        href: "/dashboard",
-        icon: "home"
+        "label": "Dashboard",
+        "href": "/dashboard",
+        "icon": "home"
     },
     {
-        label: "Master Data",
-        type: "header",
-        permission: "user.browse | role.browse | user_log.browse"
-    },
-    {
-        label: "User Management",
-        href: "/users",
-        icon: "users",
-        permission: "user.browse | role.browse | user_log.browse",
-        submenu:[
-            {
-                label: "User",
-                href: "/user",
-                permission: "user.browse",
-            },
-            {
-                label: "Role & Permission",
-                href: "/role-and-permission",
-                permission: "role.browse",
-            },
-            {
-                label: "User Log",
-                href: "/user-log",
-                permission: "user_log.browse",
-            },
+        "label": "Data Management",
+        "type": "header",
+        "permission": [
+            "user.browse",
+            "role.browse",
+            "user_log.browse",
         ]
     },
     {
-        label: "Personalization",
-        type: "fixed-header",
+        "label": "Master Data",
+        "href": "/master",
+        "icon": "inbox-stack",
+        "permission": [],
     },
     {
-        label: "Notification",
-        href: "/notification",
-        icon: "bell",
-        type: "fixed",
-    },
-    {
-        label: "Setting",
-        href: "/setting",
-        icon: "cog-6-tooth",
-        type: "fixed",
-    },
-    ... (additional page)
+        "label": "User Management",
+        "href": "/users",
+        "icon": "users",
+        "permission": [
+            "user.browse",
+            "role.browse",
+            "user_log.browse",
+        ],
+        "submenu": [
+            {
+                "label": "User",
+                "href": "/user",
+                "permission": "user.browse"
+            },
+            {
+                "label": "Role & Permission",
+                "href": "/role-and-permission",
+                "permission": "role.browse"
+            },
+            {
+                "label": "User Log",
+                "href": "/user-log",
+                "permission": "user_log.browse"
+            }
+        ]
+    }
+    ...(additional menu item here)
 ];
 ```
 
