@@ -375,6 +375,7 @@ Route::authenticated()
         // Modify the array
         $masterDataFound = false;
         $userManagementIndex = null;
+        $dataManagementIndex = null;
 
         foreach ($navItems as $index => $item) {
             if ($item['label'] === 'Master Data' && empty($item['type'])) {
@@ -383,6 +384,42 @@ Route::authenticated()
             if ($item['label'] === 'User Management') {
                 $userManagementIndex = $index;
             }
+            if ($item['label'] === 'Data Management') {
+                $dataManagementIndex = $index;
+            }
+        }
+        if($dataManagementIndex){
+            if(isset($navItems[$dataManagementIndex]['permission'])){
+                if(is_string($navItems[$dataManagementIndex]['permission']) && trim($navItems[$dataManagementIndex]['permission']) != ''){
+                    $navItems[$dataManagementIndex]['permission'] .= " | ".$permission;
+                }else if(is_array($navItems[$dataManagementIndex]['permission'])){
+                    $navItems[$dataManagementIndex]['permission'][] = $permission;
+                }else{
+                    $navItems[$dataManagementIndex]['permission'] = [$permission];
+                }
+            }else{
+                $navItems[$dataManagementIndex]['permission'] = [$permission];
+            }
+        }else{
+            $dataManagementHeader = [
+                "label" => "Data Management",
+                "type" => "header",
+                "permission" => [
+                    "user.browse" ,
+                    "role.browse" ,
+                    "user_log.browse" ,
+                    $permission
+                ]
+            ];
+
+            if ($userManagementIndex !== null) {
+                array_splice($navItems, $userManagementIndex, 0, [$dataManagementHeader]);
+                $dataManagementIndex = $userManagementIndex;
+                $userManagementIndex += 1;
+            } else {
+                $navItems[] = $dataManagementHeader; // Add to the end if "User Management" is not found
+                $dataManagementIndex = count($navItems) - 1;
+            }
         }
         // Add "Master Data" before "User Management" if it does not exist
         if (!$masterDataFound) {
@@ -390,6 +427,7 @@ Route::authenticated()
                 "label" => "Master Data",
                 "href" => "/master-data",
                 "icon" => "inbox-stack",
+                "permission" => [$permission],
                 "submenu" => [
                     [
                         "label" => $label,
@@ -409,13 +447,26 @@ Route::authenticated()
             foreach ($navItems as &$item) {
                 if ($item['label'] === 'Master Data' && empty($item['type'])) {
                     $submenuExists = false;
-                    foreach ($item['submenu'] as $submenu) {
-                        if ($submenu['label'] === $label) {
-                            $submenuExists = true;
-                            break;
+                    if(isset($item['submenu'])){
+                        foreach ($item['submenu'] as $submenu) {
+                            if ($submenu['label'] === $label) {
+                                $submenuExists = true;
+                                break;
+                            }
                         }
                     }
                     if (!$submenuExists) {
+                        if(isset($item['permission'])){
+                            if(is_string($item['permission']) && trim($item['permission']) != ''){
+                                $item['permission'] .= " | ".$permission;
+                            }else if(is_array($item['permission'])){
+                                $item['permission'][] = $permission;
+                            }else{
+                                $item['permission'] = [$permission];
+                            }
+                        }else{
+                            $item['permission'] = [$permission];
+                        }
                         $item['submenu'][] = [
                             "label" => $label,
                             "href" => '/master/'.$route,
